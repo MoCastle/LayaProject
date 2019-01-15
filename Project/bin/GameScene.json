@@ -1,0 +1,1 @@
+{"type":"View","props":{"width":320,"height":568},"child":[{"type":"Button","props":{"y":429,"x":22,"width":75,"var":"LeftTouch","skin":"comp/button.png","labelSize":70,"labelBold":false,"labelAlign":"center","label":"L","height":111}},{"type":"Button","props":{"y":428,"x":225,"var":"RightTouch","skin":"comp/button.png","label":"R"}}]}
