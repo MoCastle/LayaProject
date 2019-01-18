@@ -15,6 +15,21 @@ var View = laya.ui.View;
 var Dialog = laya.ui.Dialog;
 var ui;
 (function (ui) {
+    var CharactersUI = /** @class */ (function (_super) {
+        __extends(CharactersUI, _super);
+        function CharactersUI() {
+            return _super.call(this) || this;
+        }
+        CharactersUI.prototype.createChildren = function () {
+            View.regComponent("RoleElement", RoleElement);
+            _super.prototype.createChildren.call(this);
+            this.loadUI("Characters");
+        };
+        return CharactersUI;
+    }(View));
+    ui.CharactersUI = CharactersUI;
+})(ui || (ui = {}));
+(function (ui) {
     var EnterSceneUI = /** @class */ (function (_super) {
         __extends(EnterSceneUI, _super);
         function EnterSceneUI() {
@@ -43,6 +58,20 @@ var ui;
     ui.GameSceneUI = GameSceneUI;
 })(ui || (ui = {}));
 (function (ui) {
+    var ItemListUI = /** @class */ (function (_super) {
+        __extends(ItemListUI, _super);
+        function ItemListUI() {
+            return _super.call(this) || this;
+        }
+        ItemListUI.prototype.createChildren = function () {
+            _super.prototype.createChildren.call(this);
+            this.loadUI("ItemList");
+        };
+        return ItemListUI;
+    }(View));
+    ui.ItemListUI = ItemListUI;
+})(ui || (ui = {}));
+(function (ui) {
     var LoadingUI = /** @class */ (function (_super) {
         __extends(LoadingUI, _super);
         function LoadingUI() {
@@ -55,5 +84,19 @@ var ui;
         return LoadingUI;
     }(View));
     ui.LoadingUI = LoadingUI;
+})(ui || (ui = {}));
+(function (ui) {
+    var SetPanelUI = /** @class */ (function (_super) {
+        __extends(SetPanelUI, _super);
+        function SetPanelUI() {
+            return _super.call(this) || this;
+        }
+        SetPanelUI.prototype.createChildren = function () {
+            _super.prototype.createChildren.call(this);
+            this.loadUI("SetPanel");
+        };
+        return SetPanelUI;
+    }(View));
+    ui.SetPanelUI = SetPanelUI;
 })(ui || (ui = {}));
 //# sourceMappingURL=layaUI.max.all.js.map

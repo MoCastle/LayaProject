@@ -14,8 +14,15 @@ class SceneManager
         }
         return this._Mgr;
     }
-
-    CurScene:BaseScene;
+    private _CurScene:BaseScene;
+    get CurScene():BaseScene
+    {
+        return this._CurScene;
+    }
+    set CurScene(value:BaseScene)
+    {
+        this._CurScene =value;
+    }
 
     constructor()
     {
@@ -110,9 +117,8 @@ abstract class BaseScene extends LifeObj
 
     protected _LeaveComplete()
     {
-        super._LeaveComplete();
         this.SceneMgr.CurScene = this._NextScene;
-        
+        super._LeaveComplete();
     }
 
     protected _Update()
@@ -164,22 +170,54 @@ abstract class BaseScene extends LifeObj
 abstract class BaseDirector extends LifeObj
 {
     SceneMgr:SceneManager;
+    GameTime:number;
     //外部接口
     Start():void
     {
+        this.GameTime = Laya.timer.currTimer;
         this._Start();
     }
 
     abstract ReStart():void;
-    Leave()
+    Leave():void
     {
+        APP.MessageCenter.DesRgistIDK(GameEvent.GameTimeUp);
+         APP.MessageCenter.DesRgistIDK(GameEvent.GameContinue);
         this._Leave();
     }
 
-   //私有属性和功能
-   constructor()
-   {
-       super();
-       this.SceneMgr = GM.SceneMgr;
-   }
+    TimeUp():void
+    {
+        if(this._TimeUpClock>0)
+        {
+            APP.MessageCenter.Trigger(GameEvent.GameTimeUp);
+            this._TimeUpClock = Laya.timer.currTimer;
+        }
+    }
+
+    ContinueTime():void
+    {
+        APP.MessageCenter.Trigger(GameEvent.GameContinue);
+        this._TimeUpCount += Laya.timer.currTimer - this._TimeUpClock;
+        this._TimeUpClock = -1;
+    }
+
+    get CurGameTime():number
+    {
+        return this._CurGameTime + this._TimeUpCount;
+    }
+    
+    //私有属性和功能
+    private _CurGameTime:number;
+    private _TimeUpCount:number;
+    private _TimeUpClock:number;
+
+    constructor()
+    {
+        super();
+        this.SceneMgr = GM.SceneMgr;
+        this._TimeUpCount = 0;
+        this._CurGameTime = 0;
+        this._TimeUpClock = -1;
+    }
 }

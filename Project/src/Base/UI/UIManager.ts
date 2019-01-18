@@ -1,6 +1,7 @@
 /**作者:Mo
  * UI管理
  */
+enum UITypeEnum {Low,Midle};
 class UIManager
 {
     //对外接口
@@ -13,15 +14,46 @@ class UIManager
         return UIManager._Mgr;
     }
 
-    Open(ui:Laya.Sprite)
+    Open(ui:BaseUI)
     {
-        this._UINode.addChild(ui);
+        var node:Laya.Sprite = null;
+        switch(ui.UIType)
+        {
+            //中层次UI
+            case UITypeEnum.Midle:
+                node = this._MidleUINode;
+            break;
+            //默认Ui全是低层次UI
+            default:
+                node = this._UINode;
+            break;
+        }
+        node.addChild(ui);
+        if(this._MidleUINode.numChildren>0)
+        {
+            //通知导演暂停游戏
+            APP.SceneManager.CurScene.CurDir.TimeUp();
+        }
+        ui.OpenOP();
     }
 
-    Close(ui:Laya.Sprite)
+    Close(ui:BaseUI)
     {
         ui.removeSelf();
+        ui.CloseOP();
+        if(ui.UIType == UITypeEnum.Midle && this._MidleUINode.numChildren<=0)
+        {
+            //关闭窗口 通知游戏继续
+            APP.SceneManager.CurScene.CurDir.ContinueTime();
+        }
     }
+
+    CloseCurView()
+    {
+        var ui:BaseUI =this._UINode.getChildAt(this._UINode.numChildren-1) as BaseUI;
+        this.Close(ui);
+    }
+
     //删除所有节点上的UI
     Clear()
     {
@@ -29,34 +61,22 @@ class UIManager
         while (uiNode.numChildren) {
             (uiNode.getChildAt(0) as Laya.Sprite).removeSelf();
         }
+        uiNode = this._MidleUINode
+        while (uiNode.numChildren) {
+            (uiNode.getChildAt(0) as Laya.Sprite).removeSelf();
+        }
     }
+
     //内部功能
     private constructor()
     {
         this._UINode = new Laya.Sprite();
+        this._MidleUINode = new Laya.Sprite();
         Laya.stage.addChild(this._UINode);
+        Laya.stage.addChild(this._MidleUINode);
     }
 
-    private _UINode;
+    private _UINode:Laya.Sprite;
+    private _MidleUINode:Laya.Sprite;
 }
 
-//UI基类
-abstract class BaseUI extends Laya.Sprite
-{
-    Open()
-    {
-        UIManager.Mgr.Open(this);
-    }
-    Close()
-    {
-        UIManager.Mgr.Close(this);
-    }
-    Destroy( )
-    {
-        this.destroy();
-    }
-    constructor()
-    {
-        super();
-    }
-}

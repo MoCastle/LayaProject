@@ -1,6 +1,6 @@
+
 module ui {
-    export class EnterGameUI extends ui.EnterSceneUI
-    {
+    export class ExtendEnterGameUI extends ui.EnterSceneUI {
         Panel:Laya.Panel;
         constructor()
         {
@@ -8,23 +8,25 @@ module ui {
             this.Panel = this._Panel;
             this.Panel.vScrollBarSkin = "";
             this.Panel.hScrollBarSkin = "";
+            this._Character.on(Laya.Event.CLICK,null,ControlAPP.GameControler.ShowCharacterPanel);
+            this._SetPanel.on(Laya.Event.CLICK,null,ControlAPP.GameControler.ShowSetPanel);
+            this._Start.on(Laya.Event.CLICK,null,ControlAPP.GameControler.EnterGame);
         }
         createChildren():void
         {
-            var res:JSON = Laya.loader.getRes("EnterScene.json");
+            var res:JSON = Laya.loader.getRes("res/uijson/EnterScene.json");
             this.createView(res);
             super.createChildren();
         }
     }
 }
-
 class EnterGameUI extends BaseUI
 {
-    private _UI:ui.EnterGameUI;
+    UI:ui.ExtendEnterGameUI;
     constructor()
     {
         super();
-        this._UI = new ui.EnterGameUI();
-        this.addChild(this._UI);
+        this.UI= new ui.ExtendEnterGameUI();
+        this.addChild(this.UI);
     }
 }

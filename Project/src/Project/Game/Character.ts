@@ -4,6 +4,11 @@
 //管理一整行
 class MountLine extends Laya.Sprite3D
 {
+    LineIdx:number;
+    FloorNum:number;
+    StepList:Step[];
+    LogicLength:number;
+    StepItem:StepItem;
     set Position( newPS:Laya.Vector3 )
     {
         this.transform.position = newPS;
@@ -12,11 +17,7 @@ class MountLine extends Laya.Sprite3D
     {
         return this.transform.position;
     }
-    LineIdx:number;
-    FloorNum:number;
-    StepList:Step[];
-    LogicLength:number;
-    StepItem:StepItem;
+    
 
     //设获取显示出来的第几个平台
     GetStep(idx:number):Step

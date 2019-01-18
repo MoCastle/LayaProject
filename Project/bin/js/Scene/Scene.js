@@ -31,6 +31,16 @@ var SceneManager = /** @class */ (function () {
         enumerable: true,
         configurable: true
     });
+    Object.defineProperty(SceneManager.prototype, "CurScene", {
+        get: function () {
+            return this._CurScene;
+        },
+        set: function (value) {
+            this._CurScene = value;
+        },
+        enumerable: true,
+        configurable: true
+    });
     SceneManager.prototype.EnterScene = function (targetScene) {
         if (this.CurScene == null)
             this.CurScene = targetScene;
@@ -87,8 +97,8 @@ var BaseScene = /** @class */ (function (_super) {
         }
     };
     BaseScene.prototype._LeaveComplete = function () {
-        _super.prototype._LeaveComplete.call(this);
         this.SceneMgr.CurScene = this._NextScene;
+        _super.prototype._LeaveComplete.call(this);
     };
     BaseScene.prototype._Update = function () {
         if (this.CurDir != null)
@@ -126,19 +136,42 @@ var BaseScene = /** @class */ (function (_super) {
 //导演基类
 var BaseDirector = /** @class */ (function (_super) {
     __extends(BaseDirector, _super);
-    //私有属性和功能
     function BaseDirector() {
         var _this = _super.call(this) || this;
         _this.SceneMgr = GM.SceneMgr;
+        _this._TimeUpCount = 0;
+        _this._CurGameTime = 0;
+        _this._TimeUpClock = -1;
         return _this;
     }
     //外部接口
     BaseDirector.prototype.Start = function () {
+        this.GameTime = Laya.timer.currTimer;
         this._Start();
     };
     BaseDirector.prototype.Leave = function () {
+        APP.MessageCenter.DesRgistIDK(GameEvent.GameTimeUp);
+        APP.MessageCenter.DesRgistIDK(GameEvent.GameContinue);
         this._Leave();
     };
+    BaseDirector.prototype.TimeUp = function () {
+        if (this._TimeUpClock > 0) {
+            APP.MessageCenter.Trigger(GameEvent.GameTimeUp);
+            this._TimeUpClock = Laya.timer.currTimer;
+        }
+    };
+    BaseDirector.prototype.ContinueTime = function () {
+        APP.MessageCenter.Trigger(GameEvent.GameContinue);
+        this._TimeUpCount += Laya.timer.currTimer - this._TimeUpClock;
+        this._TimeUpClock = -1;
+    };
+    Object.defineProperty(BaseDirector.prototype, "CurGameTime", {
+        get: function () {
+            return this._CurGameTime + this._TimeUpCount;
+        },
+        enumerable: true,
+        configurable: true
+    });
     return BaseDirector;
 }(LifeObj));
 //# sourceMappingURL=Scene.js.map
