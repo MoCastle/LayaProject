@@ -1,8 +1,8 @@
 {
     "x":0,
     "type":"View",
-    "selectedBox":1,
-    "selecteID":7,
+    "selectedBox":10,
+    "selecteID":13,
     "props":{"width":320,"sceneColor":"#000000","height":568},
     "nodeParent":-1,
     "label":"View",
@@ -14,40 +14,186 @@
     "child":[
         {
             "x":15,
-            "type":"Button",
-            "props":{"y":429,"x":22,"width":75,"var":"LeftTouch","skin":"comp/button.png","labelSize":70,"labelBold":false,"labelAlign":"center","label":"L","height":111},
+            "type":"Box",
+            "props":{"y":278,"x":110,"var":"_CountDownUI"},
             "nodeParent":1,
-            "label":"Button(LeftTouch)",
-            "isDirectory":false,
+            "label":"Box(_CountDownUI)",
+            "isOpen":true,
+            "isDirectory":true,
             "isAniNode":true,
-            "hasChild":false,
-            "compId":3,
+            "hasChild":true,
+            "compId":9,
             "child":[
-                ]
+                {
+                    "x":30,
+                    "type":"Button",
+                    "props":{"width":96,"var":"_ItemListBtn","skin":"comp/button.png","label":"Item","height":55},
+                    "nodeParent":9,
+                    "label":"Button(_ItemListBtn)",
+                    "isDirectory":false,
+                    "isAniNode":true,
+                    "hasChild":false,
+                    "compId":8,
+                    "child":[
+                        ]
+                },
+                {
+                    "x":30,
+                    "type":"Label",
+                    "props":{"y":-155,"x":5,"width":78,"var":"_CountTime","text":"3","height":135,"fontSize":150,"color":"#ff7270"},
+                    "nodeParent":9,
+                    "label":"Label(_CountTime)",
+                    "isDirectory":false,
+                    "isAniNode":true,
+                    "hasChild":false,
+                    "compId":7,
+                    "child":[
+                        ]
+                }]
         },
         {
             "x":15,
-            "type":"Button",
-            "props":{"y":428,"x":225,"width":75,"var":"RightTouch","skin":"comp/button.png","labelSize":70,"label":"R","height":111},
+            "type":"Box",
+            "props":{"y":428,"x":22,"var":"_GamePanel"},
             "nodeParent":1,
-            "label":"Button(RightTouch)",
-            "isDirectory":false,
+            "label":"Box(_GamePanel)",
+            "isOpen":true,
+            "isDirectory":true,
             "isAniNode":true,
-            "hasChild":false,
-            "compId":6,
+            "hasChild":true,
+            "compId":10,
             "child":[
-                ]
+                {
+                    "x":30,
+                    "type":"Label",
+                    "props":{"y":-417,"x":-11,"width":63,"var":"_TxtDistance","text":"Distance:# ","height":31,"fontSize":20,"color":"#ffffff"},
+                    "nodeParent":10,
+                    "label":"Label(_TxtDistance)",
+                    "isDirectory":false,
+                    "isAniNode":true,
+                    "hasChild":false,
+                    "compId":12,
+                    "child":[
+                        ]
+                },
+                {
+                    "x":30,
+                    "type":"Button",
+                    "props":{"y":-177,"x":-19,"width":49,"var":"_UseItem","skin":"comp/button.png","label":"UseItem","height":49},
+                    "nodeParent":10,
+                    "label":"Button(_UseItem)",
+                    "isDirectory":false,
+                    "isAniNode":true,
+                    "hasChild":false,
+                    "compId":11,
+                    "child":[
+                        ]
+                },
+                {
+                    "x":30,
+                    "type":"Label",
+                    "props":{"y":-417,"x":179,"width":63,"var":"_TxtGold","text":"Gold:# ","height":31,"fontSize":20,"color":"#ffffff"},
+                    "nodeParent":10,
+                    "label":"Label(_TxtGold)",
+                    "isDirectory":false,
+                    "isAniNode":true,
+                    "hasChild":false,
+                    "compId":13,
+                    "child":[
+                        ]
+                },
+                {
+                    "x":30,
+                    "type":"Box",
+                    "props":{"y":54,"x":109,"var":"_RightHandBtnList"},
+                    "nodeParent":10,
+                    "label":"Box(_RightHandBtnList)",
+                    "isOpen":true,
+                    "isDirectory":true,
+                    "isAniNode":true,
+                    "hasChild":true,
+                    "compId":14,
+                    "child":[
+                        {
+                            "x":45,
+                            "type":"Button",
+                            "props":{"width":60,"var":"_Right_LeftTouch","skin":"comp/button.png","labelSize":70,"labelBold":false,"labelAlign":"center","label":"L","height":72},
+                            "nodeParent":14,
+                            "label":"Button(_Right_LeftTouch)",
+                            "isDirectory":false,
+                            "isAniNode":true,
+                            "hasChild":false,
+                            "compId":3,
+                            "child":[
+                                ]
+                        },
+                        {
+                            "x":45,
+                            "type":"Button",
+                            "props":{"x":113,"width":60,"var":"_Right_RightTouch","skin":"comp/button.png","labelSize":70,"label":"R","height":72},
+                            "nodeParent":14,
+                            "label":"Button(_Right_RightTouch)",
+                            "isDirectory":false,
+                            "isAniNode":true,
+                            "hasChild":false,
+                            "compId":6,
+                            "child":[
+                                ]
+                        }],
+                    "$HIDDEN":false
+                },
+                {
+                    "x":30,
+                    "type":"Box",
+                    "props":{"y":54,"x":-3,"var":"_LeftHandBtnList"},
+                    "nodeParent":10,
+                    "label":"Box(_LeftHandBtnList)",
+                    "isOpen":true,
+                    "isDirectory":true,
+                    "isAniNode":true,
+                    "hasChild":true,
+                    "compId":15,
+                    "child":[
+                        {
+                            "x":45,
+                            "type":"Button",
+                            "props":{"width":60,"var":"_Left_LeftTouch","skin":"comp/button.png","labelSize":70,"labelBold":false,"labelAlign":"center","label":"L","height":72},
+                            "nodeParent":15,
+                            "label":"Button(_Left_LeftTouch)",
+                            "isDirectory":false,
+                            "isAniNode":true,
+                            "hasChild":false,
+                            "compId":16,
+                            "child":[
+                                ]
+                        },
+                        {
+                            "x":45,
+                            "type":"Button",
+                            "props":{"x":113,"width":60,"var":"_Left_RightTouch","skin":"comp/button.png","labelSize":70,"label":"R","height":72},
+                            "nodeParent":15,
+                            "label":"Button(_Left_RightTouch)",
+                            "isDirectory":false,
+                            "isAniNode":true,
+                            "hasChild":false,
+                            "compId":17,
+                            "child":[
+                                ]
+                        }],
+                    "$HIDDEN":false
+                }],
+            "$HIDDEN":false
         },
         {
             "x":15,
             "type":"Label",
-            "props":{"y":242,"x":115,"width":78,"var":"_CountTime","text":"3","height":135,"fontSize":150,"color":"#ff7270"},
+            "props":{"y":172,"x":57,"width":188,"var":"_GameInfo","valign":"middle","text":"123","height":235,"fontSize":80,"color":"#d43f3c","align":"center"},
             "nodeParent":1,
-            "label":"Label(_CountTime)",
+            "label":"Label(_GameInfo)",
             "isDirectory":false,
             "isAniNode":true,
             "hasChild":false,
-            "compId":7,
+            "compId":18,
             "child":[
                 ]
         }],

@@ -30,6 +30,20 @@ var ui;
     ui.CharactersUI = CharactersUI;
 })(ui || (ui = {}));
 (function (ui) {
+    var EndGameUI = /** @class */ (function (_super) {
+        __extends(EndGameUI, _super);
+        function EndGameUI() {
+            return _super.call(this) || this;
+        }
+        EndGameUI.prototype.createChildren = function () {
+            _super.prototype.createChildren.call(this);
+            this.loadUI("EndGame");
+        };
+        return EndGameUI;
+    }(View));
+    ui.EndGameUI = EndGameUI;
+})(ui || (ui = {}));
+(function (ui) {
     var EnterSceneUI = /** @class */ (function (_super) {
         __extends(EnterSceneUI, _super);
         function EnterSceneUI() {
@@ -64,6 +78,7 @@ var ui;
             return _super.call(this) || this;
         }
         ItemListUI.prototype.createChildren = function () {
+            View.regComponent("ItemElement", ItemElement);
             _super.prototype.createChildren.call(this);
             this.loadUI("ItemList");
         };
@@ -84,6 +99,20 @@ var ui;
         return LoadingUI;
     }(View));
     ui.LoadingUI = LoadingUI;
+})(ui || (ui = {}));
+(function (ui) {
+    var PlayerListUI = /** @class */ (function (_super) {
+        __extends(PlayerListUI, _super);
+        function PlayerListUI() {
+            return _super.call(this) || this;
+        }
+        PlayerListUI.prototype.createChildren = function () {
+            _super.prototype.createChildren.call(this);
+            this.loadUI("PlayerList");
+        };
+        return PlayerListUI;
+    }(View));
+    ui.PlayerListUI = PlayerListUI;
 })(ui || (ui = {}));
 (function (ui) {
     var SetPanelUI = /** @class */ (function (_super) {

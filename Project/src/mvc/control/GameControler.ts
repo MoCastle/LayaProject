@@ -18,15 +18,13 @@ class GameControler
     //显示设置面板
     ShowSetPanel()
     {
-        var Panel = new SetPanel();
-        APP.UIManager.Open(Panel);
+        var Panel = APP.UIManager.Show<SetPanelUI>(SetPanelUI);// new SetPanel();
     }
 
     //显示角色面板
     ShowCharacterPanel()
     {
-        var character = new CharacterUI();
-        APP.UIManager.Open(character);
+         var character = APP.UIManager.Show<CharacterUI>(CharacterUI);
     }
 
     private _SetInfo;

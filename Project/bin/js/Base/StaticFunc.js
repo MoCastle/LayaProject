@@ -6,6 +6,8 @@
 var IsRight = true;
 var PlayerMoveTime = 0.02 * 10000;
 //const PlayerMoveTime:number =0.02;
+var ItemDictType;
+ItemDictType = {};
 var LifeObjState;
 (function (LifeObjState) {
     LifeObjState[LifeObjState["UnStarted"] = 0] = "UnStarted";
@@ -13,6 +15,7 @@ var LifeObjState;
     LifeObjState[LifeObjState["Updating"] = 2] = "Updating";
     LifeObjState[LifeObjState["Ended"] = 3] = "Ended";
 })(LifeObjState || (LifeObjState = {}));
+var UIStrToClass = {};
 var MLocation = /** @class */ (function () {
     function MLocation(x, y) {
         this._Arr = [x, y];

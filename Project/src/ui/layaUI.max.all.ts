@@ -4,7 +4,6 @@ import Dialog=laya.ui.Dialog;
 module ui {
     export class CharactersUI extends View {
 		public _GoldDis:Laya.Label;
-		public _SkillDis:Laya.Label;
 		public _List:Laya.List;
 
         constructor(){ super()}
@@ -20,11 +19,31 @@ module ui {
 }
 
 module ui {
+    export class EndGameUI extends View {
+		public _GameInfo:Laya.Label;
+		public _StartBtn:Laya.Button;
+		public _MenueBtn:Laya.Button;
+		public _SetBtn:Laya.Button;
+		public _PlayerListBtn:Laya.Button;
+
+        constructor(){ super()}
+        createChildren():void {
+        
+            super.createChildren();
+            this.loadUI("EndGame");
+
+        }
+
+    }
+}
+
+module ui {
     export class EnterSceneUI extends View {
 		public _Start:Laya.Button;
 		public _Character:Laya.Button;
 		public _Panel:Laya.Panel;
 		public _SetPanel:Laya.Button;
+		public _CharacterList:Laya.Button;
 
         constructor(){ super()}
         createChildren():void {
@@ -39,9 +58,20 @@ module ui {
 
 module ui {
     export class GameSceneUI extends View {
-		public LeftTouch:Laya.Button;
-		public RightTouch:Laya.Button;
+		public _CountDownUI:Laya.Box;
+		public _ItemListBtn:Laya.Button;
 		public _CountTime:Laya.Label;
+		public _GamePanel:Laya.Box;
+		public _TxtDistance:Laya.Label;
+		public _UseItem:Laya.Button;
+		public _TxtGold:Laya.Label;
+		public _RightHandBtnList:Laya.Box;
+		public _Right_LeftTouch:Laya.Button;
+		public _Right_RightTouch:Laya.Button;
+		public _LeftHandBtnList:Laya.Box;
+		public _Left_LeftTouch:Laya.Button;
+		public _Left_RightTouch:Laya.Button;
+		public _GameInfo:Laya.Label;
 
         constructor(){ super()}
         createChildren():void {
@@ -56,10 +86,12 @@ module ui {
 
 module ui {
     export class ItemListUI extends View {
+		public _List:Laya.List;
 
         constructor(){ super()}
         createChildren():void {
-        
+        			View.regComponent("ItemElement",ItemElement);
+
             super.createChildren();
             this.loadUI("ItemList");
 
@@ -80,6 +112,22 @@ module ui {
         
             super.createChildren();
             this.loadUI("Loading");
+
+        }
+
+    }
+}
+
+module ui {
+    export class PlayerListUI extends View {
+		public _PlayerList:Laya.List;
+		public _ReturnMain:Laya.Button;
+
+        constructor(){ super()}
+        createChildren():void {
+        
+            super.createChildren();
+            this.loadUI("PlayerList");
 
         }
 

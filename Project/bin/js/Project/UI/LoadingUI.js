@@ -64,12 +64,15 @@ var ui;
 })(ui || (ui = {}));
 var LoadUI = /** @class */ (function (_super) {
     __extends(LoadUI, _super);
-    function LoadUI() {
-        var _this = _super.call(this) || this;
+    function LoadUI(name) {
+        var _this = _super.call(this, name) || this;
         _this.LoadUI = new ui.ExtendsLoadUI();
         _this.addChild(_this.LoadUI);
         return _this;
     }
+    LoadUI.Name = function () {
+        return "LoadUI";
+    };
     LoadUI.prototype.Update = function () {
         this.LoadUI.Update();
     };

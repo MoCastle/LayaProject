@@ -23,6 +23,10 @@ class SceneManager
     {
         this._CurScene =value;
     }
+    get CurDir():BaseDirector
+    {
+        return this._CurScene.CurDir;
+    }
 
     constructor()
     {
@@ -109,6 +113,7 @@ abstract class BaseScene extends LifeObj
     protected _Leaving()
     {
         APP.UIManager.Clear();
+
         if(this.CurDir.ObjState == LifeObjState.Ended)
         {
             super._Leaveing();
@@ -117,8 +122,18 @@ abstract class BaseScene extends LifeObj
 
     protected _LeaveComplete()
     {
-        this.SceneMgr.CurScene = this._NextScene;
         super._LeaveComplete();
+        if(this.Scene)
+        {
+            this.Scene.removeSelf();
+            while(this.Scene.numChildren)
+            {
+                var actor = this.Scene.getChildAt(0);
+                actor.removeSelf();
+            }
+        }
+        this.SceneMgr.CurScene = this._NextScene;
+        //zerg 场景不知道会不会内存泄漏
     }
 
     protected _Update()
@@ -161,6 +176,7 @@ abstract class BaseScene extends LifeObj
     }
     protected _StartComplete()
     {
+        APP.UIManager.Clear();
         this._GenDir();
         super._StartComplete();
     }
@@ -170,28 +186,53 @@ abstract class BaseScene extends LifeObj
 abstract class BaseDirector extends LifeObj
 {
     SceneMgr:SceneManager;
-    GameTime:number;
+    get GameTime():number
+    {
+        if(this._TimeUpClock>0)
+        {
+            return this._TimeUpClock- this._StartGameTime - this._TimeUpCount;
+        }else
+        {
+            return Laya.timer.currTimer- this._StartGameTime - this._TimeUpCount;
+        }
+    }
+    set GameTime(value:number)
+    {
+        this._StartGameTime = value;
+    }
     //外部接口
     Start():void
     {
-        this.GameTime = Laya.timer.currTimer;
         this._Start();
+    }
+    protected _Start():void
+    {
+        this._StartGameTime = Laya.timer.currTimer;
+        super._Start();
     }
 
     abstract ReStart():void;
-    Leave():void
+    _Leave():void
     {
         APP.MessageCenter.DesRgistIDK(GameEvent.GameTimeUp);
-         APP.MessageCenter.DesRgistIDK(GameEvent.GameContinue);
-        this._Leave();
+        APP.MessageCenter.DesRgistIDK(GameEvent.GameContinue);
+        super._Leave();
     }
 
     TimeUp():void
     {
-        if(this._TimeUpClock>0)
+        if(this._TimeUpClock<=0)
         {
             APP.MessageCenter.Trigger(GameEvent.GameTimeUp);
             this._TimeUpClock = Laya.timer.currTimer;
+        }
+    }
+
+    Update()
+    {
+        if(this._TimeUpClock<=0)
+        {
+            super.Update();
         }
     }
 
@@ -204,11 +245,11 @@ abstract class BaseDirector extends LifeObj
 
     get CurGameTime():number
     {
-        return this._CurGameTime + this._TimeUpCount;
+        return this._StartGameTime + this._TimeUpCount;
     }
     
     //私有属性和功能
-    private _CurGameTime:number;
+    private _StartGameTime:number;
     private _TimeUpCount:number;
     private _TimeUpClock:number;
 
@@ -217,7 +258,15 @@ abstract class BaseDirector extends LifeObj
         super();
         this.SceneMgr = GM.SceneMgr;
         this._TimeUpCount = 0;
-        this._CurGameTime = 0;
+        this._StartGameTime = 0;
         this._TimeUpClock = -1;
+    }
+    protected _StartComplete()
+    {
+        this._TimeUpCount = 0;
+        this._StartGameTime = 0;
+        this._TimeUpClock = -1;
+        APP.UIManager.Clear();
+        super._StartComplete();
     }
 }

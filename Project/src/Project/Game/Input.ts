@@ -20,6 +20,23 @@ abstract class BaseGameInput
     
 }
 
+class DIYInput extends BaseGameInput
+{
+    Input(isRight:boolean)
+    {
+        if(this._Listener)
+            this._Listener.call(this._Owner,isRight);
+    }
+
+    private _Owner:any;
+    private _Listener:(isring:boolean)=>void;
+    constructor(owner:any = null,listener:(isring:boolean)=>void = null)
+    {
+        super();
+        this._Owner = owner;
+        this._Listener = listener;
+    }
+}
 class NormGameInput extends BaseGameInput
 {
     GameDir:GameDirector;

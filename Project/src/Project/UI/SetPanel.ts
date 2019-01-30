@@ -4,7 +4,8 @@ module ui {
         constructor()
         {
             super();
-            this._Return.on(Laya.Event.CLICK,this,()=>{APP.UIManager.CloseCurView()});
+            //this._Return.on(Laya.Event.CLICK,this,()=>{APP.UIManager.CloseCurView()});
+            this._Return.on(Laya.Event.CLICK,this,()=>{APP.UIManager.CloseCurView();StageAPP.GuiderManager.EnterScene()});
             this.SetPanel();
         }
 
@@ -36,16 +37,12 @@ module ui {
         }
     }
 }
-class SetPanel extends BaseUI
+class SetPanelUI extends BaseUI
 {
-    UI:ui.ExtendsSetPanel;
-    constructor()
+    static Name():string
     {
-        super();
-        this.UI = new ui.ExtendsSetPanel();
-        this.addChild(this.UI);
+        return "SetPanel";
     }
-
     SetPanel()
     {
         this.UI.SetPanel();
@@ -59,4 +56,14 @@ class SetPanel extends BaseUI
     {
         this.UI.CloseOP();
     }
+    UI:ui.ExtendsSetPanel;
+    constructor(name:string)
+    {
+        super(name);
+        this._UIType = UITypeEnum.Midle;
+        this.UI = new ui.ExtendsSetPanel();
+        this.addChild(this.UI);
+    }
+
+    
 }

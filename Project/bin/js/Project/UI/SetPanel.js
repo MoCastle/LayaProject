@@ -17,7 +17,8 @@ var ui;
         __extends(ExtendsSetPanel, _super);
         function ExtendsSetPanel() {
             var _this = _super.call(this) || this;
-            _this._Return.on(Laya.Event.CLICK, _this, function () { APP.UIManager.CloseCurView(); });
+            //this._Return.on(Laya.Event.CLICK,this,()=>{APP.UIManager.CloseCurView()});
+            _this._Return.on(Laya.Event.CLICK, _this, function () { APP.UIManager.CloseCurView(); StageAPP.GuiderManager.EnterScene(); });
             _this.SetPanel();
             return _this;
         }
@@ -45,23 +46,27 @@ var ui;
     }(ui.SetPanelUI));
     ui.ExtendsSetPanel = ExtendsSetPanel;
 })(ui || (ui = {}));
-var SetPanel = /** @class */ (function (_super) {
-    __extends(SetPanel, _super);
-    function SetPanel() {
-        var _this = _super.call(this) || this;
+var SetPanelUI = /** @class */ (function (_super) {
+    __extends(SetPanelUI, _super);
+    function SetPanelUI(name) {
+        var _this = _super.call(this, name) || this;
+        _this._UIType = UITypeEnum.Midle;
         _this.UI = new ui.ExtendsSetPanel();
         _this.addChild(_this.UI);
         return _this;
     }
-    SetPanel.prototype.SetPanel = function () {
+    SetPanelUI.Name = function () {
+        return "SetPanel";
+    };
+    SetPanelUI.prototype.SetPanel = function () {
         this.UI.SetPanel();
     };
-    SetPanel.prototype.SavePanel = function () {
+    SetPanelUI.prototype.SavePanel = function () {
         this.UI.SavePanel();
     };
-    SetPanel.prototype.CloseOP = function () {
+    SetPanelUI.prototype.CloseOP = function () {
         this.UI.CloseOP();
     };
-    return SetPanel;
+    return SetPanelUI;
 }(BaseUI));
 //# sourceMappingURL=SetPanel.js.map

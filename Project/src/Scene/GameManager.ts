@@ -67,7 +67,7 @@ class GameScene extends BaseScene
     //对外接口
     StartLoad()
     {
-        Laya.loader.load("res/uijson/GameScene.json",Laya.Handler.create(this,this._LoadComplete));
+        Laya.loader.load(["res/uijson/PlayerList.json","res/uijson/GameScene.json","res/uijson/EndGame.json"],Laya.Handler.create(this,this._LoadComplete));
         super.StartLoad();
     }
 
@@ -93,7 +93,13 @@ class GameScene extends BaseScene
         this.CurDir = this.GameDir;
 
     }
-
+//         APP.MessageCenter.DesRgistIDK(GameEvent.PlayerDeath);
+    //离开时进行配置
+    protected _Leave():void
+    {
+        APP.MessageCenter.DesRgistIDK(GameEvent.PlayerDeath);
+        super._Leave();
+    }
     protected _LoadComplete()
     {
         this.Scene = new Laya.Scene();
@@ -104,7 +110,6 @@ class GameScene extends BaseScene
 //游戏导演
 class GameDirector extends BaseDirector
 {
-    PanelUI:GameUI;
     Camera:GameCamera;
     GameScene:BaseScene;
     MountLines:MountLine[];
@@ -113,6 +118,71 @@ class GameDirector extends BaseDirector
     ItemLayout:ItemLayout;
     CurLineRewards:Array<LineItemInfo>;
     CurLineBarriers:Array<LineItemInfo>
+    get SafeLocation():MLocation
+    {
+        return this._SafeLocation;
+    }
+    private _SafeLocation:MLocation;
+    AddInputCtrler(value:BaseGameInput)
+    {
+        value.NextInput = this.InputCtrl;
+        this.InputCtrl = value;
+    }
+    PopInputCtrler()
+    {
+        this.InputCtrl = this.InputCtrl.NextInput;
+    }
+    AddGold(num:number)
+    {
+        this._GoldNum += num;
+        this.AddLogicGold(num);
+    }
+    AddGoldUnLogicGold(num:number)
+    {
+        this._GoldNum += num;
+    }
+    AddLogicGold(num:number)
+    {
+        this.PanelUI.AddGold(num);
+    }
+
+    //设置安全位置
+    SetSafePS(location:MLocation)
+    {
+        if(location.Y<this.TailFLoor.FloorNum)
+        {
+            return;
+        }
+        this._SafeLocation = location;
+        if(location.Y<=this.HeadFloor.FloorNum)
+        {
+            var floorNum = location.Y
+            for(let index = 0;index<2;++index)
+            {
+                this.LoopDoFloorStep(floorNum+index,this,this.ClearFloor);
+            }
+        }
+        
+    }
+    //清理层的负面道具
+    ClearFloor(step:Step):void
+    {
+        var stepItem = step.StepItem;
+        if(stepItem.IsDifficulty||stepItem.ItemType == ItemType.Vine)
+        {
+            step.PutItem(ItemType.Empty);
+        }
+    }
+    get PanelUI():GameUI
+    {
+        return this._PanelUI;
+    }
+    set PanelUI(value:GameUI)
+    {
+        value.SetLeftTouch(this,()=>{this.InputCtrl.Input(!IsRight);})
+        value.SetRightTouch(this,()=>{this.InputCtrl.Input(IsRight);});                       
+        this._PanelUI = value;
+    }
     
     get HeadFloor():MountLine
     {
@@ -122,7 +192,17 @@ class GameDirector extends BaseDirector
     {
         return this.MountLines[this._TailFLoorIdx];
     }
-    
+    get PlayerDistance():number
+    {
+        return Math.abs((this.Player.Position.z - this._StartPosition.z)/(GameManager.StepDistance/2));
+    }
+
+    Death():void
+    {
+        var ui:EndGameUI = APP.UIManager.Show<EndGameUI>(EndGameUI);
+        ui.SetGameInfo(this.PlayerDistance,this._GoldNum);
+        this.TimeUp();
+    }
     //对外接口
     Start( ):void
     {
@@ -132,6 +212,10 @@ class GameDirector extends BaseDirector
     ReStart():void
     {
         this._StartComplete();
+    }
+    ShowInputInfo(info:string):void
+    {
+        this.PanelUI.ShowInputInfo(info);
     }
     //左右移动
     MoveStep( isRight:boolean )
@@ -176,6 +260,20 @@ class GameDirector extends BaseDirector
         return this.MountLines[floorID];
     }
 
+    LoopDoFloorStep( floor:number,Owner:any,callBack:(step:Step)=>void ):void
+    {
+        if(floor<this.TailFLoor.FloorNum||floor>this.HeadFloor.FloorNum)
+        {
+            return;
+        }
+        var floorLine:MountLine = this.GetFloorByFloor(floor);
+        for(let idx=0;idx<floorLine.LogicLength;++idx)
+        {
+            var step = floorLine.GetStep(idx);
+            callBack.call(Owner,step);
+        }
+    }
+
     /**
      * 通过坐标获取台阶
      * @param location 索引,层数
@@ -190,7 +288,11 @@ class GameDirector extends BaseDirector
     {
         var floor:number = this._StartPosition.z - this.Player.LogicPosition.z;
         floor = Math.round(floor/(GameManager.StepDistance/2));
-        return floor;
+        return Math.abs(floor);
+    }
+    get PlayerFloorLine( ):MountLine
+    {
+        return this.GetFloorByFloor(this.PlayerFloor);
     }
 
     //内部功能
@@ -199,10 +301,14 @@ class GameDirector extends BaseDirector
     private _CountTime:number;
     private _BootomFloor:number;
     private _StartPosition:Laya.Vector3;
+    private _GameUpdate:()=>void;
+    private _PanelUI:GameUI;
+    private _GoldNum:number;
+    private _LogicGoldNum:number;
+    
     constructor()
     {
         super();
-        this.PanelUI = null;
         this.Camera = null;  
         this.GameScene = null;
         this.MountLines = null;
@@ -217,16 +323,19 @@ class GameDirector extends BaseDirector
         this._CountTime = 0;
         this._BootomFloor =0;
         this._StartPosition = new Laya.Vector3();
+        this._PanelUI = null;
+        
     }
     //创建相关放这 这里重新开始不会走
     protected _Start():void
     {
+        /*
         //创建方向光
         var directionLight = new Laya.DirectionLight();
         this.SceneMgr.CurScene.PutObj(directionLight);
         directionLight.color = new Laya.Vector3(1, 1, 1);
         directionLight.direction = new Laya.Vector3(1, -1, 0);
-
+*/
         this.Camera =new GameCamera();
         this.Camera.transform.localRotationEuler =new Laya.Vector3(-30,0,0);
         this.SceneMgr.CurScene.PutObj(this.Camera);
@@ -240,17 +349,7 @@ class GameDirector extends BaseDirector
             this.MountLines[lineIdx] = newMountLine;
         }
         //创建UI
-        var panelUI = new GameUI();
         var dir:GameDirector = this;
-        panelUI.LeftTouch.on(Laya.Event.CLICK,null,function()
-                                            {
-                                                dir.InputCtrl.Input(!IsRight);
-                                            });
-        panelUI.RightTouch.on(Laya.Event.CLICK,null,function()
-                                            {
-                                                dir.InputCtrl.Input(IsRight);
-                                            });                       
-        this.PanelUI = panelUI;
         
 
         //创建玩家
@@ -258,28 +357,24 @@ class GameDirector extends BaseDirector
         this.SceneMgr.CurScene.PutObj(this.Player);
 
         //准备玩家死亡事件
-        APP.MessageCenter.Regist(GameEvent.PlayerDeath,this.ReStart,this);
+        APP.MessageCenter.Regist(GameEvent.PlayerDeath,this.Death,this);
         super._Start();
-    }
-
-    protected _Leave()
-    {
-        super._Leave();
     }
 
     //进入游戏的设置放这里 重新开始走这里
     protected _StartComplete()
     {
+        this._SafeLocation = new MLocation(0,0);
         //重置物品
         this.ItemLayout = new ItemLayout()
         this.CurLineRewards = new Array<LineItemInfo>();
         this.CurLineBarriers = new Array<LineItemInfo>();
-        APP.UIManager.Open(this.PanelUI);
         var lines:MountLine[] = this.MountLines;
         //创建输入控制器
         this.InputCtrl = new NormGameInput(this);
         this._HeadFloorIdx = lines.length -1;
         this._TailFLoorIdx = 0;
+        this.Player.Reset();
         for(var idx:number = 0;idx<lines.length;++idx)
         {
             var line:MountLine = this.MountLines[idx];
@@ -293,26 +388,57 @@ class GameDirector extends BaseDirector
             }
             this._PutItemInLine(idx);
         }
-        this.Camera.Reset(new Laya.Vector3(),new Laya.Vector3(this.Player.Position.x,4.5,4),this.Player);
+        this.Camera.Reset(new Laya.Vector3(),new Laya.Vector3(this.Player.Position.x,GameManager.StepLength * 9,GameManager.StepLength * 8),this.Player);
+        this._GoldNum = 0;
+        this._LogicGoldNum = 0;
 
-        this._CountTime = Laya.timer.currTimer +6000;
         super._StartComplete();
+        this.PanelUI = APP.UIManager.Show(GameUI);
+        this._CountTime = this.GameTime +6000;
         this._BootomFloor = 0;
+        this._GameUpdate = this._StartCount;
     }
 
     protected _Update():void
     {
+        if(this._GameUpdate!=null )
+        {
+            this._GameUpdate();
+        }
+        /*
+        */
+    }
+
+    //正常运行时的每帧逻辑
+    private _RunGameUpdate()
+    {
+        this.PanelUI.Distance = this.PlayerDistance;
         var flooVector:Laya.Vector3 = this.TailFLoor.Position;
         if(flooVector.z - this.Player.Position.z>3*GameManager.StepDistance/2)
         {
             this._PushFLoor();
         }
-        if(this._CountTime < Laya.timer.currTimer)
+        if(this._CountTime < this.GameTime)
         {
-            this._CountTime = Laya.timer.currTimer + 3000;
+            this._CountTime = this.GameTime+ 3000;
             this._DestroyLine(this._BootomFloor);
             this._BootomFloor += 1; 
         }
+    }
+
+    //开始倒计时期间的每帧逻辑
+    private _StartCount()
+    {
+        var time:string =""
+        var countTime:number = this._CountTime - this.GameTime;
+        if(countTime>0)
+            time+= Math.floor( countTime/1000);
+        else
+        {
+            this._GameUpdate = this._RunGameUpdate;
+            this._CountTime = this.GameTime + 3000;
+        }
+        this.PanelUI.SetCountTime(time);
     }
      
     //将层向上叠
@@ -336,7 +462,7 @@ class GameDirector extends BaseDirector
     protected _PutItemInLine(floor:number)
     {
         var safeCol :{[key:string] :Array<number>;} = {};
-        if(floor >= GameManager.MaxLineNum)
+        if(floor >= this._SafeLocation.Y + GameManager.MaxLineNum)
         {
             safeCol = this._CountOpenList(floor);
         }else
@@ -382,6 +508,13 @@ class GameDirector extends BaseDirector
         }
         //放陷阱
         var barriersList:Array<LineItemInfo> = this.CurLineBarriers;
+        if(floor<=this._SafeLocation.Y+1&&floor>=this._SafeLocation.Y)
+        {
+            for(let index:number = barriersList.length-1; index>-1;--index)
+            {
+                barriersList.shift();
+            }
+        }
         this._OrginizePutItem(barriersList,randomPool);
         
         //摆放道具
@@ -438,6 +571,8 @@ class GameDirector extends BaseDirector
         for(var floorCount:number = this.PlayerFloor; floorCount<=floorNum;++floorCount)
         {
             var floor:MountLine = this.GetFloorByFloor(floorCount);
+            if(floor == null)
+                return;
             for(var stepIdx = 0;stepIdx<floor.LogicLength;++stepIdx)
             {
                 var step = floor.GetStep(stepIdx);
@@ -569,10 +704,10 @@ class GameDirector extends BaseDirector
         }
     }
 
-/**
- * 放道具前算通路情况
- * @param {number} floor 
- */
+    /**
+     * 放道具前算通路情况
+     * @param {number} floor 
+     */
     _CountRoadInfo(floor:number):Array<number>
     {
         var safeStepList:Array<number> = [];

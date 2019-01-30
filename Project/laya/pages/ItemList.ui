@@ -2,7 +2,7 @@
     "x":0,
     "type":"View",
     "selectedBox":1,
-    "selecteID":4,
+    "selecteID":3,
     "props":{"width":320,"sceneColor":"#000000","height":568},
     "nodeParent":-1,
     "label":"View",
@@ -15,7 +15,7 @@
         {
             "x":15,
             "type":"Button",
-            "props":{"y":339,"x":54,"width":230,"skin":"comp/button.png","label":"看广告","height":23},
+            "props":{"y":339,"x":54,"width":230,"skin":"comp/button.png","label":"Advertisement","height":23},
             "nodeParent":1,
             "label":"Button",
             "isDirectory":false,
@@ -28,9 +28,9 @@
         {
             "x":15,
             "type":"List",
-            "props":{"y":171,"x":14,"width":292,"spaceX":15,"height":133},
+            "props":{"y":171,"x":14,"width":292,"var":"_List","spaceX":15,"height":133},
             "nodeParent":1,
-            "label":"List",
+            "label":"List(_List)",
             "isOpen":true,
             "isDirectory":true,
             "isAniNode":true,
@@ -40,7 +40,7 @@
                 {
                     "x":30,
                     "type":"Box",
-                    "props":{"width":66,"name":"render","height":133},
+                    "props":{"width":66,"runtime":"ItemElement","name":"render","height":133},
                     "nodeParent":4,
                     "label":"Box(render)",
                     "isOpen":true,
@@ -65,7 +65,7 @@
                         {
                             "x":45,
                             "type":"Button",
-                            "props":{"y":110,"x":-3,"skin":"comp/button.png","label":"选择"},
+                            "props":{"y":110,"x":-3,"skin":"comp/button.png","label":"Coose"},
                             "nodeParent":6,
                             "label":"Button",
                             "isDirectory":false,

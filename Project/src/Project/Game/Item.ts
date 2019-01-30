@@ -38,11 +38,12 @@ class ItemLayout
         this.BarrierList.push(new LayItemMgr(10,4,ItemType.Rock,10));
         this.BarrierList.push(new LayItemMgr(10,4,ItemType.Thorn,10));
         this.BarrierList.push(new LayItemMgr(10,10,ItemType.Protect,10));
-        this.RewardList.push(new LayItemMgr(10,3,ItemType.Fly))
-    //this.ItemList.push(new ItemMgr(10,3,ItemType.Rope))
-    //this.ItemList.push(new ItemMgr(10,4,ItemType.Vine))
-    //this.ItemList.push(new ItemMgr(10,6,ItemType.Coin))
-    //this.ItemList.push(new ItemMgr(10,1,ItemType.Collector))
+        this.BarrierList.push(new LayItemMgr(10,4,ItemType.Vine))
+        
+        this.RewardList.push(new LayItemMgr(10,4,ItemType.Fly))
+        this.RewardList.push(new LayItemMgr(10,2,ItemType.Rope))
+        this.RewardList.push(new LayItemMgr(10,10,ItemType.Coin))
+        this.RewardList.push(new LayItemMgr(10,1,ItemType.Collector))
     }
     
     TakeLineReward(floor:number)
@@ -73,10 +74,7 @@ class ItemLayout
 
 
 //该对象的分布图每层等概率分布
-//range区间范围
-//num 区间范围数量
-//itemType 生产的道具类型
-//startFloor 从哪一行开始投掷
+
 class LayItemMgr
 {
     //道具类型
@@ -90,6 +88,10 @@ class LayItemMgr
     //分布区间
     Range:number;
     ItemList:Array<number>;
+    //range区间范围
+    //num 区间范围数量
+    //itemType 生产的道具类型
+    //startFloor 从哪一行开始投掷
     constructor( range:number,num:number,itemType:ItemType,startFloor:number = 1 )
     {
         if(num == undefined)
@@ -211,7 +213,7 @@ ItemFactory.prototype.TakeItems = function( floor )
     return {ItemType:this.ItemType, Num:countNum};
 }
 
-function StepItemFactory( itemType,Step)
+function StepItemFactory( itemType:ItemType,Step)
 {
     if(Step == undefined)
     {
@@ -226,11 +228,13 @@ function StepItemFactory( itemType,Step)
     item = objPool.getItem(ItemID+itemType)
     if(item==null)
     {
-        switch(itemType)
+        if(ItemDictType[itemType]!=null&&ItemDictType[itemType]!=undefined)
         {
-            default:
-                item = new StepItem(itemType,Step)
-            break;
+            var clas: any = ItemDictType[itemType];
+            item = new clas(Step);
+        }else
+        {
+            item = new StepItem(itemType,Step)
         }
     }
     item.Step = Step;
@@ -256,7 +260,7 @@ class StepItem
     //重置
     ResetItem()
     {
-        this._GenItemModel();
+        this._InitItemModel();
         this.SetEnable();
         if(this.Model!= null)
         {
@@ -303,37 +307,6 @@ class StepItem
     {
         switch(this.ItemType)
         {
-            case ItemType.Thorn:
-               /* if(player.Buff.Type == ItemTypeEnume.Protect)
-                {
-                    player.CompleteBuff();
-                    this.PutItem();
-                }else*/
-                    APP.MessageCenter.Trigger(GameEvent.PlayerDeath);
-            break;
-            
-            case ItemType.Protect:
-                this._AddBuffToPlayer(player,new BasePlayerBuff(this.ItemType));
-                break;
-
-            case ItemType.Fly:
-                player.AddCtrler(new PlayerFly(0.1,10));
-            /*
-                if(!this.JudgePlayerInBuff(player))//AddBuff(this.ItemType)) 
-                {
-                    var map = Game.CurScene.Map;
-                    map.FlyTo(10);
-                    Game.CurScene.InputCtrler = new InputCtrler(Game.CurScene.InputCtrler);
-                    var completeFunc = buff.CompleteFunc;
-                    buff.CompleteFunc = function()
-                    {
-                        Game.CurScene.InputCtrler = Game.CurScene.InputCtrler.Ctrler;
-                        completeFunc();
-                    }
-                }
-                */
-
-            break;
             /*
             case ItemTypeEnume.Rope:
                 if(!this.JudgePlayerInBuff(player))//AddBuff(this.ItemType)) 
@@ -449,37 +422,10 @@ class StepItem
             case ItemTypeEnume.Coin:
                 map.AddCoins(1);
                 this.PutItem();
-            break;
-            case ItemTypeEnume.Collector:
-                if(this.JudgePlayerInBuff(player))
-                {
-                    break;
-                }
-                var CurFloor = this.Step.Floor.Floor+1;
-                var Time = Laya.timer.currTimer +2000;
-                map.LoopAddCoins(CurFloor);
-                map.LoopAddCoins(CurFloor -1)
-                map.LoopAddCoins(CurFloor -2)
-                buff.Type = this.ItemType;
-                buff.ActionFunc = function()
-                {
-                    var floor = map.GetFloorByFloor(CurFloor);
-                    while( player.GetPs().z - floor.GetPs().z <SquareDistance/2+0.1 )
-                    {
-                        map.LoopAddCoins(CurFloor);
-                        ++CurFloor;
-                        floor = map.GetFloorByFloor(CurFloor);
-                    }
-                    if(Time<Laya.timer.currTimer)
-                    {
-                        player.CompleteBuff();
-                    }
-                }
-                this.PutItem();
             break;*/
         }
     }
-    constructor( itemType,Step )
+    constructor( itemType:ItemType,Step:Step )
     {
         if(itemType == undefined)
         {
@@ -497,44 +443,32 @@ class StepItem
             this.PutItem();
         }
     }
-    //由父类统一管理模型生成
-    _GenItemModel()
+    private _InitItemModel()
     {
         if( this.Model!=null&&!this.Model.destroyed )
         {
             return;
         }
-        var model = null;
         var ps = new Laya.Vector3(0,GameManager.StepLength/2+0.06,0);
+        this._GenItemModel(ps);
+        return this.Model;
+    }
+
+    //由父类统一管理模型生成
+    protected _GenItemModel(ps:Laya.Vector3)
+    {
+        var model = null;
+        
         switch(this.ItemType)
         {
             case ItemType.Rock:
                 model = new Laya.MeshSprite3D(new Laya.BoxMesh(0.3, 0.3, 0.5));
             break;
-            case ItemType.Thorn:
-                model = new Laya.MeshSprite3D(new Laya.BoxMesh(0.1,0.1,0.3));
-            break;
-            case ItemType.Protect:
-                model = new Laya.MeshSprite3D(new Laya.BoxMesh(0.1,0.1,0.1));
-                model.transform.rotate(new Laya.Vector3(-30, 0, 0), true, false);
-            break;
-            case ItemType.Fly:
-                model = new Laya.MeshSprite3D(new Laya.BoxMesh(0.5,0.5,0.1))
-                ps.y+= 0.3;
-            break;
             case ItemType.Rope:
-                model = new Laya.MeshSprite3D(new Laya.BoxMesh(0.1,0.5,0.1))
-                model.transform.rotate(new Laya.Vector3(30, -45, 0), true, false);
-                ps.y+= 0.3;
+                
             break
             case ItemType.Vine:
-                model = new Laya.MeshSprite3D(new Laya.BoxMesh(0.7,0.7,0.1))
-            break;
-            case ItemType.Coin:
-                model = new Laya.MeshSprite3D(new Laya.BoxMesh(0.2, 0.2, 0.2));
-            break;
-            case ItemType.Collector:
-                model = new Laya.MeshSprite3D(new Laya.SphereMesh(0.2));
+                
             break;
         }
         if(model!= null)
@@ -542,96 +476,436 @@ class StepItem
             model.transform.position = ps;
         }
         this.Model = model;    
-        return model;
     }
 }
 
-
-
-
-
-
-
-
-
-
-/*
-//触发
-StepItem.prototype.*/
-/*
-//设置玩家Buff
-StepItem.prototype.SetPlayerBuff = function(player,type,time,compFunc)
+class Thorn extends StepItem
 {
-    var buff = player.Buff;
-    buff.Type = type;
-    if(time!=undefined)
+    constructor(Step:Step)
     {
-        buff.Time = time;
-    }else
-    {
-        buff.Time = -1;
+        super(ItemType.Thorn,Step);
     }
-    if(compFunc!= undefined)
+    //由父类统一管理模型生成
+    protected _GenItemModel(ps:Laya.Vector3)
     {
-        buff.compFunc = compFunc;
+        var model = null;
+        
+        model = new Laya.MeshSprite3D(new Laya.BoxMesh(0.1,0.1,0.3));
+        model.transform.position = ps;
+        this.Model = model;    
     }
-}
-//判断玩家是否已经捡到BUFF
-StepItem.prototype.JudgePlayerInBuff = function(player)
-{
-     return player.Buff.Type >9&&player.Buff.Type!=ItemType.Vine;
-}
-
-function VineInput( ctrler )
-{
-    var countTime = 3;
-    var inputDir = IsRight;
-    var thisInput = this;
-    var map = Game.CurScene.Map;
-    map.GuideInfoUI.visible = true;
-    if(inputDir==IsRihgt)
+    TouchItem( player:Player ):void
     {
-        map.GuideInfoUI.text = "R";
-    }
-    else
-    {
-        map.GuideInfoUI.text = "L";
-    }
-    this.Input = function(isRight)
-    {
-        if(isRight == inputDir)
+        if(player.GetBuff(ProtectBuff.Idx)!=null&&player.BuffArr[ProtectBuff.Idx].Type == ItemType.Protect)
         {
-            inputDir = !inputDir;
-            if(inputDir==IsRihgt)
-            {
-                map.GuideInfoUI.text = "R";
-            }
-            else
-            {
-                map.GuideInfoUI.text = "L";
-            }
-            --countTime;
-            if(countTime<0)
-            {
-                Game.CurScene.InputCtrler = thisInput.Ctrler;
-                map.GuideInfoUI.visible =false;
-            }
+            player.GetBuff(ProtectBuff.Idx).Complete();
+            this.PutItem();
+        }else
+            APP.MessageCenter.Trigger(GameEvent.PlayerDeath);
+    }
+}
+ItemDictType[ItemType.Thorn] = Thorn;
+
+class Protect extends StepItem
+{
+    constructor(step:Step)
+    {
+        super(ItemType.Protect,step);
+    }
+    //由父类统一管理模型生成
+    protected _GenItemModel(ps:Laya.Vector3)
+    {
+        var model = null;
+        
+        model = new Laya.MeshSprite3D(new Laya.BoxMesh(0.1,0.1,0.1));
+        model.transform.rotate(new Laya.Vector3(-30, 0, 0), true, false);
+        model.transform.position = ps;
+        this.Model = model;    
+    }
+
+    TouchItem( player:Player )
+    {
+        if(player.GetBuff(ProtectBuff.Idx)!=null)
+            return;
+        this._AddBuffToPlayer(player,new ProtectBuff(3000));
+    }
+}
+ItemDictType[ItemType.Protect] = Protect;
+
+class ProtectBuff extends BasePlayerBuff
+{
+    Time:number;
+    static get Idx():number
+    {
+        return 0;
+    }
+    constructor(time:number = 0)
+    {
+        super(ItemType.Protect,ProtectBuff.Idx);
+        this.Time = APP.SceneManager.CurDir.GameTime+time;
+    }
+    Update()
+    {
+        if(this.Time<APP.SceneManager.CurDir.GameTime)
+        {
+            this.Complete();
         }
     }
-    arguments.callee.superClass.constructor.call(this,ctrler);
 }
-extend(VineInput,InputCtrler);
 
-function RopeInput( ctrler )
+class Coin extends StepItem
 {
-    var map = Game.CurScene.Map;
-    map.StartLocation = map.Player.GetLocation();
-
-    this.Input = function( isRight )
+    FlyToPlayer(player:Player)
     {
-        map.JumpRope( isRight );
+        var conin:AnimCoin = GenAnimObj<AnimCoin>(AnimCoin,this.Model);
+        conin.SetTarget(player);
+        APP.GameManager.GameDir.AddGoldUnLogicGold(1);
+        this.PutItem();
     }
-    arguments.callee.superClass.constructor.call(this,ctrler);
+    TouchItem( player:Player )
+    {
+        StageAPP.GameManager.GameDir.AddGold(1);
+        this.PutItem();
+    }
+    constructor(step:Step)
+    {
+        super(ItemType.Coin,step);
+    }
+    
+    //由父类统一管理模型生成
+    protected _GenItemModel(ps:Laya.Vector3)
+    {
+        var model = null;
+        
+        model = new Laya.MeshSprite3D(new Laya.BoxMesh(0.2, 0.2, 0.2));
+        model.transform.position = ps;
+        this.Model = model;    
+    }
 }
-extend( RopeInput,InputCtrler );
-*/
+ItemDictType[ItemType.Coin] = Coin;
+
+class Collecter extends StepItem
+{
+    TouchItem( player:Player )
+    {
+        if(player.GetBuff(CollectBuff.Idx)!=null)
+            return;
+        player.AddBuff(new CollectBuff(10000));
+        this.PutItem();
+    }
+    constructor(step:Step)
+    {
+        super(ItemType.Collector,step);
+    }
+    //由父类统一管理模型生成
+    protected _GenItemModel(ps:Laya.Vector3)
+    {
+        var model = null;
+        model = new Laya.MeshSprite3D(new Laya.SphereMesh(0.2));
+        model.transform.position = ps;
+        this.Model = model;    
+    }
+}
+ItemDictType[ItemType.Collector] = Collecter;
+
+class CollectBuff extends BasePlayerBuff
+{
+    Time:number;
+    GameDir:GameDirector;
+    CountFloor:number;
+    static get Idx():number
+    {
+        return 1;
+    }
+    constructor(time:number = 0)
+    {
+        super(ItemType.Protect,CollectBuff.Idx);
+        this.GameDir = APP.GameManager.GameDir;
+        this.Time = this.GameDir.GameTime+time;
+        this.CountFloor = 0;
+    }
+    Start(player:Player)
+    {
+        super.Start(player);
+        this.CountFloor = this.GameDir.PlayerFloor - 2;
+    }
+    Update()
+    {
+        if(this.Time<this.GameDir.GameTime)
+        {
+            this.Complete();
+        }else
+        {
+            if(this.GameDir.PlayerFloor - this.CountFloor+1<0)
+            {
+                return;
+            }
+            this.GameDir.LoopDoFloorStep(this.CountFloor,this,this.CountCoins);
+            ++this.CountFloor;
+        }
+    }
+    private CountCoins(step:Step)
+    {
+        if(step.StepItem.ItemType == ItemType.Coin)
+        {
+            var Coin:Coin = step.StepItem as Coin;
+            Coin.FlyToPlayer(this.Player);
+        }
+    }
+}
+
+class FLy extends StepItem
+{
+    TouchItem( player:Player )
+    {
+        if(player.GetBuff(0))
+            return;
+        player.AddBuff(new FlyBuff());
+    }
+    constructor(step:Step)
+    {
+        super(ItemType.Fly,step);
+    }
+    //由父类统一管理模型生成
+    protected _GenItemModel(ps:Laya.Vector3)
+    {
+        var model = new Laya.MeshSprite3D(new Laya.BoxMesh(0.5,0.5,0.1))
+        ps.y+= 0.3;
+        model.transform.position = ps;
+        this.Model = model;    
+    }
+}
+ItemDictType[ItemType.Fly] = FLy;
+
+class FlyBuff extends BasePlayerBuff
+{
+    Speed:number;
+    Floor:number;
+    
+    static get Idx():number
+    {
+        return 0;
+    }
+    Start(player:Player)
+    {
+        super.Start(player)
+        this._FinalLocation = player.CurStep.Location;
+        this._FinalLocation.Y +=this.Floor;
+        this._FinalZ = player.Position.z - GameManager.StepDistance/2*this.Floor;
+        
+        var flyCtrl = new PlayerFly(this.Speed);
+        flyCtrl.SetPlayer(player)
+        player.AddCtrler(flyCtrl);
+        APP.GameManager.GameDir.AddInputCtrler(new DIYInput());
+        APP.GameManager.GameDir.SetSafePS(this._FinalLocation);
+    }
+
+    private _FinalLocation:MLocation;
+    private _FinalZ:number;   
+    constructor(speed:number=0.1,floor:number=10)
+    {
+        super(ItemType.Rope,ProtectBuff.Idx);
+        this.Speed = speed;
+        this.Floor = floor;
+        this._FinalLocation = null;
+        this._FinalZ = 0; 
+        
+    }
+    Update()
+    {
+        if(this.Player == null)
+        {
+            return;
+        }
+        if(this._FinalZ - this.Player.Position.z>-0.2)
+        {
+            var step:Step = APP.GameManager.GameDir.GetStepByLocation(this._FinalLocation);
+            this.Player.LayStep(step);
+            this.Player.BaseCtrler.StartMove();
+            this.Player.PopCtrler();
+
+            APP.GameManager.GameDir.PopInputCtrler();
+            super.Complete();
+        }
+    }
+}
+
+class Rope extends StepItem
+{
+    TouchItem( player:Player )
+    {
+        if(player.GetBuff(0))
+            return;
+        player.AddBuff(new RopeBuff());
+    }
+    constructor(step:Step)
+    {
+        super(ItemType.Rope,step);
+    }
+
+    //由父类统一管理模型生成
+    protected _GenItemModel(ps:Laya.Vector3)
+    {
+        var model:Laya.MeshSprite3D = new Laya.MeshSprite3D(new Laya.BoxMesh(0.1,0.5,0.1))
+        model.transform.rotate(new Laya.Vector3(30, -45, 0), true, false);
+        model.transform.position = ps;
+        this.Model = model;    
+    }
+}
+ItemDictType[ItemType.Rope] = Rope;
+
+class RopeBuff extends BasePlayerBuff
+{
+    Speed:number;
+    Floor:number;
+    
+    static get Idx():number
+    {
+        return 0;
+    }
+    Update()
+    {
+        if(this.Player == null)
+        {
+            return;
+        }
+        if(this._FinalZ - this.Player.Position.z>-0.2)
+        {
+            var step:Step = APP.GameManager.GameDir.GetStepByLocation(this._FinalLocation);
+            this.End(step);
+        }
+    }
+    End(step:Step)
+    {
+        this.Player.LayStep(step);
+        this.Player.BaseCtrler.StartMove();
+        this.Player.PopCtrler();
+        APP.GameManager.GameDir.PopInputCtrler();
+        super.Complete();
+    }
+    Start(player:Player)
+    {
+        super.Start(player)
+        this._FinalLocation = player.CurStep.Location;
+        this._FinalLocation.Y +=this.Floor;
+        this._FinalZ = player.Position.z - GameManager.StepDistance/2*this.Floor;
+        
+        var flyCtrl = new PlayerFly(this.Speed);
+        flyCtrl.SetPlayer(player)
+        player.AddCtrler(flyCtrl);
+        APP.GameManager.GameDir.AddInputCtrler(new DIYInput(this,this._Input));
+        APP.GameManager.GameDir.SetSafePS(this._FinalLocation);
+    }
+
+    private _FinalLocation:MLocation;
+    private _FinalZ:number;   
+    constructor(speed:number=0.1,floor:number=10)
+    {
+        super(ItemType.Rope,ProtectBuff.Idx);
+        this.Speed = speed;
+        this.Floor = floor;
+        this._FinalLocation = null;
+        this._FinalZ = 0; 
+        
+    }
+    private _Input(isRight:boolean):void
+    {
+        var closeFloor = APP.GameManager.GameDir.PlayerFloorLine;
+        if(closeFloor.FloorNum%2!= this._FinalLocation.Y%2)
+        {
+            closeFloor = APP.GameManager.GameDir.GetFloorByFloor(closeFloor.FloorNum +1 );
+        }
+        var step:Step = closeFloor.GetStep( this._FinalLocation.X );
+        if(isRight)
+            step = step.RightParent;
+        else
+            step = step.LeftParent;
+        if(step.StepItem.IsForbiden)
+        {
+            return
+        }
+        this.End(step);
+    }
+}
+
+class Vine extends StepItem
+{
+    TouchItem( player:Player )
+    {
+        var curBuff:BasePlayerBuff = player.GetBuff(0);
+        if(curBuff&&curBuff.Type == ItemType.Protect)
+        {
+            curBuff.Complete;
+            this.PutItem();
+        }
+        else
+        {
+            if(curBuff)
+            {
+                curBuff.Complete();
+            }
+            player.AddBuff(new VineBuff());
+            this.PutItem();
+            return;
+        }
+        
+    }
+    constructor(step:Step)
+    {
+        super(ItemType.Vine,step);
+    }
+    //由父类统一管理模型生成
+    protected _GenItemModel(ps:Laya.Vector3)
+    {
+        var model:Laya.MeshSprite3D = new Laya.MeshSprite3D(new Laya.BoxMesh(0.7,0.7,0.1))
+        model.transform.position = ps;
+        this.Model = model;    
+    }
+}
+ItemDictType[ItemType.Vine] = Vine;
+
+class VineBuff extends BasePlayerBuff
+{
+    CountTime:number;
+    InputDir:boolean;
+    Start(player:Player)
+    {
+        super.Start(player)
+        APP.GameManager.GameDir.AddInputCtrler(new DIYInput(this,this._Input));
+    }
+    Complete()
+    {
+        APP.GameManager.GameDir.PopInputCtrler();
+        super.Complete();
+    }
+    constructor(countTime:number = 3,inputDir:boolean = IsRight)
+    {
+        super(ItemType.Vine,0);
+        this.CountTime = countTime;
+        this.InputDir = inputDir;
+        this._ShowGameInfo();
+    }
+    private _Time;
+    private _Input(isRight:boolean)
+    {
+        if(this.InputDir == isRight)
+        {
+            this.InputDir =!this.InputDir;
+            --this.CountTime;
+        }
+        if(this.CountTime<0)
+        {
+            this.Complete();
+        }
+        this._ShowGameInfo();
+    }
+    private _ShowGameInfo()
+    {
+        var info:string;
+        if(this.CountTime<0)
+            info = "";
+        else
+            info = this.InputDir == IsRight?"Right":"Left";
+        APP.GameManager.GameDir.ShowInputInfo(info);
+    }
+}

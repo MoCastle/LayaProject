@@ -28,7 +28,7 @@
         {
             "x":15,
             "type":"Label",
-            "props":{"y":59,"x":47,"width":63,"text":"声音","height":29,"fontSize":20,"color":"#ffffff","align":"center"},
+            "props":{"y":59,"x":47,"width":63,"text":"Voice","height":29,"fontSize":20,"color":"#ffffff","align":"center"},
             "nodeParent":1,
             "label":"Label",
             "isDirectory":false,
@@ -41,7 +41,7 @@
         {
             "x":15,
             "type":"RadioGroup",
-            "props":{"y":62,"x":131,"width":162,"var":"_AudioSwitch","space":40,"skin":"comp/radiogroup.png","labels":"   开,    关","labelStrokeColor":"#ffffff","height":21,"direction":"horizontal"},
+            "props":{"y":62,"x":131,"width":162,"var":"_AudioSwitch","space":40,"skin":"comp/radiogroup.png","labels":"   Open,    Close","labelStrokeColor":"#ffffff","height":21,"direction":"horizontal"},
             "nodeParent":1,
             "label":"RadioGroup(_AudioSwitch)",
             "isDirectory":false,
@@ -54,7 +54,7 @@
         {
             "x":15,
             "type":"Label",
-            "props":{"y":127,"x":47,"width":63,"text":"操作","height":29,"fontSize":20,"color":"#ffffff","align":"center"},
+            "props":{"y":127,"x":47,"width":63,"text":"Option","height":29,"fontSize":20,"color":"#ffffff","align":"center"},
             "nodeParent":1,
             "label":"Label",
             "isDirectory":false,
@@ -67,7 +67,7 @@
         {
             "x":15,
             "type":"RadioGroup",
-            "props":{"y":130,"x":131,"width":162,"var":"_OPSwitch","space":40,"skin":"comp/radiogroup.png","labels":"左侧, 右侧","labelStrokeColor":"#ffffff","height":21,"direction":"horizontal"},
+            "props":{"y":130,"x":131,"width":162,"var":"_OPSwitch","space":40,"skin":"comp/radiogroup.png","labels":"LeftSight, RightSight","labelStrokeColor":"#ffffff","height":21,"direction":"horizontal"},
             "nodeParent":1,
             "label":"RadioGroup(_OPSwitch)",
             "isDirectory":false,
@@ -80,7 +80,7 @@
         {
             "x":15,
             "type":"Label",
-            "props":{"y":196,"x":47,"width":63,"text":"评价","height":29,"fontSize":20,"color":"#ffffff","align":"center"},
+            "props":{"y":196,"x":47,"width":63,"text":"achievement","height":29,"fontSize":20,"color":"#ffffff","align":"center"},
             "nodeParent":1,
             "label":"Label",
             "isDirectory":false,
@@ -93,7 +93,7 @@
         {
             "x":15,
             "type":"Button",
-            "props":{"y":199,"x":148,"skin":"comp/button.png","label":"请点击我"},
+            "props":{"y":199,"x":171,"skin":"comp/button.png","label":"ClickMe"},
             "nodeParent":1,
             "label":"Button",
             "isDirectory":false,
@@ -119,7 +119,7 @@
         {
             "x":15,
             "type":"Button",
-            "props":{"y":465,"x":128,"var":"_Return","skin":"comp/button.png","label":"返回首页"},
+            "props":{"y":465,"x":128,"var":"_Return","skin":"comp/button.png","label":"ReturnMenue"},
             "nodeParent":1,
             "label":"Button(_Return)",
             "isDirectory":false,

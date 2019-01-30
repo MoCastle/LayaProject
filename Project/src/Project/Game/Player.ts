@@ -5,6 +5,10 @@ class Player extends Laya.MeshSprite3D
     CurStep:Step;
     BaseCtrler:PlayerNormCtrler;
     BuffArr:Array<BasePlayerBuff>;
+    GetBuff(idx:number):BasePlayerBuff
+    {
+        return (this.BuffArr[idx] !=null&&this.BuffArr[idx]!=undefined)?this.BuffArr[idx]:null;
+    }
     //摆放角色
     SetStep(putStep:Step):void
     {
@@ -85,16 +89,16 @@ class Player extends Laya.MeshSprite3D
      * @param buff 
      * @param index 
      */
-    AddBuff(buff:BasePlayerBuff,index:number = 0):boolean
+    AddBuff(buff:BasePlayerBuff):boolean
     {
+        var index:number = buff.Idx;
         if(this.BuffArr[index]!=null||this.BuffArr[index]!=undefined)
         {
             return false;
         }
         this.BuffArr[index] = buff;
-        buff.IDX = index;
-        buff.Player = this;
-        buff.Start();
+        buff.Idx = index;
+        buff.Start(this);
         return true;
     }
     /**
@@ -119,37 +123,52 @@ class Player extends Laya.MeshSprite3D
         {
             return;
         }
-        buff.End();
     }
     //私有属性
     _LogicPosition:Laya.Vector3;
     _BuffNode:Laya.Sprite3D;
+    _PlayerModel:Laya.Sprite3D;
     constructor()
     {
-        super(new Laya.BoxMesh(0.4, 0.4, 0.4));
-        this.CurStep = null;
+        super();
+        this._PlayerModel = Laya.MeshSprite3D.load("http://www.gsjgame.com/Resource/LayaScene_L01_spr_plat_01/L01_spr_plat_01.lh");
+        var secondPlayer:Laya.Sprite3D = Laya.Sprite3D.instantiate(this._PlayerModel, this, false, new Laya.Vector3(0.6, 0, 0));
+        //var model:Laya.Sprite3D = this._PlayerModel.clone();
+        this.addChild(this._PlayerModel);
+        //this.addChild(secondPlayer);
+        secondPlayer.transform.translate(new Laya.Vector3(1,1,1));
+//        Laya.Sprite3D.instantiate(this._PlayerModel,this,false)
         GameManager.Mgr.CurScene.PutObj(this);
         //添加自定义模型
         this.transform.rotate(new Laya.Vector3(0, 0, 0), false, false);
         var material = new Laya.StandardMaterial();
         material.diffuseTexture = Laya.Texture2D.load("res/layabox.png");
         this.meshRender.material = material;
+        
+        this.Reset();
+    }
+    Reset()
+    {
+        this.CurStep = null;
+        if(this._BuffNode)
+            this._BuffNode.destroy();
+        this._BuffNode = new Laya.Sprite3D();
+        this.addChild(this._BuffNode);
+        this.BuffArr = new Array();
         this.BaseCtrler = new PlayerNormCtrler(this);
         this._Ctrler = this.BaseCtrler;
         this._LogicPosition = new Laya.Vector3(0,0);
-        this.timer.loop(1,this,this._Update);
-        this.BuffArr = new Array();
-        this._BuffNode = new Laya.Sprite3D();
-        this.addChild(this._BuffNode);
+        this.frameLoop(1,this,this._Update);
     }
     private _Ctrler:BasePlayerCtrler;
 
     _Update():void
     {
         this._Ctrler.Update();
-        for( var buffIdx:number = 0;buffIdx<this.BuffArr.length;++buffIdx )
+        for( var buffIdx:number = 0;buffIdx<2;++buffIdx )
         {
-            this.BuffArr[buffIdx].Update();
+            if(this.BuffArr[buffIdx]!=null||this.BuffArr[buffIdx]!=undefined)
+                this.BuffArr[buffIdx].Update();
         }
     }
 }
@@ -157,18 +176,18 @@ class Player extends Laya.MeshSprite3D
 class BasePlayerBuff
 {
     Type:ItemType;
-    IDX:number;
+    Idx:number;
     Player:Player;
     Update()
     {
-        if(this._UpdateFunc!=null)
-        {
-            this._UpdateFunc();
-        }
     }
-    Start()
+    GenBuffMod()
     {
         this._BuffMod = new Laya.MeshSprite3D(new Laya.SphereMesh(0.3,8,8));
+    }
+    Start(player:Player)
+    {
+        this.Player = player;
         //创建模型显示对象
         this.Player.AddBuffMode(this._BuffMod);
         if(this._StartFunc!=null)
@@ -176,28 +195,21 @@ class BasePlayerBuff
             this._StartFunc();
         }
     }
-    End()
+
+    Complete()
     {
-        if(this._EndFunc!=null)
-        {
-            this._EndFunc();
-        }
+        this.Player.CompleteBuff(this.Idx);
         this._BuffMod.destroy();
     }
     //
     protected _BuffMod:Laya.Sprite3D;
-    constructor(type:ItemType,idx:number = 0,update:()=>void = null,start:()=>void = null,end:()=>void = null)
+    constructor(type:ItemType,idx:number = 0)
     {
         this.Type = type;
-        this.IDX = idx;
-        
-        this._UpdateFunc = update;
-        this._StartFunc = start;
-        this._EndFunc = end;
+        this.Idx = idx;
+        this.GenBuffMod();
     }
-    private _UpdateFunc:()=>void;
     private _StartFunc:()=>void;
-    private _EndFunc:()=>void;
 }
 
 abstract class BasePlayerCtrler
@@ -233,7 +245,7 @@ class PlayerNormCtrler extends BasePlayerCtrler
     Time:number;
     StartMove()
     {
-        this.Time = Laya.timer.currTimer + PlayerMoveTime;
+        this.Time = APP.SceneManager.CurScene.CurDir.GameTime + PlayerMoveTime;
     }
     constructor(player:Player = null)
     {
@@ -244,7 +256,7 @@ class PlayerNormCtrler extends BasePlayerCtrler
     {
         if(this.Time>0)
         {
-            if(this.Time<=Laya.timer.currTimer)
+            if(this.Time<=APP.SceneManager.CurScene.CurDir.GameTime)
             {
                 this.Time = -1;
                 this.player.SetStep(this.player.CurStep);
@@ -265,6 +277,9 @@ class PlayerNormCtrler extends BasePlayerCtrler
 
                 this.player.Position = newPs;
             }
+        }else
+        {
+            this.player.TouchGround();
         }
     }
 }
@@ -273,7 +288,6 @@ class PlayerNormCtrler extends BasePlayerCtrler
 class PlayerFly extends BasePlayerCtrler
 {
     Speed:number;
-    Floor:number;
     /**
      * 设置玩家
      * @param player 操控角色
@@ -281,28 +295,15 @@ class PlayerFly extends BasePlayerCtrler
     SetPlayer(player:Player)
     {
         super.SetPlayer(player);
-        this._FinalLocation = player.CurStep.Location;
-        this._FinalLocation.Y +=this.Floor;
-        this._FinalZ = player.Position.z - GameManager.StepDistance/2*this.Floor;
     }
 
-    EndCtrl()
-    {
-        var step:Step = APP.GameManager.GameDir.GetStepByLocation(this._FinalLocation);
-        this.player.LayStep(step);
-        this.player.BaseCtrler.StartMove();
-        this.player.PopCtrler();
-    }
     //
     private _FinalLocation:MLocation;
     private _FinalZ:number;    
-    constructor(speed:number,floor:number)
+    constructor(speed:number)
     {
         super(null);
         this.Speed = speed;
-        this.Floor = floor;
-        this._FinalLocation = null;
-        this._FinalZ = 0; 
     }
 
     protected _Update():void
@@ -311,15 +312,9 @@ class PlayerFly extends BasePlayerCtrler
         {
             return;
         }
-        if(this._FinalZ - this.player.Position.z>-0.2)
-        {
-            this.EndCtrl();
-        }else
-        {
-            var vector = new Laya.Vector3(0,GameManager.StepLength,-GameManager.StepDistance/2);
-            Laya.Vector3.scale(vector,this.Speed,vector);
-            this.player.Translate(vector);
-        }
+        var vector = new Laya.Vector3(0,GameManager.StepLength,-GameManager.StepDistance/2);
+        Laya.Vector3.scale(vector,this.Speed,vector);
+        this.player.Translate(vector);
     }
 }
 
@@ -366,7 +361,12 @@ class GameCamera extends Laya.Camera
         this.DynamicPS = this.transform.position.clone();
         this.BasePS = new Laya.Vector3();
         this.Player = null;
-        this.timerLoop(1,this.Ctrler,this.Ctrler.Update);
+        //this.timerLoop(1,this.Ctrler,this.Ctrler.Update);
+        this.frameLoop(1,this,this._Update);
+    }
+    private _Update()
+    {
+        this.Ctrler.Update();
     }
 }
 

@@ -16,13 +16,11 @@ var GameControler = /** @class */ (function () {
     };
     //显示设置面板
     GameControler.prototype.ShowSetPanel = function () {
-        var Panel = new SetPanel();
-        APP.UIManager.Open(Panel);
+        var Panel = APP.UIManager.Show(SetPanelUI); // new SetPanel();
     };
     //显示角色面板
     GameControler.prototype.ShowCharacterPanel = function () {
-        var character = new CharacterUI();
-        APP.UIManager.Open(character);
+        var character = APP.UIManager.Show(CharacterUI);
     };
     Object.defineProperty(GameControler.prototype, "SetInfo", {
         get: function () {

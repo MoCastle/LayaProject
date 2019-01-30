@@ -86,7 +86,7 @@ class Delegate
      * 触发
      * @param {any} param 消息名字
      */
-     Execute( param:any )
+     Execute( param:any = null )
      {
          this.Action.call(this.Listener,param);
      }

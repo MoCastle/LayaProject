@@ -36,12 +36,16 @@ var ui;
 })(ui || (ui = {}));
 var EnterGameUI = /** @class */ (function (_super) {
     __extends(EnterGameUI, _super);
-    function EnterGameUI() {
-        var _this = _super.call(this) || this;
+    function EnterGameUI(name) {
+        var _this = _super.call(this, name) || this;
         _this.UI = new ui.ExtendEnterGameUI();
         _this.addChild(_this.UI);
+        _this.UI._CharacterList.on(Laya.Event.CLICK, null, function () { APP.UIManager.Show(PlayerListUI); });
         return _this;
     }
+    EnterGameUI.Name = function () {
+        return "EnterGameUI";
+    };
     return EnterGameUI;
 }(BaseUI));
 //# sourceMappingURL=EnterGameUI.js.map

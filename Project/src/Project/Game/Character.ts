@@ -17,7 +17,6 @@ class MountLine extends Laya.Sprite3D
     {
         return this.transform.position;
     }
-    
 
     //设获取显示出来的第几个平台
     GetStep(idx:number):Step
@@ -62,6 +61,7 @@ class MountLine extends Laya.Sprite3D
             this.LogicLength = stepArr.length -3;
         }
     }
+    
     //判断是否收缩的那层
     JugeIsLessLine():boolean
     {
@@ -163,6 +163,9 @@ class Step extends Laya.MeshSprite3D
         {
             this.active =false;
             return;
+        }else
+        {
+            this.active = true;
         }
         this.StepItem.PutItem(itemEnume);
     }
@@ -181,10 +184,17 @@ class Step extends Laya.MeshSprite3D
         this._IsDeadRoad = false;
         this.RoadNum = 0;
     }
-    
+    _StepModel:Laya.Sprite3D;
     constructor(floor:MountLine,idx:number)
     {
-        super(new Laya.BoxMesh(0.4, 0.4, 0.4));
+        //super(new Laya.BoxMesh(1,1,1) );
+        super();
+        var box:Laya.MeshSprite3D = new Laya.MeshSprite3D( new Laya.BoxMesh(1,1,1));
+        this._StepModel = Laya.MeshSprite3D.load("http://www.gsjgame.com/Resource/LayaScene_L01_spr_plat_01/L01_spr_plat_01.lh");
+       // this.addChild(this._StepModel.clone());
+       //this.addChild(box);
+        //this.addChild(this._StepModel);
+        //this._StepModel = Laya.MeshSprite3D.load("http://www.gsjgame.com/Resource/LayaScene_L01_spr_plat_01/L01_spr_plat_01.lh");
         this.transform.rotate(new Laya.Vector3(0, 45, 0), false, false);
         this.transform.position = new Laya.Vector3();
         this.StepItem = StepItemFactory(ItemType.None,this);;

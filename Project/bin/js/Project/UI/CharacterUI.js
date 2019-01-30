@@ -44,11 +44,14 @@ var ui;
 })(ui || (ui = {}));
 var CharacterUI = /** @class */ (function (_super) {
     __extends(CharacterUI, _super);
-    function CharacterUI() {
-        var _this = _super.call(this) || this;
+    function CharacterUI(name) {
+        var _this = _super.call(this, name) || this;
         _this.addChild(new ui.ExtendCharactersUI());
         return _this;
     }
+    CharacterUI.Name = function () {
+        return "CharacterUI";
+    };
     return CharacterUI;
 }(BaseUI));
 var RoleElement = /** @class */ (function (_super) {

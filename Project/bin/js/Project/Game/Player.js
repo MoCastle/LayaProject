@@ -16,23 +16,26 @@ var __extends = (this && this.__extends) || (function () {
 var Player = /** @class */ (function (_super) {
     __extends(Player, _super);
     function Player() {
-        var _this = _super.call(this, new Laya.BoxMesh(0.4, 0.4, 0.4)) || this;
-        _this.CurStep = null;
+        var _this = _super.call(this) || this;
+        _this._PlayerModel = Laya.MeshSprite3D.load("http://www.gsjgame.com/Resource/LayaScene_L01_spr_plat_01/L01_spr_plat_01.lh");
+        var secondPlayer = Laya.Sprite3D.instantiate(_this._PlayerModel, _this, false, new Laya.Vector3(0.6, 0, 0));
+        //var model:Laya.Sprite3D = this._PlayerModel.clone();
+        _this.addChild(_this._PlayerModel);
+        //this.addChild(secondPlayer);
+        secondPlayer.transform.translate(new Laya.Vector3(1, 1, 1));
+        //        Laya.Sprite3D.instantiate(this._PlayerModel,this,false)
         GameManager.Mgr.CurScene.PutObj(_this);
         //添加自定义模型
         _this.transform.rotate(new Laya.Vector3(0, 0, 0), false, false);
         var material = new Laya.StandardMaterial();
         material.diffuseTexture = Laya.Texture2D.load("res/layabox.png");
         _this.meshRender.material = material;
-        _this.BaseCtrler = new PlayerNormCtrler(_this);
-        _this._Ctrler = _this.BaseCtrler;
-        _this._LogicPosition = new Laya.Vector3(0, 0);
-        _this.timer.loop(1, _this, _this._Update);
-        _this.BuffArr = new Array();
-        _this._BuffNode = new Laya.Sprite3D();
-        _this.addChild(_this._BuffNode);
+        _this.Reset();
         return _this;
     }
+    Player.prototype.GetBuff = function (idx) {
+        return (this.BuffArr[idx] != null && this.BuffArr[idx] != undefined) ? this.BuffArr[idx] : null;
+    };
     //摆放角色
     Player.prototype.SetStep = function (putStep) {
         this.CurStep = putStep;
@@ -106,15 +109,14 @@ var Player = /** @class */ (function (_super) {
      * @param buff
      * @param index
      */
-    Player.prototype.AddBuff = function (buff, index) {
-        if (index === void 0) { index = 0; }
+    Player.prototype.AddBuff = function (buff) {
+        var index = buff.Idx;
         if (this.BuffArr[index] != null || this.BuffArr[index] != undefined) {
             return false;
         }
         this.BuffArr[index] = buff;
-        buff.IDX = index;
-        buff.Player = this;
-        buff.Start();
+        buff.Idx = index;
+        buff.Start(this);
         return true;
     };
     /**
@@ -135,45 +137,50 @@ var Player = /** @class */ (function (_super) {
         if (buff == null || buff == undefined) {
             return;
         }
-        buff.End();
+    };
+    Player.prototype.Reset = function () {
+        this.CurStep = null;
+        if (this._BuffNode)
+            this._BuffNode.destroy();
+        this._BuffNode = new Laya.Sprite3D();
+        this.addChild(this._BuffNode);
+        this.BuffArr = new Array();
+        this.BaseCtrler = new PlayerNormCtrler(this);
+        this._Ctrler = this.BaseCtrler;
+        this._LogicPosition = new Laya.Vector3(0, 0);
+        this.frameLoop(1, this, this._Update);
     };
     Player.prototype._Update = function () {
         this._Ctrler.Update();
-        for (var buffIdx = 0; buffIdx < this.BuffArr.length; ++buffIdx) {
-            this.BuffArr[buffIdx].Update();
+        for (var buffIdx = 0; buffIdx < 2; ++buffIdx) {
+            if (this.BuffArr[buffIdx] != null || this.BuffArr[buffIdx] != undefined)
+                this.BuffArr[buffIdx].Update();
         }
     };
     return Player;
 }(Laya.MeshSprite3D));
 var BasePlayerBuff = /** @class */ (function () {
-    function BasePlayerBuff(type, idx, update, start, end) {
+    function BasePlayerBuff(type, idx) {
         if (idx === void 0) { idx = 0; }
-        if (update === void 0) { update = null; }
-        if (start === void 0) { start = null; }
-        if (end === void 0) { end = null; }
         this.Type = type;
-        this.IDX = idx;
-        this._UpdateFunc = update;
-        this._StartFunc = start;
-        this._EndFunc = end;
+        this.Idx = idx;
+        this.GenBuffMod();
     }
     BasePlayerBuff.prototype.Update = function () {
-        if (this._UpdateFunc != null) {
-            this._UpdateFunc();
-        }
     };
-    BasePlayerBuff.prototype.Start = function () {
+    BasePlayerBuff.prototype.GenBuffMod = function () {
         this._BuffMod = new Laya.MeshSprite3D(new Laya.SphereMesh(0.3, 8, 8));
+    };
+    BasePlayerBuff.prototype.Start = function (player) {
+        this.Player = player;
         //创建模型显示对象
         this.Player.AddBuffMode(this._BuffMod);
         if (this._StartFunc != null) {
             this._StartFunc();
         }
     };
-    BasePlayerBuff.prototype.End = function () {
-        if (this._EndFunc != null) {
-            this._EndFunc();
-        }
+    BasePlayerBuff.prototype.Complete = function () {
+        this.Player.CompleteBuff(this.Idx);
         this._BuffMod.destroy();
     };
     return BasePlayerBuff;
@@ -205,11 +212,11 @@ var PlayerNormCtrler = /** @class */ (function (_super) {
         return _this;
     }
     PlayerNormCtrler.prototype.StartMove = function () {
-        this.Time = Laya.timer.currTimer + PlayerMoveTime;
+        this.Time = APP.SceneManager.CurScene.CurDir.GameTime + PlayerMoveTime;
     };
     PlayerNormCtrler.prototype._Update = function () {
         if (this.Time > 0) {
-            if (this.Time <= Laya.timer.currTimer) {
+            if (this.Time <= APP.SceneManager.CurScene.CurDir.GameTime) {
                 this.Time = -1;
                 this.player.SetStep(this.player.CurStep);
                 return;
@@ -228,18 +235,18 @@ var PlayerNormCtrler = /** @class */ (function (_super) {
                 this.player.Position = newPs;
             }
         }
+        else {
+            this.player.TouchGround();
+        }
     };
     return PlayerNormCtrler;
 }(BasePlayerCtrler));
 //玩家飞行
 var PlayerFly = /** @class */ (function (_super) {
     __extends(PlayerFly, _super);
-    function PlayerFly(speed, floor) {
+    function PlayerFly(speed) {
         var _this = _super.call(this, null) || this;
         _this.Speed = speed;
-        _this.Floor = floor;
-        _this._FinalLocation = null;
-        _this._FinalZ = 0;
         return _this;
     }
     /**
@@ -248,28 +255,14 @@ var PlayerFly = /** @class */ (function (_super) {
      */
     PlayerFly.prototype.SetPlayer = function (player) {
         _super.prototype.SetPlayer.call(this, player);
-        this._FinalLocation = player.CurStep.Location;
-        this._FinalLocation.Y += this.Floor;
-        this._FinalZ = player.Position.z - GameManager.StepDistance / 2 * this.Floor;
-    };
-    PlayerFly.prototype.EndCtrl = function () {
-        var step = APP.GameManager.GameDir.GetStepByLocation(this._FinalLocation);
-        this.player.LayStep(step);
-        this.player.BaseCtrler.StartMove();
-        this.player.PopCtrler();
     };
     PlayerFly.prototype._Update = function () {
         if (this.player == null) {
             return;
         }
-        if (this._FinalZ - this.player.Position.z > -0.2) {
-            this.EndCtrl();
-        }
-        else {
-            var vector = new Laya.Vector3(0, GameManager.StepLength, -GameManager.StepDistance / 2);
-            Laya.Vector3.scale(vector, this.Speed, vector);
-            this.player.Translate(vector);
-        }
+        var vector = new Laya.Vector3(0, GameManager.StepLength, -GameManager.StepDistance / 2);
+        Laya.Vector3.scale(vector, this.Speed, vector);
+        this.player.Translate(vector);
     };
     return PlayerFly;
 }(BasePlayerCtrler));
@@ -282,7 +275,8 @@ var GameCamera = /** @class */ (function (_super) {
         _this.DynamicPS = _this.transform.position.clone();
         _this.BasePS = new Laya.Vector3();
         _this.Player = null;
-        _this.timerLoop(1, _this.Ctrler, _this.Ctrler.Update);
+        //this.timerLoop(1,this.Ctrler,this.Ctrler.Update);
+        _this.frameLoop(1, _this, _this._Update);
         return _this;
     }
     GameCamera.prototype.SetPlaer = function (player) {
@@ -309,6 +303,9 @@ var GameCamera = /** @class */ (function (_super) {
         enumerable: true,
         configurable: true
     });
+    GameCamera.prototype._Update = function () {
+        this.Ctrler.Update();
+    };
     return GameCamera;
 }(Laya.Camera));
 var BaseGameCameraCtrler = /** @class */ (function () {

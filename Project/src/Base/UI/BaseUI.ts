@@ -3,7 +3,6 @@ abstract class BaseUI extends Laya.Sprite
 {
     Open()
     {
-        UIManager.Mgr.Open(this);
     }
 
     Close()
@@ -13,6 +12,7 @@ abstract class BaseUI extends Laya.Sprite
 
     OpenOP()
     {
+        this.visible = true;
     }
     CloseOP()
     {
@@ -27,13 +27,25 @@ abstract class BaseUI extends Laya.Sprite
     {
         return this._UIType;
     }
+    
+    get IsMutex():boolean
+    {
+        return this._IsMutex;
+    }
 
+    get Name():string
+    {
+        return this._Name;
+    }
     //
     protected _UIType:UITypeEnum;
-    
-    constructor()
+    protected _IsMutex:boolean;
+    protected _Name:string;    
+    constructor(name:string)
     {
         super();
         this._UIType = UITypeEnum.Low;
+        this._IsMutex = false;
+        this._Name = name;
     }
 }

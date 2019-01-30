@@ -73,7 +73,7 @@ var GameScene = /** @class */ (function (_super) {
     }
     //对外接口
     GameScene.prototype.StartLoad = function () {
-        Laya.loader.load("res/uijson/GameScene.json", Laya.Handler.create(this, this._LoadComplete));
+        Laya.loader.load(["res/uijson/PlayerList.json", "res/uijson/GameScene.json", "res/uijson/EndGame.json"], Laya.Handler.create(this, this._LoadComplete));
         _super.prototype.StartLoad.call(this);
     };
     GameScene.prototype._Start = function () {
@@ -86,6 +86,12 @@ var GameScene = /** @class */ (function (_super) {
         this.GameDir = new GameDirector();
         this.CurDir = this.GameDir;
     };
+    //         APP.MessageCenter.DesRgistIDK(GameEvent.PlayerDeath);
+    //离开时进行配置
+    GameScene.prototype._Leave = function () {
+        APP.MessageCenter.DesRgistIDK(GameEvent.PlayerDeath);
+        _super.prototype._Leave.call(this);
+    };
     GameScene.prototype._LoadComplete = function () {
         this.Scene = new Laya.Scene();
         _super.prototype._LoadComplete.call(this);
@@ -97,7 +103,6 @@ var GameDirector = /** @class */ (function (_super) {
     __extends(GameDirector, _super);
     function GameDirector() {
         var _this = _super.call(this) || this;
-        _this.PanelUI = null;
         _this.Camera = null;
         _this.GameScene = null;
         _this.MountLines = null;
@@ -111,8 +116,66 @@ var GameDirector = /** @class */ (function (_super) {
         _this._CountTime = 0;
         _this._BootomFloor = 0;
         _this._StartPosition = new Laya.Vector3();
+        _this._PanelUI = null;
         return _this;
     }
+    Object.defineProperty(GameDirector.prototype, "SafeLocation", {
+        get: function () {
+            return this._SafeLocation;
+        },
+        enumerable: true,
+        configurable: true
+    });
+    GameDirector.prototype.AddInputCtrler = function (value) {
+        value.NextInput = this.InputCtrl;
+        this.InputCtrl = value;
+    };
+    GameDirector.prototype.PopInputCtrler = function () {
+        this.InputCtrl = this.InputCtrl.NextInput;
+    };
+    GameDirector.prototype.AddGold = function (num) {
+        this._GoldNum += num;
+        this.AddLogicGold(num);
+    };
+    GameDirector.prototype.AddGoldUnLogicGold = function (num) {
+        this._GoldNum += num;
+    };
+    GameDirector.prototype.AddLogicGold = function (num) {
+        this.PanelUI.AddGold(num);
+    };
+    //设置安全位置
+    GameDirector.prototype.SetSafePS = function (location) {
+        if (location.Y < this.TailFLoor.FloorNum) {
+            return;
+        }
+        this._SafeLocation = location;
+        if (location.Y <= this.HeadFloor.FloorNum) {
+            var floorNum = location.Y;
+            for (var index = 0; index < 2; ++index) {
+                this.LoopDoFloorStep(floorNum + index, this, this.ClearFloor);
+            }
+        }
+    };
+    //清理层的负面道具
+    GameDirector.prototype.ClearFloor = function (step) {
+        var stepItem = step.StepItem;
+        if (stepItem.IsDifficulty || stepItem.ItemType == ItemType.Vine) {
+            step.PutItem(ItemType.Empty);
+        }
+    };
+    Object.defineProperty(GameDirector.prototype, "PanelUI", {
+        get: function () {
+            return this._PanelUI;
+        },
+        set: function (value) {
+            var _this = this;
+            value.SetLeftTouch(this, function () { _this.InputCtrl.Input(!IsRight); });
+            value.SetRightTouch(this, function () { _this.InputCtrl.Input(IsRight); });
+            this._PanelUI = value;
+        },
+        enumerable: true,
+        configurable: true
+    });
     Object.defineProperty(GameDirector.prototype, "HeadFloor", {
         get: function () {
             return this.MountLines[this._HeadFloorIdx];
@@ -127,6 +190,18 @@ var GameDirector = /** @class */ (function (_super) {
         enumerable: true,
         configurable: true
     });
+    Object.defineProperty(GameDirector.prototype, "PlayerDistance", {
+        get: function () {
+            return Math.abs((this.Player.Position.z - this._StartPosition.z) / (GameManager.StepDistance / 2));
+        },
+        enumerable: true,
+        configurable: true
+    });
+    GameDirector.prototype.Death = function () {
+        var ui = APP.UIManager.Show(EndGameUI);
+        ui.SetGameInfo(this.PlayerDistance, this._GoldNum);
+        this.TimeUp();
+    };
     //对外接口
     GameDirector.prototype.Start = function () {
         this._Start();
@@ -134,6 +209,9 @@ var GameDirector = /** @class */ (function (_super) {
     //重新开始
     GameDirector.prototype.ReStart = function () {
         this._StartComplete();
+    };
+    GameDirector.prototype.ShowInputInfo = function (info) {
+        this.PanelUI.ShowInputInfo(info);
     };
     //左右移动
     GameDirector.prototype.MoveStep = function (isRight) {
@@ -168,6 +246,16 @@ var GameDirector = /** @class */ (function (_super) {
         var floorID = (floor - tailFloor.FloorNum + this._TailFLoorIdx) % this.MountLines.length;
         return this.MountLines[floorID];
     };
+    GameDirector.prototype.LoopDoFloorStep = function (floor, Owner, callBack) {
+        if (floor < this.TailFLoor.FloorNum || floor > this.HeadFloor.FloorNum) {
+            return;
+        }
+        var floorLine = this.GetFloorByFloor(floor);
+        for (var idx = 0; idx < floorLine.LogicLength; ++idx) {
+            var step = floorLine.GetStep(idx);
+            callBack.call(Owner, step);
+        }
+    };
     /**
      * 通过坐标获取台阶
      * @param location 索引,层数
@@ -180,18 +268,27 @@ var GameDirector = /** @class */ (function (_super) {
         get: function () {
             var floor = this._StartPosition.z - this.Player.LogicPosition.z;
             floor = Math.round(floor / (GameManager.StepDistance / 2));
-            return floor;
+            return Math.abs(floor);
+        },
+        enumerable: true,
+        configurable: true
+    });
+    Object.defineProperty(GameDirector.prototype, "PlayerFloorLine", {
+        get: function () {
+            return this.GetFloorByFloor(this.PlayerFloor);
         },
         enumerable: true,
         configurable: true
     });
     //创建相关放这 这里重新开始不会走
     GameDirector.prototype._Start = function () {
+        /*
         //创建方向光
         var directionLight = new Laya.DirectionLight();
         this.SceneMgr.CurScene.PutObj(directionLight);
         directionLight.color = new Laya.Vector3(1, 1, 1);
         directionLight.direction = new Laya.Vector3(1, -1, 0);
+*/
         this.Camera = new GameCamera();
         this.Camera.transform.localRotationEuler = new Laya.Vector3(-30, 0, 0);
         this.SceneMgr.CurScene.PutObj(this.Camera);
@@ -203,37 +300,27 @@ var GameDirector = /** @class */ (function (_super) {
             this.MountLines[lineIdx] = newMountLine;
         }
         //创建UI
-        var panelUI = new GameUI();
         var dir = this;
-        panelUI.LeftTouch.on(Laya.Event.CLICK, null, function () {
-            dir.InputCtrl.Input(!IsRight);
-        });
-        panelUI.RightTouch.on(Laya.Event.CLICK, null, function () {
-            dir.InputCtrl.Input(IsRight);
-        });
-        this.PanelUI = panelUI;
         //创建玩家
         this.Player = new Player();
         this.SceneMgr.CurScene.PutObj(this.Player);
         //准备玩家死亡事件
-        APP.MessageCenter.Regist(GameEvent.PlayerDeath, this.ReStart, this);
+        APP.MessageCenter.Regist(GameEvent.PlayerDeath, this.Death, this);
         _super.prototype._Start.call(this);
-    };
-    GameDirector.prototype._Leave = function () {
-        _super.prototype._Leave.call(this);
     };
     //进入游戏的设置放这里 重新开始走这里
     GameDirector.prototype._StartComplete = function () {
+        this._SafeLocation = new MLocation(0, 0);
         //重置物品
         this.ItemLayout = new ItemLayout();
         this.CurLineRewards = new Array();
         this.CurLineBarriers = new Array();
-        APP.UIManager.Open(this.PanelUI);
         var lines = this.MountLines;
         //创建输入控制器
         this.InputCtrl = new NormGameInput(this);
         this._HeadFloorIdx = lines.length - 1;
         this._TailFLoorIdx = 0;
+        this.Player.Reset();
         for (var idx = 0; idx < lines.length; ++idx) {
             var line = this.MountLines[idx];
             line.SetLine(idx);
@@ -245,21 +332,46 @@ var GameDirector = /** @class */ (function (_super) {
             }
             this._PutItemInLine(idx);
         }
-        this.Camera.Reset(new Laya.Vector3(), new Laya.Vector3(this.Player.Position.x, 4.5, 4), this.Player);
-        this._CountTime = Laya.timer.currTimer + 6000;
+        this.Camera.Reset(new Laya.Vector3(), new Laya.Vector3(this.Player.Position.x, GameManager.StepLength * 9, GameManager.StepLength * 8), this.Player);
+        this._GoldNum = 0;
+        this._LogicGoldNum = 0;
         _super.prototype._StartComplete.call(this);
+        this.PanelUI = APP.UIManager.Show(GameUI);
+        this._CountTime = this.GameTime + 6000;
         this._BootomFloor = 0;
+        this._GameUpdate = this._StartCount;
     };
     GameDirector.prototype._Update = function () {
+        if (this._GameUpdate != null) {
+            this._GameUpdate();
+        }
+        /*
+        */
+    };
+    //正常运行时的每帧逻辑
+    GameDirector.prototype._RunGameUpdate = function () {
+        this.PanelUI.Distance = this.PlayerDistance;
         var flooVector = this.TailFLoor.Position;
         if (flooVector.z - this.Player.Position.z > 3 * GameManager.StepDistance / 2) {
             this._PushFLoor();
         }
-        if (this._CountTime < Laya.timer.currTimer) {
-            this._CountTime = Laya.timer.currTimer + 3000;
+        if (this._CountTime < this.GameTime) {
+            this._CountTime = this.GameTime + 3000;
             this._DestroyLine(this._BootomFloor);
             this._BootomFloor += 1;
         }
+    };
+    //开始倒计时期间的每帧逻辑
+    GameDirector.prototype._StartCount = function () {
+        var time = "";
+        var countTime = this._CountTime - this.GameTime;
+        if (countTime > 0)
+            time += Math.floor(countTime / 1000);
+        else {
+            this._GameUpdate = this._RunGameUpdate;
+            this._CountTime = this.GameTime + 3000;
+        }
+        this.PanelUI.SetCountTime(time);
     };
     //将层向上叠
     GameDirector.prototype._PushFLoor = function () {
@@ -278,7 +390,7 @@ var GameDirector = /** @class */ (function (_super) {
      */
     GameDirector.prototype._PutItemInLine = function (floor) {
         var safeCol = {};
-        if (floor >= GameManager.MaxLineNum) {
+        if (floor >= this._SafeLocation.Y + GameManager.MaxLineNum) {
             safeCol = this._CountOpenList(floor);
         }
         else {
@@ -316,6 +428,11 @@ var GameDirector = /** @class */ (function (_super) {
         }
         //放陷阱
         var barriersList = this.CurLineBarriers;
+        if (floor <= this._SafeLocation.Y + 1 && floor >= this._SafeLocation.Y) {
+            for (var index = barriersList.length - 1; index > -1; --index) {
+                barriersList.shift();
+            }
+        }
         this._OrginizePutItem(barriersList, randomPool);
         //摆放道具
         for (var safeStepIdx = 0; safeIdx < safeStepList.length; ++safeIdx) {
@@ -360,6 +477,8 @@ var GameDirector = /** @class */ (function (_super) {
     GameDirector.prototype._CountOpenList = function (floorNum) {
         for (var floorCount = this.PlayerFloor; floorCount <= floorNum; ++floorCount) {
             var floor = this.GetFloorByFloor(floorCount);
+            if (floor == null)
+                return;
             for (var stepIdx = 0; stepIdx < floor.LogicLength; ++stepIdx) {
                 var step = floor.GetStep(stepIdx);
                 step.Mark = undefined;

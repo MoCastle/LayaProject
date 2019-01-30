@@ -34,9 +34,13 @@ module ui {
 }
 class CharacterUI extends BaseUI
 {
-    constructor()
+    static Name():string
     {
-        super();
+        return "CharacterUI";
+    }
+    constructor(name:string)
+    {
+        super(name);
         this.addChild(new ui.ExtendCharactersUI());
     }
 }

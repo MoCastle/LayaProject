@@ -41,7 +41,7 @@ class GuiderScene extends BaseScene
     }
     StartLoad( )
     {
-        Laya.loader.load([{url:"res/uijson/EnterScene.json",type:Laya.Loader.JSON},{url:"res/atlas/comp.atlas",type: Laya.Loader.ATLAS }],Laya.Handler.create(this,this._LoadComplete));
+        Laya.loader.load([{url:"res/uijson/ItemList.json",type:Laya.Loader.JSON},{url:"res/uijson/EnterScene.json",type:Laya.Loader.JSON},{url:"res/atlas/comp.atlas",type: Laya.Loader.ATLAS }],Laya.Handler.create(this,this._LoadComplete));
     }
     protected _GenDir():void
     {
@@ -65,16 +65,15 @@ class GuiderDirector extends BaseDirector
 
     protected _Start():void
     {
-        this.UI = new EnterGameUI();
         super._Start();
     }
     protected _StartComplete():void
     {
-        APP.UIManager.Open(this.UI);
         super._StartComplete();
+        this.UI = APP.UIManager.Show<EnterGameUI>(EnterGameUI);
     }
     protected _Update():void
     {
-
+        
     }
 }

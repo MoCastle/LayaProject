@@ -41,6 +41,13 @@ var SceneManager = /** @class */ (function () {
         enumerable: true,
         configurable: true
     });
+    Object.defineProperty(SceneManager.prototype, "CurDir", {
+        get: function () {
+            return this._CurScene.CurDir;
+        },
+        enumerable: true,
+        configurable: true
+    });
     SceneManager.prototype.EnterScene = function (targetScene) {
         if (this.CurScene == null)
             this.CurScene = targetScene;
@@ -97,8 +104,16 @@ var BaseScene = /** @class */ (function (_super) {
         }
     };
     BaseScene.prototype._LeaveComplete = function () {
-        this.SceneMgr.CurScene = this._NextScene;
         _super.prototype._LeaveComplete.call(this);
+        if (this.Scene) {
+            this.Scene.removeSelf();
+            while (this.Scene.numChildren) {
+                var actor = this.Scene.getChildAt(0);
+                actor.removeSelf();
+            }
+        }
+        this.SceneMgr.CurScene = this._NextScene;
+        //zerg 场景不知道会不会内存泄漏
     };
     BaseScene.prototype._Update = function () {
         if (this.CurDir != null)
@@ -128,6 +143,7 @@ var BaseScene = /** @class */ (function (_super) {
             _super.prototype._Starting.call(this);
     };
     BaseScene.prototype._StartComplete = function () {
+        APP.UIManager.Clear();
         this._GenDir();
         _super.prototype._StartComplete.call(this);
     };
@@ -140,24 +156,47 @@ var BaseDirector = /** @class */ (function (_super) {
         var _this = _super.call(this) || this;
         _this.SceneMgr = GM.SceneMgr;
         _this._TimeUpCount = 0;
-        _this._CurGameTime = 0;
+        _this._StartGameTime = 0;
         _this._TimeUpClock = -1;
         return _this;
     }
+    Object.defineProperty(BaseDirector.prototype, "GameTime", {
+        get: function () {
+            if (this._TimeUpClock > 0) {
+                return this._TimeUpClock - this._StartGameTime - this._TimeUpCount;
+            }
+            else {
+                return Laya.timer.currTimer - this._StartGameTime - this._TimeUpCount;
+            }
+        },
+        set: function (value) {
+            this._StartGameTime = value;
+        },
+        enumerable: true,
+        configurable: true
+    });
     //外部接口
     BaseDirector.prototype.Start = function () {
-        this.GameTime = Laya.timer.currTimer;
         this._Start();
     };
-    BaseDirector.prototype.Leave = function () {
+    BaseDirector.prototype._Start = function () {
+        this._StartGameTime = Laya.timer.currTimer;
+        _super.prototype._Start.call(this);
+    };
+    BaseDirector.prototype._Leave = function () {
         APP.MessageCenter.DesRgistIDK(GameEvent.GameTimeUp);
         APP.MessageCenter.DesRgistIDK(GameEvent.GameContinue);
-        this._Leave();
+        _super.prototype._Leave.call(this);
     };
     BaseDirector.prototype.TimeUp = function () {
-        if (this._TimeUpClock > 0) {
+        if (this._TimeUpClock <= 0) {
             APP.MessageCenter.Trigger(GameEvent.GameTimeUp);
             this._TimeUpClock = Laya.timer.currTimer;
+        }
+    };
+    BaseDirector.prototype.Update = function () {
+        if (this._TimeUpClock <= 0) {
+            _super.prototype.Update.call(this);
         }
     };
     BaseDirector.prototype.ContinueTime = function () {
@@ -167,11 +206,18 @@ var BaseDirector = /** @class */ (function (_super) {
     };
     Object.defineProperty(BaseDirector.prototype, "CurGameTime", {
         get: function () {
-            return this._CurGameTime + this._TimeUpCount;
+            return this._StartGameTime + this._TimeUpCount;
         },
         enumerable: true,
         configurable: true
     });
+    BaseDirector.prototype._StartComplete = function () {
+        this._TimeUpCount = 0;
+        this._StartGameTime = 0;
+        this._TimeUpClock = -1;
+        APP.UIManager.Clear();
+        _super.prototype._StartComplete.call(this);
+    };
     return BaseDirector;
 }(LifeObj));
 //# sourceMappingURL=Scene.js.map

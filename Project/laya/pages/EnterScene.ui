@@ -2,7 +2,7 @@
     "x":0,
     "type":"View",
     "selectedBox":1,
-    "selecteID":3,
+    "selecteID":25,
     "props":{"width":320,"sceneColor":"#000000","height":568},
     "nodeParent":-1,
     "label":"View",
@@ -28,7 +28,7 @@
         {
             "x":15,
             "type":"Button",
-            "props":{"y":365,"x":183,"var":"_Start","skin":"comp/button.png","labelStrokeColor":"#ff0400","label":"开始"},
+            "props":{"y":365,"x":183,"var":"_Start","skin":"comp/button.png","labelStrokeColor":"#ff0400","label":"Start"},
             "nodeParent":1,
             "label":"Button(_Start)",
             "isDirectory":false,
@@ -41,7 +41,7 @@
         {
             "x":15,
             "type":"Button",
-            "props":{"y":365,"x":66,"var":"_Character","skin":"comp/button.png","labelStrokeColor":"#ff0400","label":"角色"},
+            "props":{"y":365,"x":66,"var":"_Character","skin":"comp/button.png","labelStrokeColor":"#ff0400","label":"Character"},
             "nodeParent":1,
             "label":"Button(_Character)",
             "isDirectory":false,
@@ -80,7 +80,7 @@
         {
             "x":15,
             "type":"Button",
-            "props":{"y":525,"x":42,"width":39,"var":"_SetPanel","skin":"comp/button.png","labelStrokeColor":"#ff0400","label":"设置","height":23},
+            "props":{"y":525,"x":42,"width":39,"var":"_SetPanel","skin":"comp/button.png","labelStrokeColor":"#ff0400","label":"Set","height":23},
             "nodeParent":1,
             "label":"Button(_SetPanel)",
             "isDirectory":false,
@@ -93,9 +93,9 @@
         {
             "x":15,
             "type":"Button",
-            "props":{"y":525,"x":136,"width":39,"skin":"comp/button.png","labelStrokeColor":"#ff0400","label":"排行","height":23},
+            "props":{"y":525,"x":136,"width":39,"var":"_CharacterList","skin":"comp/button.png","labelStrokeColor":"#ff0400","label":"List","height":23},
             "nodeParent":1,
-            "label":"Button",
+            "label":"Button(_CharacterList)",
             "isDirectory":false,
             "isAniNode":true,
             "hasChild":false,
@@ -106,7 +106,7 @@
         {
             "x":15,
             "type":"Button",
-            "props":{"y":522,"x":243,"width":39,"skin":"comp/button.png","labelStrokeColor":"#ff0400","label":"广告","height":23},
+            "props":{"y":522,"x":243,"width":39,"skin":"comp/button.png","labelStrokeColor":"#ff0400","label":"adv","height":23},
             "nodeParent":1,
             "label":"Button",
             "isDirectory":false,

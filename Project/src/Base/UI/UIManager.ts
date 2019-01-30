@@ -13,38 +13,70 @@ class UIManager
         }
         return UIManager._Mgr;
     }
-
-    Open(ui:BaseUI)
+    
+    Show<T extends BaseUI>(uiClass:{new (name:string): T; Name():string }):T
     {
+        var str:string = uiClass.Name();    
+        var newUI:BaseUI = this.GetUIByName(str);
+        newUI = newUI==null?this.AddUIByName(str,new uiClass(str)):newUI;
+
         var node:Laya.Sprite = null;
-        switch(ui.UIType)
+        switch(newUI.UIType)
         {
             //中层次UI
             case UITypeEnum.Midle:
                 node = this._MidleUINode;
+                if(this._MidleUINode.numChildren<=0)
+                {
+                    //通知导演暂停游戏
+                    //APP.SceneManager.CurScene.CurDir.TimeUp();
+                }
             break;
             //默认Ui全是低层次UI
             default:
                 node = this._UINode;
             break;
         }
-        node.addChild(ui);
-        if(this._MidleUINode.numChildren>0)
+
+        var childNum:number = node.numChildren;
+        //把互斥的窗口关掉
+        if(newUI.IsMutex&&childNum>0)
         {
-            //通知导演暂停游戏
-            APP.SceneManager.CurScene.CurDir.TimeUp();
+            var lastUI = node.getChildAt(node.numChildren-1) as BaseUI;
+            lastUI.visible = !lastUI.IsMutex;
         }
-        ui.OpenOP();
+
+        node.addChild(newUI);
+        newUI.OpenOP();
+
+        return newUI as T;
     }
 
     Close(ui:BaseUI)
     {
         ui.removeSelf();
+
         ui.CloseOP();
-        if(ui.UIType == UITypeEnum.Midle && this._MidleUINode.numChildren<=0)
+        var node:Laya.Sprite = null;
+        switch(ui.UIType)
         {
-            //关闭窗口 通知游戏继续
-            APP.SceneManager.CurScene.CurDir.ContinueTime();
+            //中层次UI
+            case UITypeEnum.Midle:
+                node = this._MidleUINode;
+                if(node.numChildren<=0)
+                    //关闭窗口 通知游戏继续
+                    //APP.SceneManager.CurScene.CurDir.ContinueTime();
+            break;
+            //默认Ui全是低层次UI
+            default:
+                node = this._UINode;
+            break;
+        }
+        var childNum:number = node.numChildren;
+        if(childNum>0)
+        {
+            var lastUI:BaseUI = node.getChildAt(childNum-1) as BaseUI;
+            lastUI.visible = true;
         }
     }
 
@@ -67,16 +99,31 @@ class UIManager
         }
     }
 
+    GetUIByName(name:string):BaseUI
+    {
+        var ui = this._UIDict[name];
+        ui = ui==undefined?null:ui;
+        return ui;
+    }
+    AddUIByName(name:string,ui:BaseUI):BaseUI
+    {
+        this._UIDict[name] = ui;
+        return ui;
+    }
     //内部功能
+    private _UINode:Laya.Sprite;
+    private _MidleUINode:Laya.Sprite;
+    private _UIDict:{[name:string]:BaseUI};
+
     private constructor()
     {
         this._UINode = new Laya.Sprite();
         this._MidleUINode = new Laya.Sprite();
         Laya.stage.addChild(this._UINode);
         Laya.stage.addChild(this._MidleUINode);
+        this._UIDict = {};
     }
 
-    private _UINode:Laya.Sprite;
-    private _MidleUINode:Laya.Sprite;
+    
 }
 

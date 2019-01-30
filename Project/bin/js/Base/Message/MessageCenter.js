@@ -79,6 +79,7 @@ var Delegate = /** @class */ (function () {
      * @param {any} param 消息名字
      */
     Delegate.prototype.Execute = function (param) {
+        if (param === void 0) { param = null; }
         this.Action.call(this.Listener, param);
     };
     return Delegate;

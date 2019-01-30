@@ -14,18 +14,20 @@ var __extends = (this && this.__extends) || (function () {
 //UI基类
 var BaseUI = /** @class */ (function (_super) {
     __extends(BaseUI, _super);
-    function BaseUI() {
+    function BaseUI(name) {
         var _this = _super.call(this) || this;
         _this._UIType = UITypeEnum.Low;
+        _this._IsMutex = false;
+        _this._Name = name;
         return _this;
     }
     BaseUI.prototype.Open = function () {
-        UIManager.Mgr.Open(this);
     };
     BaseUI.prototype.Close = function () {
         UIManager.Mgr.Close(this);
     };
     BaseUI.prototype.OpenOP = function () {
+        this.visible = true;
     };
     BaseUI.prototype.CloseOP = function () {
     };
@@ -35,6 +37,20 @@ var BaseUI = /** @class */ (function (_super) {
     Object.defineProperty(BaseUI.prototype, "UIType", {
         get: function () {
             return this._UIType;
+        },
+        enumerable: true,
+        configurable: true
+    });
+    Object.defineProperty(BaseUI.prototype, "IsMutex", {
+        get: function () {
+            return this._IsMutex;
+        },
+        enumerable: true,
+        configurable: true
+    });
+    Object.defineProperty(BaseUI.prototype, "Name", {
+        get: function () {
+            return this._Name;
         },
         enumerable: true,
         configurable: true

@@ -60,10 +60,14 @@ module ui {
 }
 class LoadUI extends BaseUI
 {
-    LoadUI:ui.ExtendsLoadUI;
-    constructor()
+    static Name():string
     {
-        super();
+        return "LoadUI";
+    }
+    LoadUI:ui.ExtendsLoadUI;
+    constructor(name:string)
+    {
+        super(name);
         this.LoadUI = new ui.ExtendsLoadUI();
         this.addChild(this.LoadUI);
     }

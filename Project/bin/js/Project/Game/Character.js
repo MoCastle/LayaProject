@@ -115,7 +115,15 @@ var MountLine = /** @class */ (function (_super) {
 var Step = /** @class */ (function (_super) {
     __extends(Step, _super);
     function Step(floor, idx) {
-        var _this = _super.call(this, new Laya.BoxMesh(0.4, 0.4, 0.4)) || this;
+        var _this = 
+        //super(new Laya.BoxMesh(1,1,1) );
+        _super.call(this) || this;
+        var box = new Laya.MeshSprite3D(new Laya.BoxMesh(1, 1, 1));
+        _this._StepModel = Laya.MeshSprite3D.load("http://www.gsjgame.com/Resource/LayaScene_L01_spr_plat_01/L01_spr_plat_01.lh");
+        // this.addChild(this._StepModel.clone());
+        //this.addChild(box);
+        //this.addChild(this._StepModel);
+        //this._StepModel = Laya.MeshSprite3D.load("http://www.gsjgame.com/Resource/LayaScene_L01_spr_plat_01/L01_spr_plat_01.lh");
         _this.transform.rotate(new Laya.Vector3(0, 45, 0), false, false);
         _this.transform.position = new Laya.Vector3();
         _this.StepItem = StepItemFactory(ItemType.None, _this);
@@ -177,6 +185,9 @@ var Step = /** @class */ (function (_super) {
         if (itemEnume == ItemType.Empty) {
             this.active = false;
             return;
+        }
+        else {
+            this.active = true;
         }
         this.StepItem.PutItem(itemEnume);
     };

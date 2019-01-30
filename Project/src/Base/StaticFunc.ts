@@ -5,10 +5,14 @@
 //输入常量 左/右
 const IsRight:boolean = true;
 const PlayerMoveTime:number =0.02*10000;
-//const PlayerMoveTime:number =0.02;
 
+//const PlayerMoveTime:number =0.02;
+var ItemDictType:{[ItemType:number]:any};
+ItemDictType = { };
 
 enum LifeObjState{ UnStarted,Starting,Updating,Ended }
+
+var UIStrToClass:{[name:string]:any} = {};
 
 class MLocation
 {

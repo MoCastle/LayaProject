@@ -26,6 +26,22 @@ var BaseGameInput = /** @class */ (function () {
     }
     return BaseGameInput;
 }());
+var DIYInput = /** @class */ (function (_super) {
+    __extends(DIYInput, _super);
+    function DIYInput(owner, listener) {
+        if (owner === void 0) { owner = null; }
+        if (listener === void 0) { listener = null; }
+        var _this = _super.call(this) || this;
+        _this._Owner = owner;
+        _this._Listener = listener;
+        return _this;
+    }
+    DIYInput.prototype.Input = function (isRight) {
+        if (this._Listener)
+            this._Listener.call(this._Owner, isRight);
+    };
+    return DIYInput;
+}(BaseGameInput));
 var NormGameInput = /** @class */ (function (_super) {
     __extends(NormGameInput, _super);
     function NormGameInput(dir, input) {

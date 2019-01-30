@@ -47,7 +47,7 @@ var GuiderScene = /** @class */ (function (_super) {
         return _super.call(this) || this;
     }
     GuiderScene.prototype.StartLoad = function () {
-        Laya.loader.load([{ url: "res/uijson/EnterScene.json", type: Laya.Loader.JSON }, { url: "res/atlas/comp.atlas", type: Laya.Loader.ATLAS }], Laya.Handler.create(this, this._LoadComplete));
+        Laya.loader.load([{ url: "res/uijson/ItemList.json", type: Laya.Loader.JSON }, { url: "res/uijson/EnterScene.json", type: Laya.Loader.JSON }, { url: "res/atlas/comp.atlas", type: Laya.Loader.ATLAS }], Laya.Handler.create(this, this._LoadComplete));
     };
     GuiderScene.prototype._GenDir = function () {
         this.GuidDir = new GuiderDirector();
@@ -63,12 +63,11 @@ var GuiderDirector = /** @class */ (function (_super) {
     GuiderDirector.prototype.ReStart = function () {
     };
     GuiderDirector.prototype._Start = function () {
-        this.UI = new EnterGameUI();
         _super.prototype._Start.call(this);
     };
     GuiderDirector.prototype._StartComplete = function () {
-        APP.UIManager.Open(this.UI);
         _super.prototype._StartComplete.call(this);
+        this.UI = APP.UIManager.Show(EnterGameUI);
     };
     GuiderDirector.prototype._Update = function () {
     };
