@@ -262,122 +262,6 @@ var StepItem = /** @class */ (function () {
      */
     StepItem.prototype.TouchItem = function (player) {
         switch (this.ItemType) {
-            /*
-            case ItemTypeEnume.Rope:
-                if(!this.JudgePlayerInBuff(player))//AddBuff(this.ItemType))
-                {
-                    var map = Game.CurScene.Map;
-                    map.FlyTo(10);
-                    Game.CurScene.InputCtrler = new RopeInput(Game.CurScene.InputCtrler);
-                    var completeFunc = buff.CompleteFunc;
-                    buff.CompleteFunc = function()
-                    {
-                        Game.CurScene.InputCtrler = Game.CurScene.InputCtrler.Ctrler;
-                        completeFunc();
-                    }
-                }
-            break;
-            case ItemTypeEnume.Vine:
-                if(player.Buff.Type == ItemTypeEnume.Protect)
-                {
-                    player.CompleteBuff();
-                    this.PutItem();
-                }else
-                {
-                    Game.CurScene.InputCtrler = new VineInput(Game.CurScene.InputCtrler);
-                }
-            break;
-            case ItemTypeEnume.Coin:
-                map.AddCoins(1);
-                this.PutItem();
-            break;
-            case ItemTypeEnume.Collector:
-                if(this.JudgePlayerInBuff(player))
-                {
-                    break;
-                }
-                var CurFloor = this.Step.Floor.Floor+1;
-                var Time = Laya.timer.currTimer +2000;
-                map.LoopAddCoins(CurFloor);
-                map.LoopAddCoins(CurFloor -1)
-                map.LoopAddCoins(CurFloor -2)
-                buff.Type = this.ItemType;
-                buff.ActionFunc = function()
-                {
-                    var floor = map.GetFloorByFloor(CurFloor);
-                    while( player.GetPs().z - floor.GetPs().z <SquareDistance/2+0.1 )
-                    {
-                        map.LoopAddCoins(CurFloor);
-                        ++CurFloor;
-                        floor = map.GetFloorByFloor(CurFloor);
-                    }
-                    if(Time<Laya.timer.currTimer)
-                    {
-                        player.CompleteBuff();
-                    }
-                }
-                this.PutItem();
-            break;
-        }
-        /*
-        var buff = player.Buff;
-        var map = Game.CurScene.Map;
-        switch(this.ItemType)
-        {
-            case ItemTypeEnume.Thorn:
-                if(player.Buff.Type == ItemTypeEnume.Protect)
-                {
-                    player.CompleteBuff();
-                    this.PutItem();
-                }else
-                    player.PlayerState = PlayerState.Death;
-            break;
-            case ItemTypeEnume.Protect:
-                if(player.AddBuff(this.ItemType,2*1000))
-                    this.PutItem;
-                break;
-            case ItemTypeEnume.Fly:
-                if(!this.JudgePlayerInBuff(player))//AddBuff(this.ItemType))
-                {
-                    var map = Game.CurScene.Map;
-                    map.FlyTo(10);
-                    Game.CurScene.InputCtrler = new InputCtrler(Game.CurScene.InputCtrler);
-                    var completeFunc = buff.CompleteFunc;
-                    buff.CompleteFunc = function()
-                    {
-                        Game.CurScene.InputCtrler = Game.CurScene.InputCtrler.Ctrler;
-                        completeFunc();
-                    }
-                }
-            break;
-            case ItemTypeEnume.Rope:
-                if(!this.JudgePlayerInBuff(player))//AddBuff(this.ItemType))
-                {
-                    var map = Game.CurScene.Map;
-                    map.FlyTo(10);
-                    Game.CurScene.InputCtrler = new RopeInput(Game.CurScene.InputCtrler);
-                    var completeFunc = buff.CompleteFunc;
-                    buff.CompleteFunc = function()
-                    {
-                        Game.CurScene.InputCtrler = Game.CurScene.InputCtrler.Ctrler;
-                        completeFunc();
-                    }
-                }
-            break;
-            case ItemTypeEnume.Vine:
-                if(player.Buff.Type == ItemTypeEnume.Protect)
-                {
-                    player.CompleteBuff();
-                    this.PutItem();
-                }else
-                {
-                    Game.CurScene.InputCtrler = new VineInput(Game.CurScene.InputCtrler);
-                }
-            break;
-            case ItemTypeEnume.Coin:
-                map.AddCoins(1);
-                this.PutItem();
-            break;*/
         }
     };
     StepItem.prototype._AddBuffToPlayer = function (player, buff) {
@@ -389,20 +273,15 @@ var StepItem = /** @class */ (function () {
         if (this.Model != null && !this.Model.destroyed) {
             return;
         }
-        var ps = new Laya.Vector3(0, GameManager.StepLength / 2 + 0.06, 0);
+        var ps = new Laya.Vector3(0, GameManager.StepLength, 0);
         this._GenItemModel(ps);
         return this.Model;
     };
-    //由父类统一管理模型生成
     StepItem.prototype._GenItemModel = function (ps) {
         var model = null;
         switch (this.ItemType) {
             case ItemType.Rock:
                 model = new Laya.MeshSprite3D(new Laya.BoxMesh(0.3, 0.3, 0.5));
-                break;
-            case ItemType.Rope:
-                break;
-            case ItemType.Vine:
                 break;
         }
         if (model != null) {
@@ -412,6 +291,25 @@ var StepItem = /** @class */ (function () {
     };
     return StepItem;
 }());
+var Rock = /** @class */ (function (_super) {
+    __extends(Rock, _super);
+    function Rock(Step) {
+        return _super.call(this, ItemType.Rock, Step) || this;
+    }
+    Rock.prototype._GenItemModel = function (ps) {
+        var model = null;
+        var idx = 1 + Math.floor(Math.random() * Rock.ModelNum);
+        var road = "http://www.gsjgame.com/Resource/LayaScene_L01_spr_barrier_0" + idx + "/L01_spr_barrier_0" + idx + ".lh";
+        model = Laya.MeshSprite3D.load(road).clone();
+        if (model != null) {
+            model.transform.position = ps;
+        }
+        this.Model = model;
+    };
+    Rock.ModelNum = 3;
+    return Rock;
+}(StepItem));
+ItemDictType[ItemType.Rock] = Rock;
 var Thorn = /** @class */ (function (_super) {
     __extends(Thorn, _super);
     function Thorn(Step) {

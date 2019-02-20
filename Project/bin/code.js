@@ -96439,6 +96439,7 @@ if (typeof define === 'function' && define.amd){
         }
     });
 }
+//# sourceMappingURL=TestScene.js.map
 var PlayerManager = /** @class */ (function () {
     function PlayerManager() {
         this._PlayerData = new PlayerData();
@@ -96471,6 +96472,7 @@ var PlayerData = /** @class */ (function () {
     return PlayerData;
 }());
 //# sourceMappingURL=PlayerManager.js.map
+//# sourceMappingURL=ModelMgr.js.map
 var GameControler = /** @class */ (function () {
     function GameControler() {
     }
@@ -96633,11 +96635,13 @@ var UIManager = /** @class */ (function () {
     UIManager.prototype.Clear = function () {
         var uiNode = this._UINode;
         while (uiNode.numChildren) {
-            uiNode.getChildAt(0).removeSelf();
+            var closeUI = uiNode.getChildAt(0); //.removeSelf();
+            this.Close(closeUI);
         }
         uiNode = this._MidleUINode;
         while (uiNode.numChildren) {
-            uiNode.getChildAt(0).removeSelf();
+            var closeUI = uiNode.getChildAt(0); //.removeSelf();
+            this.Close(closeUI);
         }
     };
     UIManager.prototype.GetUIByName = function (name) {
@@ -97215,8 +97219,16 @@ var MountLine = /** @class */ (function (_super) {
 var Step = /** @class */ (function (_super) {
     __extends(Step, _super);
     function Step(floor, idx) {
-        var _this = _super.call(this, new Laya.BoxMesh(0.4, 0.4, 0.4)) || this;
-        _this.transform.rotate(new Laya.Vector3(0, 45, 0), false, false);
+        var _this = 
+        //super(new Laya.BoxMesh(1,1,1) );
+        _super.call(this) || this;
+        GameManager.Mgr.CurScene.PutObj(_this);
+        var Idx = Math.floor(1 + Math.random() * Step.stepModelNum);
+        var road = "http://www.gsjgame.com/Resource/LayaScene_L01_spr_plat_0" + Idx + "/L01_spr_plat_0" + Idx + ".lh";
+        //var road = "http://www.gsjgame.com/Resource/LayaScene_L01_spr_plat_02/L01_spr_plat_02.lh"
+        var model = Laya.MeshSprite3D.load(road);
+        var cloneModel = model.clone();
+        _this.addChild(cloneModel);
         _this.transform.position = new Laya.Vector3();
         _this.StepItem = StepItemFactory(ItemType.None, _this);
         ;
@@ -97295,8 +97307,10 @@ var Step = /** @class */ (function (_super) {
         this._IsDeadRoad = false;
         this.RoadNum = 0;
     };
+    //模型个数
+    Step.stepModelNum = 3;
     return Step;
-}(Laya.MeshSprite3D));
+}(Laya.Sprite3D));
 //# sourceMappingURL=Character.js.map
 var __extends = (this && this.__extends) || (function () {
     var extendStatics = function (d, b) {
@@ -97369,21 +97383,34 @@ var __extends = (this && this.__extends) || (function () {
         d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
     };
 })();
+var num = 0;
 //该脚本用于游戏玩家对象管理
 //玩家对象
 var Player = /** @class */ (function (_super) {
     __extends(Player, _super);
     function Player() {
-        var _this = _super.call(this, new Laya.BoxMesh(0.4, 0.4, 0.4)) || this;
+        var _this = _super.call(this) || this;
+        _this._PlayerModel = Laya.MeshSprite3D.load("http://www.gsjgame.com/Resource/LayaScene_child_01/child_01.lh");
+        var secondPlayer = Laya.Sprite3D.instantiate(_this._PlayerModel, _this, false, new Laya.Vector3(0, 0, 0));
         GameManager.Mgr.CurScene.PutObj(_this);
         //添加自定义模型
-        _this.transform.rotate(new Laya.Vector3(0, 0, 0), false, false);
+        secondPlayer.transform.rotate(new Laya.Vector3(0, 180, 0), false, false);
         var material = new Laya.StandardMaterial();
         material.diffuseTexture = Laya.Texture2D.load("res/layabox.png");
-        _this.meshRender.material = material;
+        _this.on(Laya.Event.REMOVED, _this, function () { _this.destroy(); });
         _this.Reset();
         return _this;
     }
+    Object.defineProperty(Player.prototype, "CurStep", {
+        get: function () {
+            return this._CurStep;
+        },
+        set: function (step) {
+            this._CurStep = step;
+        },
+        enumerable: true,
+        configurable: true
+    });
     Player.prototype.GetBuff = function (idx) {
         return (this.BuffArr[idx] != null && this.BuffArr[idx] != undefined) ? this.BuffArr[idx] : null;
     };
@@ -97509,7 +97536,7 @@ var Player = /** @class */ (function (_super) {
         }
     };
     return Player;
-}(Laya.MeshSprite3D));
+}(Laya.Sprite3D));
 var BasePlayerBuff = /** @class */ (function () {
     function BasePlayerBuff(type, idx) {
         if (idx === void 0) { idx = 0; }
@@ -97961,122 +97988,6 @@ var StepItem = /** @class */ (function () {
      */
     StepItem.prototype.TouchItem = function (player) {
         switch (this.ItemType) {
-            /*
-            case ItemTypeEnume.Rope:
-                if(!this.JudgePlayerInBuff(player))//AddBuff(this.ItemType))
-                {
-                    var map = Game.CurScene.Map;
-                    map.FlyTo(10);
-                    Game.CurScene.InputCtrler = new RopeInput(Game.CurScene.InputCtrler);
-                    var completeFunc = buff.CompleteFunc;
-                    buff.CompleteFunc = function()
-                    {
-                        Game.CurScene.InputCtrler = Game.CurScene.InputCtrler.Ctrler;
-                        completeFunc();
-                    }
-                }
-            break;
-            case ItemTypeEnume.Vine:
-                if(player.Buff.Type == ItemTypeEnume.Protect)
-                {
-                    player.CompleteBuff();
-                    this.PutItem();
-                }else
-                {
-                    Game.CurScene.InputCtrler = new VineInput(Game.CurScene.InputCtrler);
-                }
-            break;
-            case ItemTypeEnume.Coin:
-                map.AddCoins(1);
-                this.PutItem();
-            break;
-            case ItemTypeEnume.Collector:
-                if(this.JudgePlayerInBuff(player))
-                {
-                    break;
-                }
-                var CurFloor = this.Step.Floor.Floor+1;
-                var Time = Laya.timer.currTimer +2000;
-                map.LoopAddCoins(CurFloor);
-                map.LoopAddCoins(CurFloor -1)
-                map.LoopAddCoins(CurFloor -2)
-                buff.Type = this.ItemType;
-                buff.ActionFunc = function()
-                {
-                    var floor = map.GetFloorByFloor(CurFloor);
-                    while( player.GetPs().z - floor.GetPs().z <SquareDistance/2+0.1 )
-                    {
-                        map.LoopAddCoins(CurFloor);
-                        ++CurFloor;
-                        floor = map.GetFloorByFloor(CurFloor);
-                    }
-                    if(Time<Laya.timer.currTimer)
-                    {
-                        player.CompleteBuff();
-                    }
-                }
-                this.PutItem();
-            break;
-        }
-        /*
-        var buff = player.Buff;
-        var map = Game.CurScene.Map;
-        switch(this.ItemType)
-        {
-            case ItemTypeEnume.Thorn:
-                if(player.Buff.Type == ItemTypeEnume.Protect)
-                {
-                    player.CompleteBuff();
-                    this.PutItem();
-                }else
-                    player.PlayerState = PlayerState.Death;
-            break;
-            case ItemTypeEnume.Protect:
-                if(player.AddBuff(this.ItemType,2*1000))
-                    this.PutItem;
-                break;
-            case ItemTypeEnume.Fly:
-                if(!this.JudgePlayerInBuff(player))//AddBuff(this.ItemType))
-                {
-                    var map = Game.CurScene.Map;
-                    map.FlyTo(10);
-                    Game.CurScene.InputCtrler = new InputCtrler(Game.CurScene.InputCtrler);
-                    var completeFunc = buff.CompleteFunc;
-                    buff.CompleteFunc = function()
-                    {
-                        Game.CurScene.InputCtrler = Game.CurScene.InputCtrler.Ctrler;
-                        completeFunc();
-                    }
-                }
-            break;
-            case ItemTypeEnume.Rope:
-                if(!this.JudgePlayerInBuff(player))//AddBuff(this.ItemType))
-                {
-                    var map = Game.CurScene.Map;
-                    map.FlyTo(10);
-                    Game.CurScene.InputCtrler = new RopeInput(Game.CurScene.InputCtrler);
-                    var completeFunc = buff.CompleteFunc;
-                    buff.CompleteFunc = function()
-                    {
-                        Game.CurScene.InputCtrler = Game.CurScene.InputCtrler.Ctrler;
-                        completeFunc();
-                    }
-                }
-            break;
-            case ItemTypeEnume.Vine:
-                if(player.Buff.Type == ItemTypeEnume.Protect)
-                {
-                    player.CompleteBuff();
-                    this.PutItem();
-                }else
-                {
-                    Game.CurScene.InputCtrler = new VineInput(Game.CurScene.InputCtrler);
-                }
-            break;
-            case ItemTypeEnume.Coin:
-                map.AddCoins(1);
-                this.PutItem();
-            break;*/
         }
     };
     StepItem.prototype._AddBuffToPlayer = function (player, buff) {
@@ -98088,20 +97999,15 @@ var StepItem = /** @class */ (function () {
         if (this.Model != null && !this.Model.destroyed) {
             return;
         }
-        var ps = new Laya.Vector3(0, GameManager.StepLength / 2 + 0.06, 0);
+        var ps = new Laya.Vector3(0, GameManager.StepLength, 0);
         this._GenItemModel(ps);
         return this.Model;
     };
-    //由父类统一管理模型生成
     StepItem.prototype._GenItemModel = function (ps) {
         var model = null;
         switch (this.ItemType) {
             case ItemType.Rock:
                 model = new Laya.MeshSprite3D(new Laya.BoxMesh(0.3, 0.3, 0.5));
-                break;
-            case ItemType.Rope:
-                break;
-            case ItemType.Vine:
                 break;
         }
         if (model != null) {
@@ -98111,6 +98017,25 @@ var StepItem = /** @class */ (function () {
     };
     return StepItem;
 }());
+var Rock = /** @class */ (function (_super) {
+    __extends(Rock, _super);
+    function Rock(Step) {
+        return _super.call(this, ItemType.Rock, Step) || this;
+    }
+    Rock.prototype._GenItemModel = function (ps) {
+        var model = null;
+        var idx = 1 + Math.floor(Math.random() * Rock.ModelNum);
+        var road = "http://www.gsjgame.com/Resource/LayaScene_L01_spr_barrier_0" + idx + "/L01_spr_barrier_0" + idx + ".lh";
+        model = Laya.MeshSprite3D.load(road).clone();
+        if (model != null) {
+            model.transform.position = ps;
+        }
+        this.Model = model;
+    };
+    Rock.ModelNum = 3;
+    return Rock;
+}(StepItem));
+ItemDictType[ItemType.Rock] = Rock;
 var Thorn = /** @class */ (function (_super) {
     __extends(Thorn, _super);
     function Thorn(Step) {
@@ -99029,6 +98954,7 @@ var ui;
             _this._Name = _this.Enter.label.split("#");
             _this.Enter.visible = false;
             _this.Enter.on(Laya.Event.CLICK, _this, _this._OnClickButton);
+            _this.ErrorInfo.visible = false;
             return _this;
         }
         ExtendsLoadUI.prototype.Update = function () {
@@ -99042,6 +98968,9 @@ var ui;
             _super.prototype.createChildren.call(this);
         };
         Object.defineProperty(ExtendsLoadUI.prototype, "Value", {
+            get: function () {
+                return this.Progress.value;
+            },
             set: function (num) {
                 this.Progress.value = num;
                 this.Update();
@@ -99052,12 +98981,15 @@ var ui;
         ExtendsLoadUI.prototype.Complete = function (callBack) {
             this._CallBack = callBack;
             this.Enter.visible = true;
-            this.Enter.label = this._Name[0];
+            this.Enter.label = "Enter"; //this._Name[0];
         };
         ExtendsLoadUI.prototype.Reload = function (callBack) {
-            this._CallBack = function () { this.Enter.visible = false; callBack(); };
+            /*
+            this._CallBack = function(){this.Enter.visible = false;callBack();}
             this.Enter.visible = true;
-            this.Enter.label = this._Name[1];
+            this.Enter.label = "Reload";//this._Name[1];
+            */
+            this.ErrorInfo.visible = true;
         };
         ExtendsLoadUI.prototype._OnClickButton = function () {
             if (this._CallBack != null) {
@@ -99085,6 +99017,13 @@ var LoadUI = /** @class */ (function (_super) {
     Object.defineProperty(LoadUI.prototype, "Value", {
         set: function (num) {
             this.LoadUI.Value = num;
+        },
+        enumerable: true,
+        configurable: true
+    });
+    Object.defineProperty(LoadUI.prototype, "value", {
+        get: function () {
+            return this.LoadUI.Value;
         },
         enumerable: true,
         configurable: true
@@ -99501,7 +99440,7 @@ var GameManager = /** @class */ (function () {
     //最大行数
     GameManager.MaxLineNum = 13;
     //格子边长
-    GameManager.StepLength = 0.5;
+    GameManager.StepLength = 0.98;
     //格子斜对角长度
     GameManager.StepDistance = Math.sqrt((GameManager.StepLength * GameManager.StepLength) * 2);
     return GameManager;
@@ -99724,11 +99663,13 @@ var GameDirector = /** @class */ (function (_super) {
     });
     //创建相关放这 这里重新开始不会走
     GameDirector.prototype._Start = function () {
+        /*
         //创建方向光
         var directionLight = new Laya.DirectionLight();
         this.SceneMgr.CurScene.PutObj(directionLight);
         directionLight.color = new Laya.Vector3(1, 1, 1);
         directionLight.direction = new Laya.Vector3(1, -1, 0);
+*/
         this.Camera = new GameCamera();
         this.Camera.transform.localRotationEuler = new Laya.Vector3(-30, 0, 0);
         this.SceneMgr.CurScene.PutObj(this.Camera);
@@ -99772,7 +99713,7 @@ var GameDirector = /** @class */ (function (_super) {
             }
             this._PutItemInLine(idx);
         }
-        this.Camera.Reset(new Laya.Vector3(), new Laya.Vector3(this.Player.Position.x, 4.5, 4), this.Player);
+        this.Camera.Reset(new Laya.Vector3(), new Laya.Vector3(this.Player.Position.x, GameManager.StepLength * 9, GameManager.StepLength * 8), this.Player);
         this._GoldNum = 0;
         this._LogicGoldNum = 0;
         _super.prototype._StartComplete.call(this);
@@ -100202,10 +100143,11 @@ var LoadDirctor = /** @class */ (function (_super) {
     };
     //
     LoadDirctor.prototype._Start = function () {
+        Laya.loader.on(Laya.Event.ERROR, this, this._onError);
+        Laya.loader.on(Laya.Event.COMPLETE, this, this._onComplete);
         this.Load();
         _super.prototype._Start.call(this);
         this._LoadFaile = false;
-        Laya.loader.on(Laya.Event.ERROR, this, this._onError);
     };
     LoadDirctor.prototype._StartComplete = function () {
         _super.prototype._StartComplete.call(this);
@@ -100223,21 +100165,29 @@ var LoadDirctor = /** @class */ (function (_super) {
             { url: "res/uijson/SetPanel.json", type: Laya.Loader.JSON },
             { url: "res/atlas/comp.atlas", type: Laya.Loader.ATLAS }
         ];
-        var resource3DArr = null;
+        var resource3DArr = ["http://www.gsjgame.com/Resource/LayaScene_L01_spr_plat_01/L01_spr_plat_01.lh",
+            "http://www.gsjgame.com/Resource/LayaScene_L01_spr_plat_02/L01_spr_plat_02.lh",
+            "http://www.gsjgame.com/Resource/LayaScene_L01_spr_plat_03/L01_spr_plat_03.lh",
+            "http://www.gsjgame.com/Resource/LayaScene_L01_spr_barrier_01/L01_spr_barrier_01.lh",
+            "http://www.gsjgame.com/Resource/LayaScene_L01_spr_barrier_02/L01_spr_barrier_02.lh",
+            "http://www.gsjgame.com/Resource/LayaScene_L01_spr_barrier_03/L01_spr_barrier_03.lh",
+            "http://www.gsjgame.com/Resource/LayaScene_child_01/child_01.lh"];
         this._Load(resource2DArr, resource3DArr);
     };
     LoadDirctor.prototype._Load = function (arr2D, arr3D) {
         if (arr2D === void 0) { arr2D = null; }
         if (arr3D === void 0) { arr3D = null; }
         if (arr2D != null) {
-            Laya.loader.load(arr2D, Laya.Handler.create(this, this._onLoaded), Laya.Handler.create(this, this._on2DProgress, null, false));
+            //Laya.loader.load(arr2D,Laya.Handler.create(this,this._onLoaded),Laya.Handler.create(this,this._on2DProgress,null,false));
+            Laya.loader.load(arr2D, null, Laya.Handler.create(this, this._on2DProgress, null, false));
         }
         else {
             this._CountValue += 0.5;
             this._Count2DLoad = 1;
         }
         if (arr3D != null) {
-            Laya.loader.create(arr3D, Laya.Handler.create(this, this._on3DLoaded), Laya.Handler.create(this, this._on3DProgress, null, false));
+            //            Laya.loader.create(arr3D,Laya.Handler.create(this,this._on3DLoaded),Laya.Handler.create(this,this._on3DProgress,null,false));
+            Laya.loader.create(arr3D, Laya.Handler.create(this, null), Laya.Handler.create(this, this._on3DProgress, null, false));
         }
         else {
             this._CountValue += 0.5;
@@ -100246,7 +100196,7 @@ var LoadDirctor = /** @class */ (function (_super) {
     };
     LoadDirctor.prototype._onError = function (str) {
         this._LoadFaile = true;
-        console.debug(str);
+        console.debug("LoadError:" + str);
     };
     LoadDirctor.prototype._on3DProgress = function (value) {
         if (this._LoadFaile) {
@@ -100256,36 +100206,21 @@ var LoadDirctor = /** @class */ (function (_super) {
         this.UI.Value = (this._Count2DLoad + this._Count3DLoad);
     };
     LoadDirctor.prototype._on2DProgress = function (value) {
-        /*
-        if(this._LoadFaile)
-        {
+        if (this._LoadFaile) {
             return;
-        }*/
+        }
         this._Count2DLoad = value / 2;
         this.UI.Value = this._Count2DLoad + this._Count3DLoad;
     };
-    LoadDirctor.prototype._onLoaded = function () {
-        this.UI.Complete(StageAPP.GuiderManager.EnterScene);
-        /*
-        this._CountValue+=0.5
-        if(this._LoadFaile)
-            {
-                var thiDir = this;
-                this.UI.Reload(function():void{thiDir.Load()} );
-            }else
-                this.UI.Complete(StageAPP.GuiderManager.EnterScene)
-                */
-    };
-    LoadDirctor.prototype._on3DLoaded = function () {
-        this._CountValue += 0.5;
-        if (this._CountValue >= 1) {
-            if (this._LoadFaile) {
-                var thiDir = this;
-                this.UI.Reload(function () { thiDir.Load(); });
-            }
-            else
-                this.UI.Complete(StageAPP.GuiderManager.EnterScene);
+    LoadDirctor.prototype._onComplete = function (data) {
+        if (this._LoadFaile) {
+            var thiDir = this;
+            this.UI.Reload(function () { thiDir.Load(); });
         }
+        else {
+            this.UI.Complete(StageAPP.GuiderManager.EnterScene);
+        }
+        return;
     };
     LoadDirctor.prototype._Update = function () {
     };
@@ -100302,6 +100237,8 @@ var Game = /** @class */ (function () {
         Laya3D.init(320, 568, true);
         Laya.stage.scaleMode = Laya.Stage.SCALE_SHOWALL;
         Laya.stage.screenMode = Laya.Stage.SCREEN_VERTICAL;
+        //开启统计信息
+        Laya.Stat.show();
         this.SceneMgr = SceneManager.Mgr;
         SceneManager.Mgr.EnterScene(new LoadScene());
         Laya.timer.frameLoop(1, this, this.Update);

@@ -23,6 +23,7 @@ var ui;
             _this._Name = _this.Enter.label.split("#");
             _this.Enter.visible = false;
             _this.Enter.on(Laya.Event.CLICK, _this, _this._OnClickButton);
+            _this.ErrorInfo.visible = false;
             return _this;
         }
         ExtendsLoadUI.prototype.Update = function () {
@@ -36,6 +37,9 @@ var ui;
             _super.prototype.createChildren.call(this);
         };
         Object.defineProperty(ExtendsLoadUI.prototype, "Value", {
+            get: function () {
+                return this.Progress.value;
+            },
             set: function (num) {
                 this.Progress.value = num;
                 this.Update();
@@ -46,12 +50,15 @@ var ui;
         ExtendsLoadUI.prototype.Complete = function (callBack) {
             this._CallBack = callBack;
             this.Enter.visible = true;
-            this.Enter.label = this._Name[0];
+            this.Enter.label = "Enter"; //this._Name[0];
         };
         ExtendsLoadUI.prototype.Reload = function (callBack) {
-            this._CallBack = function () { this.Enter.visible = false; callBack(); };
+            /*
+            this._CallBack = function(){this.Enter.visible = false;callBack();}
             this.Enter.visible = true;
-            this.Enter.label = this._Name[1];
+            this.Enter.label = "Reload";//this._Name[1];
+            */
+            this.ErrorInfo.visible = true;
         };
         ExtendsLoadUI.prototype._OnClickButton = function () {
             if (this._CallBack != null) {
@@ -79,6 +86,13 @@ var LoadUI = /** @class */ (function (_super) {
     Object.defineProperty(LoadUI.prototype, "Value", {
         set: function (num) {
             this.LoadUI.Value = num;
+        },
+        enumerable: true,
+        configurable: true
+    });
+    Object.defineProperty(LoadUI.prototype, "value", {
+        get: function () {
+            return this.LoadUI.Value;
         },
         enumerable: true,
         configurable: true

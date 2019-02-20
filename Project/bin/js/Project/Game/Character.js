@@ -118,13 +118,13 @@ var Step = /** @class */ (function (_super) {
         var _this = 
         //super(new Laya.BoxMesh(1,1,1) );
         _super.call(this) || this;
-        var box = new Laya.MeshSprite3D(new Laya.BoxMesh(1, 1, 1));
-        _this._StepModel = Laya.MeshSprite3D.load("http://www.gsjgame.com/Resource/LayaScene_L01_spr_plat_01/L01_spr_plat_01.lh");
-        // this.addChild(this._StepModel.clone());
-        //this.addChild(box);
-        //this.addChild(this._StepModel);
-        //this._StepModel = Laya.MeshSprite3D.load("http://www.gsjgame.com/Resource/LayaScene_L01_spr_plat_01/L01_spr_plat_01.lh");
-        _this.transform.rotate(new Laya.Vector3(0, 45, 0), false, false);
+        GameManager.Mgr.CurScene.PutObj(_this);
+        var Idx = Math.floor(1 + Math.random() * Step.stepModelNum);
+        var road = "http://www.gsjgame.com/Resource/LayaScene_L01_spr_plat_0" + Idx + "/L01_spr_plat_0" + Idx + ".lh";
+        //var road = "http://www.gsjgame.com/Resource/LayaScene_L01_spr_plat_02/L01_spr_plat_02.lh"
+        var model = Laya.MeshSprite3D.load(road);
+        var cloneModel = model.clone();
+        _this.addChild(cloneModel);
         _this.transform.position = new Laya.Vector3();
         _this.StepItem = StepItemFactory(ItemType.None, _this);
         ;
@@ -203,6 +203,8 @@ var Step = /** @class */ (function (_super) {
         this._IsDeadRoad = false;
         this.RoadNum = 0;
     };
+    //模型个数
+    Step.stepModelNum = 3;
     return Step;
-}(Laya.MeshSprite3D));
+}(Laya.Sprite3D));
 //# sourceMappingURL=Character.js.map

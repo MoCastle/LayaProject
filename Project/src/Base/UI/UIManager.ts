@@ -91,11 +91,13 @@ class UIManager
     {
         var uiNode = this._UINode;
         while (uiNode.numChildren) {
-            (uiNode.getChildAt(0) as Laya.Sprite).removeSelf();
+           var closeUI: BaseUI = uiNode.getChildAt(0) as BaseUI;//.removeSelf();
+           this.Close(closeUI);
         }
         uiNode = this._MidleUINode
         while (uiNode.numChildren) {
-            (uiNode.getChildAt(0) as Laya.Sprite).removeSelf();
+           var closeUI: BaseUI = uiNode.getChildAt(0) as BaseUI;//.removeSelf();
+           this.Close(closeUI);
         }
     }
 

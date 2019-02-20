@@ -85,11 +85,13 @@ var UIManager = /** @class */ (function () {
     UIManager.prototype.Clear = function () {
         var uiNode = this._UINode;
         while (uiNode.numChildren) {
-            uiNode.getChildAt(0).removeSelf();
+            var closeUI = uiNode.getChildAt(0); //.removeSelf();
+            this.Close(closeUI);
         }
         uiNode = this._MidleUINode;
         while (uiNode.numChildren) {
-            uiNode.getChildAt(0).removeSelf();
+            var closeUI = uiNode.getChildAt(0); //.removeSelf();
+            this.Close(closeUI);
         }
     };
     UIManager.prototype.GetUIByName = function (name) {

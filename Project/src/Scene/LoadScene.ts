@@ -42,10 +42,11 @@ class LoadDirctor extends BaseDirector
     
     protected _Start()
     {
+        Laya.loader.on(Laya.Event.ERROR,this,this._onError);
+        Laya.loader.on(Laya.Event.COMPLETE,this,this._onComplete);
         this.Load();
         super._Start();
         this._LoadFaile = false;
-        Laya.loader.on(Laya.Event.ERROR,this,this._onError);
     }
     protected _StartComplete()
     {
@@ -65,14 +66,22 @@ class LoadDirctor extends BaseDirector
             {url:"res/uijson/SetPanel.json",type:Laya.Loader.JSON},
             {url:"res/atlas/comp.atlas",type: Laya.Loader.ATLAS }
             ];
-        var resource3DArr = ["http://www.gsjgame.com/Resource/LayaScene_L01_spr_plat_01/L01_spr_plat_01.lh","http://www.gsjgame.com/Resource/LayaScene_L01_spr_barrier_01/L01_spr_barrier_01.lh"]
+        var resource3DArr = ["http://www.gsjgame.com/Resource/LayaScene_L01_spr_plat_01/L01_spr_plat_01.lh",
+        "http://www.gsjgame.com/Resource/LayaScene_L01_spr_plat_02/L01_spr_plat_02.lh",
+        "http://www.gsjgame.com/Resource/LayaScene_L01_spr_plat_03/L01_spr_plat_03.lh",
+        "http://www.gsjgame.com/Resource/LayaScene_L01_spr_barrier_01/L01_spr_barrier_01.lh",
+        "http://www.gsjgame.com/Resource/LayaScene_L01_spr_barrier_02/L01_spr_barrier_02.lh",
+        "http://www.gsjgame.com/Resource/LayaScene_L01_spr_barrier_03/L01_spr_barrier_03.lh",
+        "http://www.gsjgame.com/Resource/LayaScene_child_01/child_01.lh"]
         this._Load(resource2DArr,resource3DArr);
     }
     protected _Load(arr2D:Array<any> = null,arr3D:Array<any>=null)
     {
         if(arr2D!=null)
         {
-            Laya.loader.load(arr2D,Laya.Handler.create(this,this._onLoaded),Laya.Handler.create(this,this._on2DProgress,null,false));
+            //Laya.loader.load(arr2D,Laya.Handler.create(this,this._onLoaded),Laya.Handler.create(this,this._on2DProgress,null,false));
+            Laya.loader.load(arr2D,null,Laya.Handler.create(this,this._on2DProgress,null,false));
+            
         }else
         {
              this._CountValue+=0.5;
@@ -80,7 +89,8 @@ class LoadDirctor extends BaseDirector
         }
         if(arr3D!=null)
         {
-            Laya.loader.create(arr3D,Laya.Handler.create(this,this._on3DLoaded),Laya.Handler.create(this,this._on3DProgress,null,false));
+//            Laya.loader.create(arr3D,Laya.Handler.create(this,this._on3DLoaded),Laya.Handler.create(this,this._on3DProgress,null,false));
+            Laya.loader.create(arr3D,Laya.Handler.create(this,null),Laya.Handler.create(this,this._on3DProgress,null,false));
         }else
         {
              this._CountValue+=0.5;
@@ -90,7 +100,7 @@ class LoadDirctor extends BaseDirector
     protected _onError(str:string)
     {
         this._LoadFaile = true;
-        console.debug(str);
+        console.debug("LoadError:"+str);
     }
 
     protected _on3DProgress(value:number)
@@ -112,32 +122,19 @@ class LoadDirctor extends BaseDirector
         this._Count2DLoad =value/2;
         this.UI.Value = this._Count2DLoad + this._Count3DLoad;
     }
-    protected _onLoaded()
+    protected _onComplete(data)
     {
-        this.UI.Complete(StageAPP.GuiderManager.EnterScene);
-        
-        this._CountValue+=0.5
         if(this._LoadFaile)
-            {
-                var thiDir = this;
-                this.UI.Reload(function():void{thiDir.Load()} );
-            }else
-                this.UI.Complete(StageAPP.GuiderManager.EnterScene)
-                
-    }
-    protected _on3DLoaded()
-    {
-        this._CountValue+=0.5
-        if(this._CountValue >=1)
         {
-            if(this._LoadFaile)
-            {
-                var thiDir = this;
-                this.UI.Reload(function():void{thiDir.Load()} );
-            }else
-                this.UI.Complete(StageAPP.GuiderManager.EnterScene)
+            var thiDir = this;
+            this.UI.Reload(function():void{thiDir.Load()} );
+        }else
+        {
+            this.UI.Complete(StageAPP.GuiderManager.EnterScene);
         }
+        return;
     }
+    
     protected _Update():void
     {
         

@@ -1,10 +1,20 @@
+var num:number = 0;
 //该脚本用于游戏玩家对象管理
 //玩家对象
-class Player extends Laya.MeshSprite3D
+class Player extends Laya.Sprite3D
 {
-    CurStep:Step;
+    set CurStep(step:Step)
+    {
+        this._CurStep = step;
+    }
+    get CurStep():Step
+    {
+        return this._CurStep;
+    }
     BaseCtrler:PlayerNormCtrler;
     BuffArr:Array<BasePlayerBuff>;
+    //zerg
+    IdNumber:number;
     GetBuff(idx:number):BasePlayerBuff
     {
         return (this.BuffArr[idx] !=null&&this.BuffArr[idx]!=undefined)?this.BuffArr[idx]:null;
@@ -128,23 +138,18 @@ class Player extends Laya.MeshSprite3D
     _LogicPosition:Laya.Vector3;
     _BuffNode:Laya.Sprite3D;
     _PlayerModel:Laya.Sprite3D;
+    _CurStep:Step;
     constructor()
     {
         super();
-        this._PlayerModel = Laya.MeshSprite3D.load("http://www.gsjgame.com/Resource/LayaScene_L01_spr_plat_01/L01_spr_plat_01.lh");
-        var secondPlayer:Laya.Sprite3D = Laya.Sprite3D.instantiate(this._PlayerModel, this, false, new Laya.Vector3(0.6, 0, 0));
-        //var model:Laya.Sprite3D = this._PlayerModel.clone();
-        this.addChild(this._PlayerModel);
-        //this.addChild(secondPlayer);
-        secondPlayer.transform.translate(new Laya.Vector3(1,1,1));
-//        Laya.Sprite3D.instantiate(this._PlayerModel,this,false)
+        this._PlayerModel = Laya.MeshSprite3D.load("http://www.gsjgame.com/Resource/LayaScene_child_01/child_01.lh");
+        var secondPlayer:Laya.Sprite3D = Laya.Sprite3D.instantiate(this._PlayerModel, this, false, new Laya.Vector3(0, 0, 0));
         GameManager.Mgr.CurScene.PutObj(this);
         //添加自定义模型
-        this.transform.rotate(new Laya.Vector3(0, 0, 0), false, false);
+        secondPlayer.transform.rotate(new Laya.Vector3(0, 180, 0), false, false);
         var material = new Laya.StandardMaterial();
         material.diffuseTexture = Laya.Texture2D.load("res/layabox.png");
-        this.meshRender.material = material;
-        
+        this.on(Laya.Event.REMOVED,this,()=>{ this.destroy() })
         this.Reset();
     }
     Reset()

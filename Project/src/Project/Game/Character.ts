@@ -116,8 +116,11 @@ class MountLine extends Laya.Sprite3D
 }
 
 //步
-class Step extends Laya.MeshSprite3D
+class Step extends Laya.Sprite3D
 {
+    //模型个数
+    public static stepModelNum:number = 3;
+
     LeftParent:Step;
     RightParent:Step;
     LeftChild:Step;
@@ -189,13 +192,16 @@ class Step extends Laya.MeshSprite3D
     {
         //super(new Laya.BoxMesh(1,1,1) );
         super();
-        var box:Laya.MeshSprite3D = new Laya.MeshSprite3D( new Laya.BoxMesh(1,1,1));
-        this._StepModel = Laya.MeshSprite3D.load("http://www.gsjgame.com/Resource/LayaScene_L01_spr_plat_01/L01_spr_plat_01.lh");
-       // this.addChild(this._StepModel.clone());
-       //this.addChild(box);
-        //this.addChild(this._StepModel);
-        //this._StepModel = Laya.MeshSprite3D.load("http://www.gsjgame.com/Resource/LayaScene_L01_spr_plat_01/L01_spr_plat_01.lh");
-        this.transform.rotate(new Laya.Vector3(0, 45, 0), false, false);
+        GameManager.Mgr.CurScene.PutObj(this);
+        var Idx = Math.floor(1+ Math.random()*Step.stepModelNum);
+        var road = "http://www.gsjgame.com/Resource/LayaScene_L01_spr_plat_0" + Idx + "/L01_spr_plat_0"+Idx+".lh"
+        //var road = "http://www.gsjgame.com/Resource/LayaScene_L01_spr_plat_02/L01_spr_plat_02.lh"
+        
+        var model = Laya.MeshSprite3D.load(road);
+
+        var cloneModel = model.clone();
+        this.addChild(cloneModel);
+        
         this.transform.position = new Laya.Vector3();
         this.StepItem = StepItemFactory(ItemType.None,this);;
         this.StepItem.ResetItem();

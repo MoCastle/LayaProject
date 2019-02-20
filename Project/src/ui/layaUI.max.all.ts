@@ -106,6 +106,7 @@ module ui {
 		public _Progress:Laya.ProgressBar;
 		public _Guider:Laya.Image;
 		public _Enter:Laya.Button;
+		public ErrorInfo:Laya.TextArea;
 
         constructor(){ super()}
         createChildren():void {

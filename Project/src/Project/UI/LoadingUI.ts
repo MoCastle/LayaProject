@@ -23,17 +23,24 @@ module ui {
                 this.Progress.value =num;
                 this.Update();
             }
+            get Value():number
+            {
+                return this.Progress.value;
+            }
             Complete(callBack:()=>void)
             {
                 this._CallBack = callBack;
                 this.Enter.visible = true;
-                this.Enter.label = this._Name[0];
+                this.Enter.label = "Enter";//this._Name[0];
             }
             Reload(callBack:()=>void)
             {
+                /*
                 this._CallBack = function(){this.Enter.visible = false;callBack();}
                 this.Enter.visible = true;
-                this.Enter.label = this._Name[1];
+                this.Enter.label = "Reload";//this._Name[1];
+                */
+                this.ErrorInfo.visible = true;
             }
 
             _Name:Array<string>;
@@ -47,6 +54,7 @@ module ui {
                 this._Name = this.Enter.label.split("#");
                 this.Enter.visible = false;
                 this.Enter.on(Laya.Event.CLICK,this,this._OnClickButton);
+                this.ErrorInfo.visible = false;
             }
 
             _OnClickButton()
@@ -79,6 +87,10 @@ class LoadUI extends BaseUI
     set Value(num:number)
     {
         this.LoadUI.Value = num;
+    }
+    get value():number
+    {
+        return this.LoadUI.Value;
     }
     Complete(callBack:()=>void)
     {

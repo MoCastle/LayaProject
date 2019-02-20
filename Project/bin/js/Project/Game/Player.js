@@ -11,28 +11,34 @@ var __extends = (this && this.__extends) || (function () {
         d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
     };
 })();
+var num = 0;
 //该脚本用于游戏玩家对象管理
 //玩家对象
 var Player = /** @class */ (function (_super) {
     __extends(Player, _super);
     function Player() {
         var _this = _super.call(this) || this;
-        _this._PlayerModel = Laya.MeshSprite3D.load("http://www.gsjgame.com/Resource/LayaScene_L01_spr_plat_01/L01_spr_plat_01.lh");
-        var secondPlayer = Laya.Sprite3D.instantiate(_this._PlayerModel, _this, false, new Laya.Vector3(0.6, 0, 0));
-        //var model:Laya.Sprite3D = this._PlayerModel.clone();
-        _this.addChild(_this._PlayerModel);
-        //this.addChild(secondPlayer);
-        secondPlayer.transform.translate(new Laya.Vector3(1, 1, 1));
-        //        Laya.Sprite3D.instantiate(this._PlayerModel,this,false)
+        _this._PlayerModel = Laya.MeshSprite3D.load("http://www.gsjgame.com/Resource/LayaScene_child_01/child_01.lh");
+        var secondPlayer = Laya.Sprite3D.instantiate(_this._PlayerModel, _this, false, new Laya.Vector3(0, 0, 0));
         GameManager.Mgr.CurScene.PutObj(_this);
         //添加自定义模型
-        _this.transform.rotate(new Laya.Vector3(0, 0, 0), false, false);
+        secondPlayer.transform.rotate(new Laya.Vector3(0, 180, 0), false, false);
         var material = new Laya.StandardMaterial();
         material.diffuseTexture = Laya.Texture2D.load("res/layabox.png");
-        _this.meshRender.material = material;
+        _this.on(Laya.Event.REMOVED, _this, function () { _this.destroy(); });
         _this.Reset();
         return _this;
     }
+    Object.defineProperty(Player.prototype, "CurStep", {
+        get: function () {
+            return this._CurStep;
+        },
+        set: function (step) {
+            this._CurStep = step;
+        },
+        enumerable: true,
+        configurable: true
+    });
     Player.prototype.GetBuff = function (idx) {
         return (this.BuffArr[idx] != null && this.BuffArr[idx] != undefined) ? this.BuffArr[idx] : null;
     };
@@ -158,7 +164,7 @@ var Player = /** @class */ (function (_super) {
         }
     };
     return Player;
-}(Laya.MeshSprite3D));
+}(Laya.Sprite3D));
 var BasePlayerBuff = /** @class */ (function () {
     function BasePlayerBuff(type, idx) {
         if (idx === void 0) { idx = 0; }

@@ -37,10 +37,11 @@ var LoadDirctor = /** @class */ (function (_super) {
     };
     //
     LoadDirctor.prototype._Start = function () {
+        Laya.loader.on(Laya.Event.ERROR, this, this._onError);
+        Laya.loader.on(Laya.Event.COMPLETE, this, this._onComplete);
         this.Load();
         _super.prototype._Start.call(this);
         this._LoadFaile = false;
-        Laya.loader.on(Laya.Event.ERROR, this, this._onError);
     };
     LoadDirctor.prototype._StartComplete = function () {
         _super.prototype._StartComplete.call(this);
@@ -58,21 +59,29 @@ var LoadDirctor = /** @class */ (function (_super) {
             { url: "res/uijson/SetPanel.json", type: Laya.Loader.JSON },
             { url: "res/atlas/comp.atlas", type: Laya.Loader.ATLAS }
         ];
-        var resource3DArr = ["http://www.gsjgame.com/Resource/LayaScene_L01_spr_plat_01/L01_spr_plat_01.lh", "http://www.gsjgame.com/Resource/LayaScene_L01_spr_barrier_01/L01_spr_barrier_01.lh"];
+        var resource3DArr = ["http://www.gsjgame.com/Resource/LayaScene_L01_spr_plat_01/L01_spr_plat_01.lh",
+            "http://www.gsjgame.com/Resource/LayaScene_L01_spr_plat_02/L01_spr_plat_02.lh",
+            "http://www.gsjgame.com/Resource/LayaScene_L01_spr_plat_03/L01_spr_plat_03.lh",
+            "http://www.gsjgame.com/Resource/LayaScene_L01_spr_barrier_01/L01_spr_barrier_01.lh",
+            "http://www.gsjgame.com/Resource/LayaScene_L01_spr_barrier_02/L01_spr_barrier_02.lh",
+            "http://www.gsjgame.com/Resource/LayaScene_L01_spr_barrier_03/L01_spr_barrier_03.lh",
+            "http://www.gsjgame.com/Resource/LayaScene_child_01/child_01.lh"];
         this._Load(resource2DArr, resource3DArr);
     };
     LoadDirctor.prototype._Load = function (arr2D, arr3D) {
         if (arr2D === void 0) { arr2D = null; }
         if (arr3D === void 0) { arr3D = null; }
         if (arr2D != null) {
-            Laya.loader.load(arr2D, Laya.Handler.create(this, this._onLoaded), Laya.Handler.create(this, this._on2DProgress, null, false));
+            //Laya.loader.load(arr2D,Laya.Handler.create(this,this._onLoaded),Laya.Handler.create(this,this._on2DProgress,null,false));
+            Laya.loader.load(arr2D, null, Laya.Handler.create(this, this._on2DProgress, null, false));
         }
         else {
             this._CountValue += 0.5;
             this._Count2DLoad = 1;
         }
         if (arr3D != null) {
-            Laya.loader.create(arr3D, Laya.Handler.create(this, this._on3DLoaded), Laya.Handler.create(this, this._on3DProgress, null, false));
+            //            Laya.loader.create(arr3D,Laya.Handler.create(this,this._on3DLoaded),Laya.Handler.create(this,this._on3DProgress,null,false));
+            Laya.loader.create(arr3D, Laya.Handler.create(this, null), Laya.Handler.create(this, this._on3DProgress, null, false));
         }
         else {
             this._CountValue += 0.5;
@@ -81,7 +90,7 @@ var LoadDirctor = /** @class */ (function (_super) {
     };
     LoadDirctor.prototype._onError = function (str) {
         this._LoadFaile = true;
-        console.debug(str);
+        console.debug("LoadError:" + str);
     };
     LoadDirctor.prototype._on3DProgress = function (value) {
         if (this._LoadFaile) {
@@ -97,26 +106,15 @@ var LoadDirctor = /** @class */ (function (_super) {
         this._Count2DLoad = value / 2;
         this.UI.Value = this._Count2DLoad + this._Count3DLoad;
     };
-    LoadDirctor.prototype._onLoaded = function () {
-        this.UI.Complete(StageAPP.GuiderManager.EnterScene);
-        this._CountValue += 0.5;
+    LoadDirctor.prototype._onComplete = function (data) {
         if (this._LoadFaile) {
             var thiDir = this;
             this.UI.Reload(function () { thiDir.Load(); });
         }
-        else
+        else {
             this.UI.Complete(StageAPP.GuiderManager.EnterScene);
-    };
-    LoadDirctor.prototype._on3DLoaded = function () {
-        this._CountValue += 0.5;
-        if (this._CountValue >= 1) {
-            if (this._LoadFaile) {
-                var thiDir = this;
-                this.UI.Reload(function () { thiDir.Load(); });
-            }
-            else
-                this.UI.Complete(StageAPP.GuiderManager.EnterScene);
         }
+        return;
     };
     LoadDirctor.prototype._Update = function () {
     };

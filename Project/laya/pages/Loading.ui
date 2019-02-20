@@ -2,6 +2,7 @@
     "x":0,
     "type":"View",
     "selectedBox":1,
+    "selecteID":6,
     "props":{"width":320,"sceneColor":"#000000","height":568},
     "nodeParent":-1,
     "label":"View",
@@ -52,13 +53,26 @@
         {
             "x":15,
             "type":"Button",
-            "props":{"y":405,"x":118,"var":"_Enter","skin":"comp/button.png","label":"Enter#Reloading"},
+            "props":{"y":405,"x":118,"var":"_Enter","skin":"comp/button.png","label":"Enter#LoadFail"},
             "nodeParent":1,
             "label":"Button(_Enter)",
             "isDirectory":false,
             "isAniNode":true,
             "hasChild":false,
             "compId":5,
+            "child":[
+                ]
+        },
+        {
+            "x":15,
+            "type":"TextArea",
+            "props":{"width":180,"var":"ErrorInfo","valign":"middle","text":"LoadFaile","promptColor":"#ffffff","height":52,"fontSize":20,"color":"#ff0400","centerX":-9,"bottom":127,"align":"center"},
+            "nodeParent":1,
+            "label":"TextArea(ErrorInfo)",
+            "isDirectory":false,
+            "isAniNode":true,
+            "hasChild":false,
+            "compId":6,
             "child":[
                 ]
         }],

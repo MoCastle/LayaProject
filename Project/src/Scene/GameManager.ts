@@ -18,7 +18,7 @@ class GameManager
     //最大行数
     static MaxLineNum:number = 13;
     //格子边长
-    static StepLength:number = 0.5;
+    static StepLength:number = 0.98;
     //格子斜对角长度
     static StepDistance:number = Math.sqrt((GameManager.StepLength*GameManager.StepLength)*2);
     
@@ -106,7 +106,6 @@ class GameScene extends BaseScene
         super._LoadComplete();
     }
 }
-
 //游戏导演
 class GameDirector extends BaseDirector
 {
@@ -117,7 +116,8 @@ class GameDirector extends BaseDirector
     InputCtrl:BaseGameInput;
     ItemLayout:ItemLayout;
     CurLineRewards:Array<LineItemInfo>;
-    CurLineBarriers:Array<LineItemInfo>
+    CurLineBarriers:Array<LineItemInfo>;
+    name:number;
     get SafeLocation():MLocation
     {
         return this._SafeLocation;
@@ -339,7 +339,13 @@ class GameDirector extends BaseDirector
         this.Camera =new GameCamera();
         this.Camera.transform.localRotationEuler =new Laya.Vector3(-30,0,0);
         this.SceneMgr.CurScene.PutObj(this.Camera);
-
+        /*
+        //添加方向光
+        var directionLight: Laya.DirectionLight = new Laya.DirectionLight() as Laya.DirectionLight;
+        directionLight.color = new Laya.Vector3(0.6, 0.6, 0.6);
+        directionLight.direction = new Laya.Vector3(1, -1, 0);
+        this.SceneMgr.CurScene.PutObj(directionLight);
+*/
         this.MountLines = [];
         var maxLineNum = GameManager.MaxLineNum;
         for( var lineIdx:number = maxLineNum-1;lineIdx>=0;--lineIdx )

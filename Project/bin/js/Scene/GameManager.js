@@ -59,7 +59,7 @@ var GameManager = /** @class */ (function () {
     //最大行数
     GameManager.MaxLineNum = 13;
     //格子边长
-    GameManager.StepLength = 0.5;
+    GameManager.StepLength = 0.98;
     //格子斜对角长度
     GameManager.StepDistance = Math.sqrt((GameManager.StepLength * GameManager.StepLength) * 2);
     return GameManager;
@@ -292,6 +292,13 @@ var GameDirector = /** @class */ (function (_super) {
         this.Camera = new GameCamera();
         this.Camera.transform.localRotationEuler = new Laya.Vector3(-30, 0, 0);
         this.SceneMgr.CurScene.PutObj(this.Camera);
+        /*
+        //添加方向光
+        var directionLight: Laya.DirectionLight = new Laya.DirectionLight() as Laya.DirectionLight;
+        directionLight.color = new Laya.Vector3(0.6, 0.6, 0.6);
+        directionLight.direction = new Laya.Vector3(1, -1, 0);
+        this.SceneMgr.CurScene.PutObj(directionLight);
+*/
         this.MountLines = [];
         var maxLineNum = GameManager.MaxLineNum;
         for (var lineIdx = maxLineNum - 1; lineIdx >= 0; --lineIdx) {
