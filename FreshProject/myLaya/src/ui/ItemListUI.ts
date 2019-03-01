@@ -5,15 +5,13 @@ import {BaseEnum} from "./../Base/BaseEnum"
 import {path} from "./../Utility/Path"
 import GuiderManager from "../Scene/GuiderManager";
 import {MessageMD} from "./../FrameWork/MessageCenter"
-
+import ItemElement from "./../script/ItemElement"
 
 class ExtendsItemListUI extends ui.ItemListUI
 {
     createChildren():void
     {
-        var res:JSON = Laya.loader.getRes("res/uijson/ItemList.json");
-        this.createView(res);
-        super.createChildren();
+        this.createView(Laya.loader.getRes(path.GetDepathUIJS("ItemList")));
     }
     SetList()
     {
@@ -47,34 +45,10 @@ export default class ItemListUI extends BaseUI
     {
         super(name);
         this.UI = new ExtendsItemListUI();
-        this.addChild(this.UI);
+        this.FixUI(this.UI);
         this.UI.BtnListener = new MessageMD.Delegate(this,()=>{ this._UIManager.Close(this)})
         this.UI.SetList();
         this._UIType = BaseEnum.UITypeEnum.Midle;
     }
 
 }
-
-class ItemElement extends Laya.Box
-    {
-        //
-        Idx:number;
-        private _Btn:Laya.Button;
-        get Btn():Laya.Button
-        {
-            if(this._Btn == null)
-            {
-                this._Btn = this.getChildAt(1) as Laya.Button;
-            }
-            return this._Btn;
-        }
-        SetBtn(owner:any,listener:()=>void)
-        {
-            this.Btn.on(Laya.Event.CLICK,owner,listener);
-        }
-        //
-        constructor()
-        {
-            super();
-        }
-    }

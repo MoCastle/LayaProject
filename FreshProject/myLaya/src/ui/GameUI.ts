@@ -7,7 +7,7 @@ import {BaseEnum} from "./../Base/BaseEnum"
 import {path} from "./../Utility/Path"
 import GuiderManager from "../Scene/GuiderManager";
 import ItemListUI from "./ItemListUI"
-import APP from "./../controler/APP"
+import GameControler from "./../controler/GameControler"
 class ExtendsGameUI extends ui.GameUI
 {
     createChildren():void
@@ -38,8 +38,7 @@ export default class GameUI extends BaseUI
         this.FixUI(this._UI);
         
         this._Gold = 0;
-        var opIsRight = APP.GameControler.SetInfo.OPIsRight;
-        this._UI._RightHandBtnList.visible = opIsRight;
+        var opIsRight = GameControler.GameControler.SetInfo.OPIsRight;
         this._UI._ItemListBtn.on(Laya.Event.CLICK,null,()=>{ this._UIManager.Show<ItemListUI>(ItemListUI)})
         this.SetCountTime();
         

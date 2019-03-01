@@ -1,7 +1,7 @@
 import Player from "./Player"
 import APP from "./../controler/APP"
 import { GameStruct } from "./GameStruct";
-
+import Controler from "./../controler/GameControler"
 export module PlayerControler
 {
     export abstract class BasePlayerCtrler
@@ -37,7 +37,7 @@ export module PlayerControler
         Time:number;
         StartMove()
         {
-            this.Time = APP.SceneManager.CurScene.CurDir.GameTime + APP.GameManager.PlayerMoveTime;
+            this.Time = APP.SceneManager.CurScene.CurDir.GameTime + Controler.GameControler.PlayerMoveTime;
         }
         constructor(player:Player = null)
         {
@@ -48,7 +48,7 @@ export module PlayerControler
         {
             if(this.Time>0)
             {
-                if(this.Time<=APP.GameManager.CurScene.CurDir.GameTime)
+                if(this.Time<=APP.SceneManager.CurScene.CurDir.GameTime)
                 {
                     this.Time = -1;
                     this.player.SetStep(this.player.CurStep);
@@ -57,11 +57,11 @@ export module PlayerControler
                 else
                 {
                     var lastTime = this.Time-Laya.timer.currTimer;
-                    var rate = (1-lastTime/ APP.GameManager.PlayerMoveTime);
+                    var rate = (1-lastTime/ Controler.GameControler.PlayerMoveTime);
                     var StepPs:Laya.Vector3 = this.player.CurStep.Position;
-                    StepPs.y +=APP.GameManager.StepLength;
+                    StepPs.y +=Controler.GameControler.StepLength;
                     var curps:Laya.Vector3 = this.player.Position;
-                    curps.y +=APP.GameManager.StepLength;
+                    curps.y +=Controler.GameControler.StepLength;
                     var newPs = new Laya.Vector3();
                     newPs.x = (StepPs.x - curps.x)*rate+ curps.x;
                     newPs.y = (StepPs.y - curps.y)*rate+curps.y;
@@ -87,6 +87,7 @@ export module PlayerControler
         SetPlayer(player:Player)
         {
             super.SetPlayer(player);
+            player.Translate(new Laya.Vector3(0,Controler.GameControler.StepLength,0));
         }
     
         //
@@ -104,7 +105,8 @@ export module PlayerControler
             {
                 return;
             }
-            var vector = new Laya.Vector3(0,APP.GameManager.StepLength,APP.GameManager.StepDistance/2);
+            var vector = new Laya.Vector3(0,Controler.GameControler.StepLength,-1*Controler.GameControler.StepDistance/2);
+            
             Laya.Vector3.scale(vector,this.Speed,vector);
             this.player.Translate(vector);
         }

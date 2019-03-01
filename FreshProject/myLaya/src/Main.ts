@@ -10,28 +10,33 @@ import {MessageMD} from "./FrameWork/MessageCenter"
 import LoadScene from "./Scene/LoadScene"
 import { ui } from "./ui/layaMaxUI";
 import APP from "./controler/APP"
+import GameConfig from "./GameConfig"
 class Game
 {
 	_Frame:FrameWork;
-    //SceneMgr:SceneManager;
     constructor()
     {
         var ss = APP;
         
         Laya3D.init(0, 0);
+        GameConfig.init();
         Laya.stage.scaleMode = Laya.Stage.SCALE_FULL;
         Laya.stage.screenMode = Laya.Stage.SCREEN_VERTICAL;
         Laya.stage.alignV = Laya.Stage.ALIGN_BOTTOM;
         //开启统计信息
 		Laya.Stat.show();
-		
-		this._Frame = FrameWork.FM;
-        this._Frame.AddManager<UIManager>(UIManager);
+        
+        var resCol = [{url:"ui/Resource/LoadUI.json",type:Laya.Loader.JSON},{url:"ui/Resource/localcomp.atlas",type:Laya.Loader.ATLAS}];
+        Laya.loader.load(resCol,Laya.Handler.create(this,this.onLoaded));
+    }
+    onLoaded()
+    {
+        this._Frame = FrameWork.FM;
         this._Frame.AddManager<MessageMD.MessageCenter>(MessageMD.MessageCenter);
-		var sceneMgr:SceneManager = this._Frame.AddManager<SceneManager>(SceneManager);
+        var sceneMgr:SceneManager = this._Frame.AddManager<SceneManager>(SceneManager);
+        this._Frame.AddManager<UIManager>(UIManager);
 		sceneMgr.EnterScene(new LoadScene());
         Laya.timer.frameLoop(1,this,this.Update);
-        
     }
 	
     Update( )
@@ -41,18 +46,3 @@ class Game
     }
 }
 var GM = new Game();
-/*/*
-import TestBase from "./XTest/TestBase"
-import RightChild from "./XTest/RightChild"
-import LeftChild from "./XTest/LeftChild"
-
-class Game
-{
-    //SceneMgr:SceneManager;
-    constructor()
-    {
-        var leftChild:LeftChild = new LeftChild();
-        var rightChild:RightChild = new RightChild();
-        rightChild.Debug();
-    }
-}*/

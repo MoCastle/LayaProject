@@ -1,8 +1,8 @@
 {
     "x":0,
     "type":"View",
-    "selectedBox":1,
-    "selecteID":9,
+    "selectedBox":10,
+    "selecteID":14,
     "searchKey":"View",
     "props":{"width":750,"sceneColor":"#000000","height":1334},
     "nodeParent":-1,
@@ -113,44 +113,31 @@
                 },
                 {
                     "x":30,
-                    "type":"Box",
-                    "searchKey":"Box,_RightHandBtnList",
-                    "props":{"width":323,"var":"_RightHandBtnList","right":0,"height":172,"bottom":0},
+                    "type":"Button",
+                    "searchKey":"Button,_Right_LeftTouch",
+                    "props":{"y":1120,"x":65,"width":120,"var":"_Right_LeftTouch","skin":"comp/button.png","left":65,"labelStrokeColor":"#050505","labelSize":100,"labelBold":false,"labelAlign":"center","label":"L","height":140,"bottom":74},
                     "nodeParent":10,
-                    "label":"_RightHandBtnList",
-                    "isOpen":false,
-                    "isDirectory":true,
+                    "label":"_Right_LeftTouch",
+                    "isDirectory":false,
                     "isAniNode":true,
-                    "hasChild":true,
-                    "compId":14,
+                    "hasChild":false,
+                    "compId":3,
                     "child":[
-                        {
-                            "type":"Button",
-                            "searchKey":"Button,_Right_LeftTouch",
-                            "props":{"y":0,"width":120,"var":"_Right_LeftTouch","skin":"comp/button.png","left":0,"labelSize":100,"labelBold":false,"labelAlign":"center","label":"L","height":140},
-                            "nodeParent":14,
-                            "label":"_Right_LeftTouch",
-                            "isDirectory":false,
-                            "isAniNode":true,
-                            "hasChild":false,
-                            "compId":3,
-                            "child":[
-                                ]
-                        },
-                        {
-                            "type":"Button",
-                            "searchKey":"Button,_Right_RightTouch",
-                            "props":{"width":120,"var":"_Right_RightTouch","skin":"comp/button.png","right":0,"labelSize":100,"label":"R","height":140,"bottom":32},
-                            "nodeParent":14,
-                            "label":"_Right_RightTouch",
-                            "isDirectory":false,
-                            "isAniNode":true,
-                            "hasChild":false,
-                            "compId":6,
-                            "child":[
-                                ]
-                        }],
-                    "$HIDDEN":false
+                        ]
+                },
+                {
+                    "x":30,
+                    "type":"Button",
+                    "searchKey":"Button,_Right_RightTouch",
+                    "props":{"y":1120,"x":560,"width":120,"var":"_Right_RightTouch","skin":"comp/button.png","right":70,"labelSize":100,"label":"R","height":140,"bottom":74},
+                    "nodeParent":10,
+                    "label":"_Right_RightTouch",
+                    "isDirectory":false,
+                    "isAniNode":true,
+                    "hasChild":false,
+                    "compId":6,
+                    "child":[
+                        ]
                 }],
             "$HIDDEN":false
         },
@@ -158,7 +145,7 @@
             "x":15,
             "type":"Label",
             "searchKey":"Label,_GameInfo",
-            "props":{"y":522,"x":244,"width":262,"var":"_GameInfo","valign":"middle","text":"123","height":309,"fontSize":100,"color":"#d43f3c","align":"center"},
+            "props":{"width":262,"var":"_GameInfo","valign":"middle","text":"123","height":309,"fontSize":100,"color":"#d43f3c","centerY":0,"centerX":0,"align":"center"},
             "nodeParent":1,
             "label":"_GameInfo",
             "isDirectory":false,

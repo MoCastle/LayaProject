@@ -5,14 +5,14 @@ import BaseDirector from "./BaseDirector"
 import LifeObj from "./../Base/LifeObj"
 import {Enum} from "./../Base/LifeObj"
 import {MessageMD} from "./../FrameWork/MessageCenter"
+import APP from "./../controler/APP"
 //场景基类
 export default abstract class BaseScene extends LifeObj
 {
     //外部接口
-    SceneMgr:SceneManager;
     CurDir:BaseDirector;
     IsLoadComplete:boolean;
-    Scene:Laya.Scene;
+    Scene:Laya.Scene3D;
     IsLoading:boolean;
 
     //结束场景
@@ -31,18 +31,23 @@ export default abstract class BaseScene extends LifeObj
     Start():void
     {
         if(!this.IsLoadComplete && !this.IsLoading)
-            this.StartLoad();
-        else
-            this._Start();
-
-       if(this.IsLoading && this._LoadCallBack == null)
         {
-            this._LoadCallBack = this._Start;
+            this.StartLoad();
+            if(this._LoadCallBack == null)
+            {
+                this._LoadCallBack = this._Start;
+            }
         }
+        else if(!this.IsLoading)
+            this._Start();
     }
     //放对象
     PutObj(node:Laya.Sprite3D ):void
     {
+        if(node == null)
+        {
+            console.log("BaseScene PutObj Error:empty Sprite3D");
+        }
          this.Scene.addChild(node);  
     }
 
@@ -55,7 +60,6 @@ export default abstract class BaseScene extends LifeObj
     constructor()
     {
         super();
-        this.SceneMgr = FW.FM.GetManager<SceneManager>(SceneManager);
         this.IsLoading = false;
         this.IsLoadComplete = false
         this.CurDir = null;
@@ -89,7 +93,7 @@ export default abstract class BaseScene extends LifeObj
             }
         }
         this._UIManager.Clear();
-        this.SceneMgr.CurScene = this._NextScene;
+        APP.SceneManager.CurScene = this._NextScene;
         //zerg 场景不知道会不会内存泄漏
     }
 
@@ -114,8 +118,11 @@ export default abstract class BaseScene extends LifeObj
 
     protected _Start()
     {
-        this.SceneMgr.SceneCtrler.addChild(this.Scene);
         super._Start();
+        if(this.Scene)
+        {
+            APP.SceneManager.CurScene = this;
+        }
     }
     protected _Starting()
     {

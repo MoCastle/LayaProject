@@ -7,6 +7,8 @@ import LoadingUI from "./../ui/UnDownload/LoadingUI"
 import FMWork from "./../FrameWork/FrameWork"
 import GuiderManager from "./GuiderManager"
 import {path} from "./../Utility/Path"
+import APP from "./../controler/APP"
+import BG from "./../ui/BG"
 
 export default class LoadScene extends BaseScene
 {
@@ -23,7 +25,7 @@ export default class LoadScene extends BaseScene
     
     StartLoad():void
     {
-        var resCol = [{url:"ui/LoadUI.json",type:Laya.Loader.JSON},{url:"ui/Resource/comp.atlas",type:Laya.Loader.ATLAS}];
+        var resCol = [{url:"ui/Resource/LoadUI.json",type:Laya.Loader.JSON},{url:"ui/Resource/localcomp.atlas",type:Laya.Loader.ATLAS}];
         Laya.loader.load(resCol,Laya.Handler.create(this,this._LoadComplete));
     }
     
@@ -60,7 +62,7 @@ class LoadDirctor extends BaseDirector
     protected _StartComplete()
     {
         super._StartComplete();
-        this.UI = FrameWork.FM.GetManager<UIManager>(UIManager).Show<LoadingUI>(LoadingUI);
+        this.UI = APP.UIManager.Show<LoadingUI>(LoadingUI);
         this.UI.Update();
     }
     protected Load()
@@ -80,6 +82,7 @@ class LoadDirctor extends BaseDirector
             path.GetDepathUIJS("ItemList"),
             path.GetDepathUIJS("Character"),
             path.GetDepathUIJS("PlayerList"),
+            path.GetDepathUIJS("BG"),
             path.GetAtlPath("comp")
             ];
         //resource2DArr = null;
@@ -102,6 +105,14 @@ class LoadDirctor extends BaseDirector
         path.GetLH("L01_spr_plat_01"),
         path.GetLH("L01_spr_plat_02"),
         path.GetLH("L01_spr_plat_03"),
+        path.GetLH("item_coin_01"),
+        path.GetLH("item_flyer_01"),
+        path.GetLH("item_shield_01"),
+        path.GetLH("item_untouchable_01"),
+        path.GetLH("trap_chomper_01"),
+        path.GetLH("trap_entangle_01"),
+        path.GetLH("trap_sting_01"),
+        //path.GetSkyBox("skyCube")
         /*
         path.ResourcePath +"LayaScene_L01_spr_plat_03/Conventional/L01_spr_plat_03.lh",
         */
@@ -164,6 +175,7 @@ class LoadDirctor extends BaseDirector
             this.UI.Reload(function():void{thiDir.Load()} );
         }else
         {
+            APP.SceneManager.BG = new BG();
             this.UI.Complete(()=>{GuiderManager.Mgr.EnterScene()});
         }
         return;

@@ -1,22 +1,19 @@
-import UIManager from "./../FrameWork/UIManager"
-import FW from "./../FrameWork/FrameWork"
+import GameControler from "./../controler/GameControler"
 import APP from "./../controler/APP"
-//import {GameStruct} from "./../Game/GameStruct"
 
-export default class RoleElement extends Laya.Box
+export default class RoleElement extends Laya.Image
 {
     //
     Idx:number;
     private _Btn:Laya.Button;
-    UIManager:UIManager;
     get Btn():Laya.Button
     {
         if(this._Btn == null)
         {
             this._Btn = this.getChildAt(1) as Laya.Button;
             this._Btn.on(Laya.Event.CLICK,this,()=>{
-                APP.GameControler.SetPlayerID(this.Idx);
-                this.UIManager.CloseCurView();
+                GameControler.GameControler.SetPlayerID(this.Idx);
+                APP.UIManager.CloseCurView();
             })
         }
         return this._Btn;
@@ -26,10 +23,9 @@ export default class RoleElement extends Laya.Box
         if(this.Btn)
         {}
     }
-    //
+
     constructor()
     {
         super();
-        this.UIManager= FW.FM.GetManager<UIManager>(UIManager);
     }
 }

@@ -1,9 +1,11 @@
 export module path
 {
-    var IsEditor:boolean = true;
+    var IsEditor:boolean = false;
+
     export var SceneAssetPath:string = "LayaScene_";
-    export var UIPath:string = IsEditor? "D:/GIt/Resources/LayaProject/FreshProject/myLaya/NetResource/":ResourcePath;
-    export var ResourcePath:string = IsEditor?"C:/Users/Administrator/Desktop/Resource/L01_laya/NetResources/":"http://www.gsjgame.com/Resource/";
+    export var ResourcePath:string = IsEditor?"D:/GIt/Resources/LayaProject/FreshProject/myLaya/NetResource/":"http://www.gsjgame.com/Resource/NetResource/";
+    export var UIPath:string = ResourcePath + "UI/";
+    export var ModelPath:string = ResourcePath+"3D/"
     
     /**
      * 获取Atl文件路径
@@ -27,6 +29,6 @@ export module path
      */
     export function GetLH(fileName:string):string
     {
-        return ResourcePath +SceneAssetPath+fileName+"/Conventional/" +fileName + ".lh"
+        return ModelPath +SceneAssetPath+fileName+"/Conventional/" +fileName + ".lh"
     }
 }

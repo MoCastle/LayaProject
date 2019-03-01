@@ -50,7 +50,7 @@ class GuiderScene extends BaseScene
     }
     StartLoad( )
     {
-        Laya.loader.load([{url:path.GetDepathUIJS("Enter") ,type:Laya.Loader.JSON},{url:path.GetDepathUIJS("ItemList") ,type:Laya.Loader.JSON},{url:"res/atlas/comp.atlas",type: Laya.Loader.ATLAS }],Laya.Handler.create(this,this._LoadComplete));
+        Laya.loader.load([{url:path.GetDepathUIJS("Enter") ,type:Laya.Loader.JSON},{url:path.GetDepathUIJS("ItemList") ,type:Laya.Loader.JSON},{url:path.GetAtlPath("comp"),type: Laya.Loader.ATLAS }],Laya.Handler.create(this,this._LoadComplete));
     }
     protected _GenDir():void
     {

@@ -4,7 +4,7 @@ import BaseUI from "./BaseUI"
 import FM from "./../FrameWork/FrameWork"
 import UIManager from "./../FrameWork/UIManager"
 import PlayerListUI from "./../ui/PlayerListUI"
-import APP from "./../controler/APP"
+import GameControler from "./../controler/GameControler"
 
 class ExtendEnterGameUI extends ui.EnterUI {
     Panel:Laya.Panel;
@@ -18,9 +18,9 @@ class ExtendEnterGameUI extends ui.EnterUI {
         this.Panel = this._Panel;
         this.Panel.vScrollBarSkin = "";
         this.Panel.hScrollBarSkin = "";
-        this._Character.on(Laya.Event.CLICK,APP.GameControler,APP.GameControler.ShowCharacterPanel);
-        this._SetPanel.on(Laya.Event.CLICK,APP.GameControler,APP.GameControler.ShowSetPanel);
-        this._Start.on(Laya.Event.CLICK,APP.GameControler,APP.GameControler.EnterGame);
+        this._Character.on(Laya.Event.CLICK,GameControler.GameControler,GameControler.GameControler.ShowCharacterPanel);
+        this._SetPanel.on(Laya.Event.CLICK,GameControler.GameControler,GameControler.GameControler.ShowSetPanel);
+        this._Start.on(Laya.Event.CLICK,GameControler.GameControler,GameControler.GameControler.EnterGame);
     }        
 }
 

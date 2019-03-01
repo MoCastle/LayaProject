@@ -4,7 +4,7 @@ import { BaseEnum } from "./../Base/BaseEnum"
 import { path } from "./../Utility/Path"
 import {GameStruct} from "./../Game/GameStruct"
 import GuiderManager from "../Scene/GuiderManager";
-import APP from "./../controler/APP"
+import Controler from "./../controler/GameControler"
 
 class ExtendsSetPanelUI extends ui.SetPanelUI {
     createChildren(): void {
@@ -32,7 +32,7 @@ export default class SetPanelUI extends BaseUI {
         return "SetPanelUI";
     }
     SetPanel() {
-        var info: GameStruct.SetInfo = APP.GameControler.GetSetInfo();
+        var info: GameStruct.SetInfo = Controler.GameControler.GetSetInfo();
         this._UI._AudioSwitch.selectedIndex = info.AudioOn ? 0 : 1;
         this._UI._OPSwitch.selectedIndex = info.OPIsRight ? 1 : 0;
         this._UI._Text.text = info.TextInfo;
@@ -41,7 +41,7 @@ export default class SetPanelUI extends BaseUI {
         var info: GameStruct.SetInfo = new GameStruct.SetInfo();
         info.AudioOn = this._UI._AudioSwitch.selectedIndex == 0;
         info.OPIsRight = this._UI._OPSwitch.selectedIndex == 1;
-        APP.GameControler.SaveSetInfo(info);
+        Controler.GameControler.SaveSetInfo(info);
     }
 
     CloseOP() {

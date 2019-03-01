@@ -1,6 +1,7 @@
 import BaseManager from "./BaseManager";
 import BaseUI from "./../ui/BaseUI"
 import {BaseEnum} from "./../Base/BaseEnum"
+import {UIFunc} from "./../Utility/UIFunc"
 export default class  UIManager extends BaseManager
 {
     //内部功能
@@ -38,8 +39,6 @@ export default class  UIManager extends BaseManager
         var str:string = uiClass.Name();    
         var newUI:BaseUI = this.GetUIByName(str);
         newUI = newUI==null?this.AddUIByName(str,new uiClass(str)):newUI;
-        newUI.width = 10;//Laya.stage.width;
-		newUI.height = 10;//Laya.stage.height;
         var node:Laya.Sprite = null;
         switch(newUI.UIType)
         {

@@ -20,6 +20,8 @@ import MountLine from "./../Game/MountLine"
 import {Item} from "./../Game/GameItem"
 import Step from "./../Game/Step"
 import GameDirector from "./GameDirector"
+import APP from "./../controler/APP"
+import Controler from "../controler/GameControler";
 type ItemLayout = Item.ItemLayout;
 type LineItemInfo = Item.LineItemInfo;
 var ItemType = Item.ItemType;
@@ -31,7 +33,7 @@ export default class GameScene extends BaseScene
     //对外接口
     StartLoad()
     {
-        Laya.loader.load([path.GetDepathUIJS("PlayerList"),path.GetDepathUIJS("GameScene"),path.GetDepathUIJS("EndGame")],Laya.Handler.create(this,this._LoadComplete));
+        Laya.loader.load([path.GetDepathUIJS("PlayerList"),path.GetDepathUIJS("Game"),path.GetDepathUIJS("EndGame")],Laya.Handler.create(this,this._LoadComplete));
         super.StartLoad();
     }
 
@@ -65,7 +67,8 @@ export default class GameScene extends BaseScene
     }
     protected _LoadComplete()
     {
-        this.Scene = new Laya.Scene();
+        this.Scene = new Laya.Scene3D();
+        this.Scene.ambientColor = new Laya.Vector3(1,1,1)
         super._LoadComplete();
     }
 }

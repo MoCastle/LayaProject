@@ -5,63 +5,7 @@ import LifeObj from "./../Base/LifeObj"
 import BaseScene from "./BaseScene";
 import APP from "./../controler/APP"
 import {MessageMD} from "./../FrameWork/MessageCenter"
-export default abstract class BaseDirector extends LifeObj
-{
-    
-    _Leave():void
-    {
-        ///APP.MessageManager.DesRgistIDK(MessageMD.GameEvent.GameTimeUp);
-        //APP.MessageManager.DesRgistIDK(MessageMD.GameEvent.GameContinue);
-        //var app = APP;
-        super._Leave();
-    }
-
-    TimeUp():void
-    {
-    }
-
-    Update()
-    {
-    }
-
-    ContinueTime():void
-    {
-    }
-
-    get CurGameTime():number
-    {
-        return this._StartGameTime + this._TimeUpCount;
-    }
-    
-    //私有属性和功能
-    private _StartGameTime:number;
-    private _TimeUpCount:number;
-    private _TimeUpClock:number;
-    protected _UIMgr:UIManager;
-    protected _MessageMgr:MessageMD.MessageCenter;
-    constructor()
-    {
-        super();
-    }
-    protected _StartComplete()
-    {
-    }
-    SceneMgr:SceneManager;
-
-    set GameTime(value:number)
-    {
-    }
-    //外部接口
-    Start():void
-    {
-    }
-    protected _Start():void
-    {
-    }
-
-    abstract ReStart():void;
-}
-/*
+import BG from "./../ui/BG"
 
 //导演基类
 export default abstract class BaseDirector extends LifeObj
@@ -70,8 +14,8 @@ export default abstract class BaseDirector extends LifeObj
     _Leave():void
     {
         
-        APP.MessageCenter.DesRgistIDK(GameEvent.GameTimeUp);
-        APP.MessageCenter.DesRgistIDK(GameEvent.GameContinue);
+        APP.MessageManager.DesRgistIDK(MessageMD.GameEvent.GameTimeUp);
+        APP.MessageManager.DesRgistIDK(MessageMD.GameEvent.GameContinue);
         
         super._Leave();
     }
@@ -110,7 +54,7 @@ export default abstract class BaseDirector extends LifeObj
     private _TimeUpCount:number;
     private _TimeUpClock:number;
     protected _UIMgr:UIManager;
-    protected _MessageMgr:MessageMD.MessageCenter;
+    private _BG:BG;
     constructor()
     {
         super();
@@ -119,6 +63,8 @@ export default abstract class BaseDirector extends LifeObj
         this._TimeUpClock = -1;
         this._UIMgr = FW.FM.GetManager<UIManager>(UIManager);
         this.SceneMgr = APP.SceneManager;
+        this._BG = APP.SceneManager.BG as BG;
+        
     }
     protected _StartComplete()
     {
@@ -156,4 +102,4 @@ export default abstract class BaseDirector extends LifeObj
     }
 
     abstract ReStart():void;
-}*/
+}

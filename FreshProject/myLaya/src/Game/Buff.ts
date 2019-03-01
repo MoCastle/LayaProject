@@ -5,6 +5,7 @@ import { GameStruct } from "./GameStruct";
 import Player from "./Player"
 import APP from "./../controler/APP"
 import Step from "./../Game/Step"
+import Controler from "./../controler/GameControler"
 
 export module PlayerBuff
 {
@@ -18,7 +19,7 @@ export module PlayerBuff
         }
         GenBuffMod()
         {
-            //this._BuffMod = new Laya.MeshSprite3D(new Laya.SphereMesh(0.3,8,8));
+            this._BuffMod = new Laya.MeshSprite3D(Laya.PrimitiveMesh.createSphere(0.3,8,8));
         }
         Start(player:Player)
         {
@@ -60,13 +61,13 @@ export module PlayerBuff
             super.Start(player)
             this._FinalLocation = player.CurStep.Location;
             this._FinalLocation.Y +=this.Floor;
-            this._FinalZ = player.Position.z - APP.GameManager.StepDistance/2*this.Floor;
+            this._FinalZ = player.Position.z - Controler.GameControler.StepDistance/2*this.Floor;
             
             var flyCtrl = new PlayerControler.PlayerFly(this.Speed);
             flyCtrl.SetPlayer(player)
             player.AddCtrler(flyCtrl);
-            APP.GameManager.GameDir.AddInputCtrler(new Input.DIYInput());
-            APP.GameManager.GameDir.SetSafePS(this._FinalLocation);
+            Controler.GameControler.GameDir.AddInputCtrler(new Input.DIYInput());
+            Controler.GameControler.GameDir.SetSafePS(this._FinalLocation);
         }
     
         private _FinalLocation:GameStruct.MLocation;
@@ -88,12 +89,12 @@ export module PlayerBuff
             }
             if(this._FinalZ - this.Player.Position.z>-0.2)
             {
-                var step:Step = APP.GameManager.GameDir.GetStepByLocation(this._FinalLocation);
+                var step:Step = Controler.GameControler.GameDir.GetStepByLocation(this._FinalLocation);
                 this.Player.LayStep(step);
                 this.Player.BaseCtrler.StartMove();
                 this.Player.PopCtrler();
     
-                APP.GameManager.GameDir.PopInputCtrler();
+                Controler.GameControler.GameDir.PopInputCtrler();
                 super.Complete();
             }
         }
@@ -126,11 +127,11 @@ export module PlayerBuff
         Start(player:Player)
         {
             super.Start(player)
-            APP.GameManager.GameDir.AddInputCtrler(new Input.DIYInput(this,this._Input));
+            Controler.GameControler.GameDir.AddInputCtrler(new Input.DIYInput(this,this._Input));
         }
         Complete()
         {
-            APP.GameManager.GameDir.PopInputCtrler();
+            Controler.GameControler.GameDir.PopInputCtrler();
             super.Complete();
         }
         constructor(countTime:number = 3,inputDir:boolean = true)
@@ -161,7 +162,7 @@ export module PlayerBuff
                 info = "";
             else
                 info = this.InputDir == true?"Right":"Left";
-            APP.GameManager.GameDir.ShowInputInfo(info);
+            Controler.GameControler.GameDir.ShowInputInfo(info);
         }
     }
 }

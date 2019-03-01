@@ -1,5 +1,5 @@
 import Player from "./Player"
-
+import {path} from "./../Utility/Path"
 //游戏中相机
 export default class GameCamera extends Laya.Camera
 {
@@ -26,6 +26,7 @@ export default class GameCamera extends Laya.Camera
         var newPS = this.transform.position;
         Laya.Vector3.add(this.BasePS,this.DynamicPS,newPS);
         this.transform.position = newPS;
+        
     }
     set Position(ps:Laya.Vector3)
     {
@@ -45,6 +46,11 @@ export default class GameCamera extends Laya.Camera
         this.Player = null;
         //this.timerLoop(1,this.Ctrler,this.Ctrler.Update);
         this.frameLoop(1,this,this._Update);
+        var skyBox:Laya.SkyBox =new Laya.SkyBox();
+        this.clearFlag = Laya.BaseCamera.CLEARFLAG_SKY;
+        //Camera.skyRenderer = skyBox._render;
+        //this.sk = skyBox;
+         //path
     }
     private _Update()
     {

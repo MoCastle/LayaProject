@@ -82,12 +82,15 @@ export default class Step extends Laya.Sprite3D
     {
         //super(new Laya.BoxMesh(1,1,1) );
         super();
-        APP.GameManager.CurScene.PutObj(this);
+        APP.SceneManager.CurScene.PutObj(this);
         var Idx = Math.floor(1+ Math.random()*Step.stepModelNum);
-        var name = "LayaScene_L0"+Idx + "_spr_plat_0"+Idx;
+        var name:string = path.GetLH("L01_spr_plat_0"+Idx)
         
-        var model = Laya.loader.getRes(path.GetLH(name));
+        var model = Laya.loader.getRes(name);
+        //var model:Laya.Sprite3D = new Laya.MeshSprite3D( Laya.PrimitiveMesh.createBox(0.5, 0.5, 0.5)) ;//loader.getRes(name);
+        
         var cloneModel = model.clone();
+        cloneModel.transform.position = new Laya.Vector3();
         this.addChild(cloneModel);
         
         this.transform.position = new Laya.Vector3();

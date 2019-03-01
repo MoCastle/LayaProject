@@ -4,9 +4,9 @@ import {BaseEnum} from "./../Base/BaseEnum"
 import {path} from "./../Utility/Path"
 import GuiderManager from "../Scene/GuiderManager";
 import {GameStruct }  from "./../Game/GameStruct"
-import APP from "./../controler/APP"
+import Controler from "./../controler/GameControler"
 
-class ExtendEnterGameUI extends ui.EndGameUI {
+class ExtendEndGameUI extends ui.EndGameUI {
     Panel:Laya.Panel;
     createChildren():void
     {
@@ -18,23 +18,23 @@ class ExtendEnterGameUI extends ui.EndGameUI {
         //this.Panel = this.Panel;
         //this.Panel.vScrollBarSkin = "";
         //this.Panel.hScrollBarSkin = "";
-        this._MenueBtn.on(Laya.Event.CLICK,APP.GameControler,APP.GameControler.ShowCharacterPanel);
-        this._SetBtn.on(Laya.Event.CLICK,APP.GameControler,APP.GameControler.ShowSetPanel);
-        this._StartBtn.on(Laya.Event.CLICK,APP.GameControler,APP.GameControler.EnterGame);
+        this._MenueBtn.on(Laya.Event.CLICK,GuiderManager.Mgr,GuiderManager.Mgr.EnterScene);
+        this._SetBtn.on(Laya.Event.CLICK,Controler.GameControler,Controler.GameControler.ShowSetPanel);
+        this._StartBtn.on(Laya.Event.CLICK,Controler.GameControler,Controler.GameControler.EnterGame);
     }
 }
 
-export default class EnterGameUI extends BaseUI
+export default class EndGameUI extends BaseUI
 {
     static Name():string
     {
-        return "EnterGameUI";
+        return "EndGameUI";
     }
-    UI:ExtendEnterGameUI;
+    UI:ExtendEndGameUI;
     constructor(name:string)
     {
         super(name);
-        this.UI= new ExtendEnterGameUI();
+        this.UI= new ExtendEndGameUI();
         this.FixUI(this.UI);
         //this.UI._CharacterList.on(Laya.Event.CLICK,null,()=>{ this._UIManager.Show<PlayerListUI>(PlayerListUI)});
     }

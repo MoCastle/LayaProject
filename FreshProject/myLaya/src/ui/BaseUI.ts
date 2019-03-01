@@ -1,6 +1,7 @@
 import UIManager from "./../FrameWork/UIManager"
 import FW from "./../FrameWork/FrameWork"
 import {BaseEnum} from "./../Base/BaseEnum"
+import {UIFunc} from "./../Utility/UIFunc"
 //UI基类
 export default abstract class BaseUI extends Laya.Sprite
 {
@@ -61,8 +62,7 @@ export default abstract class BaseUI extends Laya.Sprite
      */
     public FixUI(UI:Laya.View)
     {
-        UI.width = Laya.stage.width;
-        UI.height = Laya.stage.height;
+        UIFunc.FixUI(UI);
         this.addChild(UI);
     }
 }

@@ -9,6 +9,7 @@ import APP from "./../controler/APP"
 import GameDirector from "./../Scene/GameDirector"
 import {PlayerControler} from "./PlayerCtrler"
 import { Input } from "./Input";
+import Controler from "./../controler/GameControler"
 type BasePlayerBuff = PlayerBuff.BasePlayerBuff;
 type AnimCoin = AnimObj.AnimCoin
 
@@ -50,16 +51,15 @@ export module Item
             this.RewardList = new Array<LayItemMgr>();
             this.BarrierList = new Array<LayItemMgr>();
         
-            this.BarrierList.push(new LayItemMgr(10,4,ItemType.Empty,10));
-            this.BarrierList.push(new LayItemMgr(10,4,ItemType.Rock,10));
-            this.BarrierList.push(new LayItemMgr(10,4,ItemType.Thorn,10));
+            this.BarrierList.push(new LayItemMgr(10,8,ItemType.Empty,10));
+            this.BarrierList.push(new LayItemMgr(10,8,ItemType.Rock,10));
+            this.BarrierList.push(new LayItemMgr(10,8,ItemType.Thorn,10));
             this.BarrierList.push(new LayItemMgr(10,10,ItemType.Protect,10));
-            this.BarrierList.push(new LayItemMgr(10,4,ItemType.Vine))
+            this.BarrierList.push(new LayItemMgr(15,1,ItemType.Vine))
             
-            this.RewardList.push(new LayItemMgr(10,4,ItemType.Fly))
-            this.RewardList.push(new LayItemMgr(10,2,ItemType.Rope))
-            this.RewardList.push(new LayItemMgr(10,10,ItemType.Coin))
-            this.RewardList.push(new LayItemMgr(10,1,ItemType.Collector))
+            this.RewardList.push(new LayItemMgr(10,2,ItemType.Fly))
+            this.RewardList.push(new LayItemMgr(10,3,ItemType.Coin))
+            //this.RewardList.push(new LayItemMgr(10,1,ItemType.Collector))
         }
         
         TakeLineReward(floor:number)
@@ -88,9 +88,7 @@ export module Item
         }
     }
     
-    
     //该对象的分布图每层等概率分布
-    
     export class LayItemMgr
     {
         //道具类型
@@ -103,6 +101,8 @@ export module Item
         StartFloor:number;
         //分布区间
         Range:number;
+        //已获取层标记
+        FllorMark:number;
         ItemList:Array<number>;
         //range区间范围
         //num 区间范围数量
@@ -122,10 +122,16 @@ export module Item
             this.Range = range;
             //分布图 物品idx:层数
             this.ItemList = new Array<number>();
+            this.FllorMark = 0;
         }
         //层更新函数
         OnFloor(floor:number)
         {
+            if(floor<this.FllorMark)
+            {
+                this.StartFloor = floor;
+                this.GenMap();
+            }
             if(floor>=this.StartFloor)
             {
                 this.GenMap();
@@ -148,6 +154,7 @@ export module Item
     
         TakeItems( floor:number )
         {
+            this.FllorMark = floor;
             var countNum = 0;
             var itemList = this.ItemList;
             for(var itemIdx = 0;itemIdx<itemList.length;++itemIdx)
@@ -350,7 +357,7 @@ export module Item
             {
                 return;
             }
-            var ps = new Laya.Vector3(0,APP.GameManager.StepLength,0);
+            var ps = new Laya.Vector3(0,Controler.GameControler.StepLength,0);
             this._GenItemModel(ps);
             return this.Model;
         }
@@ -384,8 +391,9 @@ export module Item
         {
             var model:Laya.MeshSprite3D = null;
             var idx = 1+Math.floor(Math.random()*Rock.ModelNum);
-            var road = "L0"+idx+"_spr_barrier_0"+idx+".lh"
-            model = Laya.loader.getRes(path.GetLH(road)).clone();
+            var Name:string = path.GetLH("L01_spr_barrier_0"+idx)
+            model = Laya.loader.getRes(Name)
+            model = model.clone();
             if(model!= null)
             {
                 model.transform.position = ps;
@@ -404,9 +412,8 @@ export module Item
         //由父类统一管理模型生成
         protected _GenItemModel(ps:Laya.Vector3)
         {
-            var model = null;
-            
-            model = new Laya.Sprite3D();
+            var name:string = path.GetLH("trap_sting_01")
+            var model:Laya.Sprite3D = Laya.loader.getRes(name).clone();
             model.transform.position = ps;
             this.Model = model;    
         }
@@ -431,9 +438,9 @@ export module Item
         //由父类统一管理模型生成
         protected _GenItemModel(ps:Laya.Vector3)
         {
-            var model = null;
+            var name:string = path.GetLH("item_shield_01")
+            var model:Laya.Sprite3D = Laya.loader.getRes(name).clone()
             
-            model = new Laya.Sprite3D() //MeshSprite3D(new Laya.BoxMesh(0.1,0.1,0.1));
             model.transform.rotate(new Laya.Vector3(-30, 0, 0), true, false);
             model.transform.position = ps;
             this.Model = model;    
@@ -475,12 +482,12 @@ export module Item
         {
             var conin:AnimCoin = AnimObj.GenAnimObj<AnimCoin>(AnimObj.AnimCoin,this.Model);
             conin.SetTarget(player);
-            APP.GameManager.GameDir.AddGoldUnLogicGold(1);
+            Controler.GameControler.GameDir.AddGoldUnLogicGold(1);
             this.PutItem();
         }
         TouchItem( player:Player )
         {
-            APP.GameManager.GameDir.AddGold(1);
+            Controler.GameControler.GameDir.AddGold(1);
             this.PutItem();
         }
         constructor(step:Step)
@@ -491,8 +498,8 @@ export module Item
         //由父类统一管理模型生成
         protected _GenItemModel(ps:Laya.Vector3)
         {
-            var model = null;
-            model = new Laya.MeshSprite3D(Laya.PrimitiveMesh.createBox(0.2,0.2,0.2));
+            var name:string = path.GetLH("item_coin_01")
+            var model:Laya.Sprite3D = Laya.loader.getRes(name).clone()
             model.transform.position = ps;
             this.Model = model;    
         }
@@ -535,7 +542,7 @@ export module Item
         constructor(time:number = 0)
         {
             super(ItemType.Protect,CollectBuff.Idx);
-            this.GameDir = APP.GameManager.GameDir;
+            this.GameDir = Controler.GameControler.GameDir;
             this.Time = this.GameDir.GameTime+time;
             this.CountFloor = 0;
         }
@@ -577,6 +584,7 @@ export module Item
                 return;
             player.AddBuff(new FlyBuff());
         }
+        
         constructor(step:Step)
         {
             super(ItemType.Fly,step);
@@ -584,9 +592,11 @@ export module Item
         //由父类统一管理模型生成
         protected _GenItemModel(ps:Laya.Vector3)
         {
-            var model:Laya.Sprite3D = new Laya.MeshSprite3D(Laya.PrimitiveMesh.createBox(0.5,0.5,0.1));
+            var Idx = Math.floor(1+ Math.random()*2);
+            var name:string = path.GetLH("item_flyer_01");
+            var model:Laya.Sprite3D = Laya.loader.getRes(name).clone(); 
             ps.y+= 0.3;
-            
+            model.transform.position = ps;
             this.Model = model;    
         }
     }
@@ -604,15 +614,20 @@ export module Item
         Start(player:Player)
         {
             super.Start(player)
+            if(player.CurStep == null)
+            {
+                this.Complete();
+            }
             this._FinalLocation = player.CurStep.Location;
             this._FinalLocation.Y +=this.Floor;
-            this._FinalZ = player.Position.z - APP.GameManager.StepDistance/2*this.Floor;
+            this._FinalZ = player.Position.z - Controler.GameControler.StepDistance/2*this.Floor;
             
             var flyCtrl = new PlayerControler.PlayerFly(this.Speed);
             flyCtrl.SetPlayer(player)
             player.AddCtrler(flyCtrl);
-            APP.GameManager.GameDir.AddInputCtrler(new Input.DIYInput());
-            APP.GameManager.GameDir.SetSafePS(this._FinalLocation);
+            Controler.GameControler.GameDir.AddInputCtrler(new Input.DIYInput());
+            Controler.GameControler.GameDir.SetSafePS(this._FinalLocation);
+            player.FlyPrepare();
         }
     
         private _FinalLocation:GameStruct.MLocation;
@@ -634,12 +649,12 @@ export module Item
             }
             if(this._FinalZ - this.Player.Position.z>-0.2)
             {
-                var step:Step = APP.GameManager.GameDir.GetStepByLocation(this._FinalLocation);
+                var step:Step = Controler.GameControler.GameDir.GetStepByLocation(this._FinalLocation);
                 this.Player.LayStep(step);
                 this.Player.BaseCtrler.StartMove();
                 this.Player.PopCtrler();
     
-                APP.GameManager.GameDir.PopInputCtrler();
+                Controler.GameControler.GameDir.PopInputCtrler();
                 super.Complete();
             }
         }
@@ -686,7 +701,7 @@ export module Item
             }
             if(this._FinalZ - this.Player.Position.z>-0.2)
             {
-                var step:Step = APP.GameManager.GameDir.GetStepByLocation(this._FinalLocation);
+                var step:Step = Controler.GameControler.GameDir.GetStepByLocation(this._FinalLocation);
                 this.End(step);
             }
         }
@@ -695,7 +710,7 @@ export module Item
             this.Player.LayStep(step);
             this.Player.BaseCtrler.StartMove();
             this.Player.PopCtrler();
-            APP.GameManager.GameDir.PopInputCtrler();
+            Controler.GameControler.GameDir.PopInputCtrler();
             super.Complete();
         }
         Start(player:Player)
@@ -703,13 +718,13 @@ export module Item
             super.Start(player)
             this._FinalLocation = player.CurStep.Location;
             this._FinalLocation.Y +=this.Floor;
-            this._FinalZ = player.Position.z - APP.GameManager.StepDistance/2*this.Floor;
+            this._FinalZ = player.Position.z - Controler.GameControler.StepDistance/2*this.Floor;
             
             var flyCtrl = new PlayerControler.PlayerFly(this.Speed);
             flyCtrl.SetPlayer(player)
             player.AddCtrler(flyCtrl);
-            APP.GameManager.GameDir.AddInputCtrler(new Input.DIYInput(this,this._Input));
-            APP.GameManager.GameDir.SetSafePS(this._FinalLocation);
+            Controler.GameControler.GameDir.AddInputCtrler(new Input.DIYInput(this,this._Input));
+            Controler.GameControler.GameDir.SetSafePS(this._FinalLocation);
         }
     
         private _FinalLocation:GameStruct.MLocation;
@@ -725,10 +740,10 @@ export module Item
         }
         private _Input(isRight:boolean):void
         {
-            var closeFloor = APP.GameManager.GameDir.PlayerFloorLine;
+            var closeFloor = Controler.GameControler.GameDir.PlayerFloorLine;
             if(closeFloor.FloorNum%2!= this._FinalLocation.Y%2)
             {
-                closeFloor = APP.GameManager.GameDir.GetFloorByFloor(closeFloor.FloorNum +1 );
+                closeFloor = Controler.GameControler.GameDir.GetFloorByFloor(closeFloor.FloorNum +1 );
             }
             var step:Step = closeFloor.GetStep( this._FinalLocation.X );
             if(isRight)
@@ -772,7 +787,9 @@ export module Item
         //由父类统一管理模型生成
         protected _GenItemModel(ps:Laya.Vector3)
         {
-            var model:Laya.MeshSprite3D = new Laya.MeshSprite3D(Laya.PrimitiveMesh.createBox(0.7,0.7,0.1))
+            var Idx = Math.floor(1+ Math.random()*2);
+            var name:string = Idx == 1? path.GetLH("trap_entangle_01"):path.GetLH("trap_chomper_01")
+            var model:Laya.Sprite3D = Laya.loader.getRes(name).clone(); 
             model.transform.position = ps;
             this.Model = model;    
         }
@@ -786,14 +803,14 @@ export module Item
         Start(player:Player)
         {
             super.Start(player)
-            APP.GameManager.GameDir.AddInputCtrler(new Input.DIYInput(this,this._Input));
+            Controler.GameControler.GameDir.AddInputCtrler(new Input.DIYInput(this,this._Input));
         }
         Complete()
         {
-            APP.GameManager.GameDir.PopInputCtrler();
+            Controler.GameControler.GameDir.PopInputCtrler();
             super.Complete();
         }
-        constructor(countTime:number = 3,inputDir:boolean = true)
+        constructor(countTime:number = 4,inputDir:boolean = true)
         {
             super(ItemType.Vine,0);
             this.CountTime = countTime;
@@ -808,7 +825,7 @@ export module Item
                 this.InputDir =!this.InputDir;
                 --this.CountTime;
             }
-            if(this.CountTime<0)
+            if(this.CountTime<=0)
             {
                 this.Complete();
             }
@@ -817,11 +834,11 @@ export module Item
         private _ShowGameInfo()
         {
             var info:string;
-            if(this.CountTime<0)
+            if(this.CountTime<=0)
                 info = "";
             else
                 info = this.InputDir == true?"Right":"Left";
-            APP.GameManager.GameDir.ShowInputInfo(info);
+            Controler.GameControler.GameDir.ShowInputInfo(info);
         }
     }
     

@@ -21,7 +21,7 @@ class ExtLoadingUI extends ui.LoadingUI
 {
     createChildren()
     {
-        this.createView(Laya.loader.getRes("ui/LoadUI.json"));
+        this.createView(Laya.loader.getRes("ui/Resource/LoadUI.json"));
     }
     constructor()
     {

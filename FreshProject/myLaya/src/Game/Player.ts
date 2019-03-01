@@ -4,6 +4,8 @@ import {MessageMD} from "./../FrameWork/MessageCenter"
 import APP from "./../controler/APP"
 import Step from "./Step"
 import { path } from "../Utility/Path";
+import Controler from "./../controler/GameControler"
+import {Item} from "./GameItem"
 var num:number = 0;
 type BasePlayerBuff = PlayerBuff.BasePlayerBuff;
 //该脚本用于游戏玩家对象管理
@@ -31,7 +33,7 @@ export default class Player extends Laya.Sprite3D
     {
         this.CurStep = putStep;
         var newPS = putStep.Position.clone();
-        newPS.y += APP.GameManager.StepLength;
+        newPS.y += Controler.GameControler.StepLength;
         this.Position = newPS;
         this._LogicPosition = putStep.Position;
         this.TouchGround();
@@ -63,8 +65,7 @@ export default class Player extends Laya.Sprite3D
     //触发台阶
     TouchGround():void
     {
-        //踩空是无药可救的
-        if(this.CurStep.IsEmpty)
+        if((this.CurStep.StepItem.ItemType == Item.ItemType.None)&&(this.CurStep.IsEmpty||(this.CurStep.LeftParent&&this.CurStep.RightParent&&this.CurStep.LeftParent.StepItem.IsForbiden&&this.CurStep.RightParent.StepItem.IsForbiden)))
         {
             APP.MessageManager.Trigger(MessageMD.GameEvent.PlayerDeath);
             return;
@@ -149,13 +150,28 @@ export default class Player extends Laya.Sprite3D
     constructor()
     {
         super();
-        this._PlayerModel = Laya.Loader.getRes(path.GetLH("child_01"));
-        var secondPlayer:Laya.Sprite3D = Laya.Sprite3D.instantiate(this._PlayerModel, this, false, new Laya.Vector3(0, 0, 0));
-        APP.GameManager.CurScene.PutObj(this);
+        var Name:string = path.GetLH("c001_child_01");
+        var PlayerModel = Laya.Loader.getRes(Name);
+        var secondPlayer:Laya.Sprite3D = PlayerModel.clone();
+        this.addChild(secondPlayer);
+        APP.SceneManager.CurScene.PutObj(this);
         //添加自定义模型
         secondPlayer.transform.rotate(new Laya.Vector3(0, 180, 0), false, false);
         this.on(Laya.Event.REMOVED,this,()=>{ this.destroy() })
         this.Reset();
+    }
+    _Update():void
+    {
+        this._Ctrler.Update();
+        for( var buffIdx:number = 0;buffIdx<2;++buffIdx )
+        {
+            if(this.BuffArr[buffIdx]!=null||this.BuffArr[buffIdx]!=undefined)
+                this.BuffArr[buffIdx].Update();
+        }
+    }
+    FlyPrepare()
+    {
+        this.CurStep = null;
     }
     Reset()
     {
@@ -172,14 +188,15 @@ export default class Player extends Laya.Sprite3D
     }
     private _Ctrler:PlayerControler.BasePlayerCtrler;
 
-    _Update():void
-    {
-        this._Ctrler.Update();
-        for( var buffIdx:number = 0;buffIdx<2;++buffIdx )
-        {
-            if(this.BuffArr[buffIdx]!=null||this.BuffArr[buffIdx]!=undefined)
-                this.BuffArr[buffIdx].Update();
-        }
-    }
+    
 }
 
+class StepData
+{
+    constructor()
+    {}
+    GetData( step:Step )
+    {
+
+    }
+}

@@ -3,6 +3,16 @@ import View=Laya.View;
 import Dialog=Laya.Dialog;
 import Scene=Laya.Scene;
 export module ui {
+    export class BGUI extends Laya.View {
+		public _Panel:Laya.Box;
+		public _SkyModel:Laya.Image;
+		public _Earth:Laya.Image;
+        constructor(){ super()}
+        createChildren():void {
+            super.createChildren();
+            this.loadScene("BG");
+        }
+    }
     export class CharacterUI extends Laya.View {
 		public _GoldDis:Laya.Label;
 		public _List:Laya.List;
@@ -44,7 +54,6 @@ export module ui {
 		public _TxtDistance:Laya.Label;
 		public _UseItem:Laya.Button;
 		public _TxtGold:Laya.Label;
-		public _RightHandBtnList:Laya.Box;
 		public _Right_LeftTouch:Laya.Button;
 		public _Right_RightTouch:Laya.Button;
 		public _GameInfo:Laya.Label;

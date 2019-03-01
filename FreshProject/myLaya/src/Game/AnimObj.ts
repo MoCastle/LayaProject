@@ -1,4 +1,5 @@
 import APP from "./../controler/APP"
+import Controler from "./../controler/GameControler"
  /**
  * 表现用的对象
  */
@@ -89,7 +90,7 @@ export module AnimObj
         protected _LeaveStage():void
         {
             super._LeaveStage();
-            APP.GameManager.GameDir.AddLogicGold(1);
+            Controler.GameControler.GameDir.AddLogicGold(1);
         }
     
         //判断任务完成
