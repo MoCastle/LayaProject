@@ -23,6 +23,7 @@ export module Item
         Rock,
         Thorn,
         Protect=11,
+        HolyProtect,
         Fly,
         Rope,
         Vine,
@@ -54,10 +55,11 @@ export module Item
             this.BarrierList.push(new LayItemMgr(10,8,ItemType.Empty,10));
             this.BarrierList.push(new LayItemMgr(10,8,ItemType.Rock,10));
             this.BarrierList.push(new LayItemMgr(10,8,ItemType.Thorn,10));
-            this.BarrierList.push(new LayItemMgr(10,10,ItemType.Protect,10));
+            this.BarrierList.push(new LayItemMgr(10,4,ItemType.Protect,10));
+            this.BarrierList.push(new LayItemMgr(10,4,ItemType.HolyProtect,10));
             this.BarrierList.push(new LayItemMgr(15,1,ItemType.Vine))
             
-            this.RewardList.push(new LayItemMgr(10,2,ItemType.Fly))
+            this.RewardList.push(new LayItemMgr(10,3,ItemType.Fly))
             this.RewardList.push(new LayItemMgr(10,3,ItemType.Coin))
             //this.RewardList.push(new LayItemMgr(10,1,ItemType.Collector))
         }
@@ -333,6 +335,25 @@ export module Item
                 
             }
         }
+        /**
+         * 突破保护
+         * @returns 是否被突破
+         */
+        BreakProtect(player:Player):boolean
+        {
+            var curBuff = player.GetBuff(ProtectBuff.Idx);
+            if(curBuff)
+            {
+                switch(curBuff.Type)
+                {
+                    case ItemType.Protect:
+                        curBuff.Complete();
+                    case ItemType.HolyProtect:
+                    return true;
+                }
+            }
+            return  false;
+        }
         constructor( itemType:ItemType,Step:Step )
         {
             if(itemType == undefined)
@@ -358,11 +379,13 @@ export module Item
                 return;
             }
             var ps = new Laya.Vector3(0,Controler.GameControler.StepLength,0);
-            this._GenItemModel(ps);
+            this._GenItemModel();
+            if(this.Model)
+                this.Model.transform.position = ps;
             return this.Model;
         }
     
-        protected _GenItemModel(ps:Laya.Vector3)
+        protected _GenItemModel()
         {
             var model:Laya.Sprite3D = null;
             
@@ -371,10 +394,6 @@ export module Item
                 case ItemType.Rock:
                     model = new Laya.MeshSprite3D(Laya.PrimitiveMesh.createBox(0.3, 0.3, 0.5));
                 break;
-            }
-            if(model!= null)
-            {
-                model.transform.position = ps;
             }
             this.Model = model;    
         }
@@ -387,17 +406,13 @@ export module Item
         {
             super(ItemType.Rock,Step);
         }
-        protected _GenItemModel(ps:Laya.Vector3)
+        protected _GenItemModel()
         {
             var model:Laya.MeshSprite3D = null;
             var idx = 1+Math.floor(Math.random()*Rock.ModelNum);
             var Name:string = path.GetLH("L01_spr_barrier_0"+idx)
             model = Laya.loader.getRes(Name)
             model = model.clone();
-            if(model!= null)
-            {
-                model.transform.position = ps;
-            }
             this.Model = model;    
         }
     }
@@ -410,21 +425,18 @@ export module Item
             super(ItemType.Thorn,Step);
         }
         //由父类统一管理模型生成
-        protected _GenItemModel(ps:Laya.Vector3)
+        protected _GenItemModel()
         {
             var name:string = path.GetLH("trap_sting_01")
             var model:Laya.Sprite3D = Laya.loader.getRes(name).clone();
-            model.transform.position = ps;
             this.Model = model;    
         }
         TouchItem( player:Player ):void
         {
-            if(player.GetBuff(ProtectBuff.Idx)!=null&&player.BuffArr[ProtectBuff.Idx].Type == ItemType.Protect)
-            {
-                player.GetBuff(ProtectBuff.Idx).Complete();
+            if(this.BreakProtect(player))
                 this.PutItem();
-            }else
-            APP.MessageManager.Trigger(MessageMD.GameEvent.PlayerDeath);
+            else
+                APP.MessageManager.Trigger(MessageMD.GameEvent.PlayerDeath);
         }
     }
     GameStruct.ItemDictType[ItemType.Thorn] = Thorn;
@@ -436,13 +448,10 @@ export module Item
             super(ItemType.Protect,step);
         }
         //由父类统一管理模型生成
-        protected _GenItemModel(ps:Laya.Vector3)
+        protected _GenItemModel()
         {
             var name:string = path.GetLH("item_shield_01")
             var model:Laya.Sprite3D = Laya.loader.getRes(name).clone()
-            
-            model.transform.rotate(new Laya.Vector3(-30, 0, 0), true, false);
-            model.transform.position = ps;
             this.Model = model;    
         }
     
@@ -462,9 +471,14 @@ export module Item
         {
             return 0;
         }
-        constructor(time:number = 0)
+        /**
+         * 
+         * @param time 持续时间
+         * @param IsHoly 是否绝对无敌
+         */
+        constructor(time:number = 0, IsHoly:boolean = false)
         {
-            super(ItemType.Protect,ProtectBuff.Idx);
+            super(IsHoly ? ItemType.HolyProtect:ItemType.Protect,ProtectBuff.Idx);
             this.Time = APP.SceneManager.CurDir.GameTime+time;
         }
         Update()
@@ -475,7 +489,29 @@ export module Item
             }
         }
     }
+    class HolyProtect extends StepItem
+    {
+        constructor(step:Step)
+        {
+            super(ItemType.HolyProtect,step);
+        }
+        //由父类统一管理模型生成
+        protected _GenItemModel()
+        {
+            var name:string = path.GetLH("item_untouchable_01")
+            var model:Laya.Sprite3D = Laya.loader.getRes(name).clone()
+            this.Model = model;    
+        }
     
+        TouchItem( player:Player )
+        {
+            if(player.GetBuff(ProtectBuff.Idx)!=null)
+                return;
+            this._AddBuffToPlayer(player,new ProtectBuff(3000,true));
+        }
+    }
+    GameStruct.ItemDictType[ItemType.HolyProtect] = HolyProtect;
+
     class Coin extends StepItem
     {
         FlyToPlayer(player:Player)
@@ -496,11 +532,10 @@ export module Item
         }
         
         //由父类统一管理模型生成
-        protected _GenItemModel(ps:Laya.Vector3)
+        protected _GenItemModel()
         {
             var name:string = path.GetLH("item_coin_01")
             var model:Laya.Sprite3D = Laya.loader.getRes(name).clone()
-            model.transform.position = ps;
             this.Model = model;    
         }
     }
@@ -520,11 +555,10 @@ export module Item
             super(ItemType.Collector,step);
         }
         //由父类统一管理模型生成
-        protected _GenItemModel(ps:Laya.Vector3)
+        protected _GenItemModel()
         {
             var model:Laya.Sprite3D = null;
             model = new Laya.MeshSprite3D(Laya.PrimitiveMesh.createSphere(0.2,10,10));
-            model.transform.position = ps;
             this.Model = model;    
         }
     }
@@ -590,13 +624,11 @@ export module Item
             super(ItemType.Fly,step);
         }
         //由父类统一管理模型生成
-        protected _GenItemModel(ps:Laya.Vector3)
+        protected _GenItemModel()
         {
             var Idx = Math.floor(1+ Math.random()*2);
             var name:string = path.GetLH("item_flyer_01");
             var model:Laya.Sprite3D = Laya.loader.getRes(name).clone(); 
-            ps.y+= 0.3;
-            model.transform.position = ps;
             this.Model = model;    
         }
     }
@@ -674,11 +706,9 @@ export module Item
         }
     
         //由父类统一管理模型生成
-        protected _GenItemModel(ps:Laya.Vector3)
+        protected _GenItemModel()
         {
             var model:Laya.MeshSprite3D = new Laya.MeshSprite3D(Laya.PrimitiveMesh.createBox(0.1,0.5,0.1))
-            model.transform.rotate(new Laya.Vector3(30, -45, 0), true, false);
-            model.transform.position = ps;
             this.Model = model;    
         }
     }
@@ -763,34 +793,22 @@ export module Item
         TouchItem( player:Player )
         {
             var curBuff:BasePlayerBuff = player.GetBuff(0);
-            if(curBuff&&curBuff.Type == ItemType.Protect)
+            if(!this.BreakProtect(player))
             {
-                curBuff.Complete;
-                this.PutItem();
-            }
-            else
-            {
-                if(curBuff)
-                {
-                    curBuff.Complete();
-                }
                 player.AddBuff(new VineBuff());
-                this.PutItem();
-                return;
             }
-            
+            this.PutItem();
         }
         constructor(step:Step)
         {
             super(ItemType.Vine,step);
         }
         //由父类统一管理模型生成
-        protected _GenItemModel(ps:Laya.Vector3)
+        protected _GenItemModel()
         {
             var Idx = Math.floor(1+ Math.random()*2);
             var name:string = Idx == 1? path.GetLH("trap_entangle_01"):path.GetLH("trap_chomper_01")
             var model:Laya.Sprite3D = Laya.loader.getRes(name).clone(); 
-            model.transform.position = ps;
             this.Model = model;    
         }
     }
@@ -818,9 +836,9 @@ export module Item
             this._ShowGameInfo();
         }
         private _Time;
-        private _Input(isRight:boolean)
+        private _Input(inputDir:boolean)
         {
-            if(this.InputDir == isRight)
+            if(this.InputDir == inputDir)
             {
                 this.InputDir =!this.InputDir;
                 --this.CountTime;

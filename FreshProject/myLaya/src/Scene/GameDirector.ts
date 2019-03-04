@@ -63,29 +63,25 @@ export default class GameDirector extends BaseDirector
     //设置安全位置
     SetSafePS(location:GameStruct.MLocation)
     {
-        if(location.Y<this.TailFLoor.FloorNum)
+        this._SafeLocation = location;
+        if(location.Y<this.TailFLoor.FloorNum|| location.Y>this.HeadFloor.FloorNum)
         {
             return;
         }
-        this._SafeLocation = location;
-        if(location.Y<=this.HeadFloor.FloorNum)
-        {
-            var floorNum = location.Y
-            for(let index = 0;index<2;++index)
-            {
-                this.LoopDoFloorStep(floorNum+index,this,this.ClearFloor);
-            }
-        }
+        this.ResetItem( location.Y )
     }
 
     //从某一层开始一层层重新摆放道具
     ResetItem( floor:number )
     {
-        for(let floor:number;floor<=this.HeadFloor.FloorNum;++floor)
+        this.CurLineBarriers = new Array<LineItemInfo>();
+        this.CurLineRewards = new Array<LineItemInfo>();
+        for(let loopFloor:number = floor ;loopFloor<=this.HeadFloor.FloorNum;++loopFloor)
         {
-            var floorLine = this.GetFloorByFloor(floor);
-            this.LoopDoFloorStep(floor,this,this.ClearFloor);
-            this._PutItemInLine(floor);
+            var floorLine = this.GetFloorByFloor(loopFloor);
+            floorLine.LayOutDirty = false;
+            floorLine.SetLine(floorLine.FloorNum);
+            this._PutItemInLine(loopFloor);
         }
     }
 
@@ -389,6 +385,11 @@ export default class GameDirector extends BaseDirector
     protected _PutItemInLine(floor:number)
     {
         var safeCol :{[key:string] :Array<number>;} = {};
+        var floorLine = this.GetFloorByFloor(floor);
+        //布置过了不用再布置了
+        if(floorLine.LayOutDirty)
+            return ;
+        floorLine.LayOutDirty = true;
         if(floor >= this._SafeLocation.Y + Controler.GameControler.MaxLineNum)
         {
             safeCol = this._CountOpenList(floor);

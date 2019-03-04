@@ -10,6 +10,7 @@ type StepItem = Item.StepItem;
 //管理一整行
 export default class MountLine extends Laya.Sprite3D
 {
+    LayOutDirty:boolean;
     LineIdx:number;
     FloorNum:number;
     StepList:Step[];
@@ -32,6 +33,7 @@ export default class MountLine extends Laya.Sprite3D
     //设置每层
     SetLine( floor:number ):void
     {
+        this.LayOutDirty = false;
         this.active = true;
         this.FloorNum = floor;
         var newPS = this.transform.position;
@@ -112,6 +114,7 @@ export default class MountLine extends Laya.Sprite3D
         this.FloorNum = floor;
         this.StepList = [];
         this.LogicLength = 0;
+        this.LayOutDirty = false;
         for( var StartIdx:number = (columns -1);StartIdx>=0;--StartIdx )
         {
             var newStep:Step = new Step(this,StartIdx);

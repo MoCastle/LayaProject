@@ -24,6 +24,11 @@ export default class Player extends Laya.Sprite3D
     BuffArr:Array<PlayerBuff.BasePlayerBuff>;
     //zerg
     IdNumber:number;
+    /**
+     * 获取玩家BUFF
+     * @param idx 槽位检查
+     * @returns 空表示没有
+     */
     GetBuff(idx:number):PlayerBuff.BasePlayerBuff
     {
         return (this.BuffArr[idx] !=null&&this.BuffArr[idx]!=undefined)?this.BuffArr[idx]:null;

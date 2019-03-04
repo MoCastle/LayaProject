@@ -46,7 +46,7 @@ class GameControler {
     {
         if(!this._MaxLineNum)
         {
-            this._MaxLineNum = 13;
+            this._MaxLineNum = 10;
         }
         return this._MaxLineNum;
     } 
