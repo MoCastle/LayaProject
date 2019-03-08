@@ -26,7 +26,6 @@ export default class GameCamera extends Laya.Camera
         var newPS = this.transform.position;
         Laya.Vector3.add(this.BasePS,this.DynamicPS,newPS);
         this.transform.position = newPS;
-        
     }
     set Position(ps:Laya.Vector3)
     {
@@ -55,6 +54,7 @@ export default class GameCamera extends Laya.Camera
     private _Update()
     {
         this.Ctrler.Update();
+        
     }
 }
 

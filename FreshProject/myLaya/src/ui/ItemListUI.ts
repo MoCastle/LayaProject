@@ -50,5 +50,6 @@ export default class ItemListUI extends BaseUI
         this.UI.SetList();
         this._UIType = BaseEnum.UITypeEnum.Midle;
     }
-
+    Update()
+    {}
 }

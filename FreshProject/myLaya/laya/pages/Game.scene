@@ -1,12 +1,12 @@
 {
     "x":0,
     "type":"View",
-    "selectedBox":10,
-    "selecteID":14,
+    "selectedBox":1,
+    "selecteID":19,
     "searchKey":"View",
     "props":{"width":750,"sceneColor":"#000000","height":1334},
     "nodeParent":-1,
-    "maxID":19,
+    "maxID":20,
     "label":"View",
     "isOpen":true,
     "isDirectory":true,
@@ -58,6 +58,20 @@
         },
         {
             "x":15,
+            "type":"Label",
+            "searchKey":"Label,_GameInfo",
+            "props":{"y":513,"x":244,"width":262,"var":"_GameInfo","valign":"middle","text":" ","height":309,"fontSize":100,"color":"#d43f3c","centerY":0,"centerX":0,"align":"center"},
+            "nodeParent":1,
+            "label":"_GameInfo",
+            "isDirectory":false,
+            "isAniNode":true,
+            "hasChild":false,
+            "compId":18,
+            "child":[
+                ]
+        },
+        {
+            "x":15,
             "type":"Box",
             "searchKey":"Box,_GamePanel",
             "props":{"var":"_GamePanel","top":0,"right":0,"left":0,"bottom":0},
@@ -85,20 +99,6 @@
                 },
                 {
                     "x":30,
-                    "type":"Button",
-                    "searchKey":"Button,_UseItem",
-                    "props":{"width":115,"var":"_UseItem","skin":"comp/button.png","left":21,"labelSize":30,"label":"UseItem","height":91,"centerY":11},
-                    "nodeParent":10,
-                    "label":"_UseItem",
-                    "isDirectory":false,
-                    "isAniNode":true,
-                    "hasChild":false,
-                    "compId":11,
-                    "child":[
-                        ]
-                },
-                {
-                    "x":30,
                     "type":"Label",
                     "searchKey":"Label,_TxtGold",
                     "props":{"y":4,"x":506,"width":244,"var":"_TxtGold","valign":"middle","text":"Gold:# ","height":54,"fontSize":30,"color":"#ffffff","align":"center"},
@@ -108,6 +108,20 @@
                     "isAniNode":true,
                     "hasChild":false,
                     "compId":13,
+                    "child":[
+                        ]
+                },
+                {
+                    "x":30,
+                    "type":"Button",
+                    "searchKey":"Button,_UseItem",
+                    "props":{"width":115,"var":"_UseItem","skin":"comp/button.png","left":21,"labelSize":30,"label":"UseItem","height":91,"centerY":11},
+                    "nodeParent":10,
+                    "label":"_UseItem",
+                    "isDirectory":false,
+                    "isAniNode":true,
+                    "hasChild":false,
+                    "compId":11,
                     "child":[
                         ]
                 },
@@ -140,20 +154,6 @@
                         ]
                 }],
             "$HIDDEN":false
-        },
-        {
-            "x":15,
-            "type":"Label",
-            "searchKey":"Label,_GameInfo",
-            "props":{"width":262,"var":"_GameInfo","valign":"middle","text":"123","height":309,"fontSize":100,"color":"#d43f3c","centerY":0,"centerX":0,"align":"center"},
-            "nodeParent":1,
-            "label":"_GameInfo",
-            "isDirectory":false,
-            "isAniNode":true,
-            "hasChild":false,
-            "compId":18,
-            "child":[
-                ]
         }],
     "animations":[
         {

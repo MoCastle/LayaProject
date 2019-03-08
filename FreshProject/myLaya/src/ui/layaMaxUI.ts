@@ -4,8 +4,6 @@ import Dialog=Laya.Dialog;
 import Scene=Laya.Scene;
 export module ui {
     export class BGUI extends Laya.View {
-		public _Panel:Laya.Box;
-		public _SkyModel:Laya.Image;
 		public _Earth:Laya.Image;
         constructor(){ super()}
         createChildren():void {
@@ -50,13 +48,13 @@ export module ui {
 		public _CountDownUI:Laya.Box;
 		public _ItemListBtn:Laya.Button;
 		public _CountTime:Laya.Label;
+		public _GameInfo:Laya.Label;
 		public _GamePanel:Laya.Box;
 		public _TxtDistance:Laya.Label;
-		public _UseItem:Laya.Button;
 		public _TxtGold:Laya.Label;
+		public _UseItem:Laya.Button;
 		public _Right_LeftTouch:Laya.Button;
 		public _Right_RightTouch:Laya.Button;
-		public _GameInfo:Laya.Label;
         constructor(){ super()}
         createChildren():void {
             super.createChildren();

@@ -16,8 +16,6 @@ class ExtendsSetPanelUI extends ui.SetPanelUI {
     }
 }
 
-
-
 export default class SetPanelUI extends BaseUI {
     _UI: ExtendsSetPanelUI;
     constructor(name: string) {
@@ -47,4 +45,6 @@ export default class SetPanelUI extends BaseUI {
     CloseOP() {
         this.SavePanel();
     }
+    Update()
+    {}
 }

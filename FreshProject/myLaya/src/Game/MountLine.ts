@@ -33,6 +33,7 @@ export default class MountLine extends Laya.Sprite3D
     //设置每层
     SetLine( floor:number ):void
     {
+        
         this.LayOutDirty = false;
         this.active = true;
         this.FloorNum = floor;
@@ -55,11 +56,18 @@ export default class MountLine extends Laya.Sprite3D
             var newStep:Step = stepArr[column];
             var stepVector = newStep.Position;
             stepVector.x = startX;
-            newStep.ResetStep(stepVector)
+            if(this._Seted&&(column == 0||column>this.LogicLength))
+                newStep.ResetStep(stepVector,true)
+            else
+                newStep.ResetStep(stepVector)
             startX += stepDistance;
         }
+        
+        if(this._Seted)
+            return;
         stepArr[0].active = false;
         stepArr[stepArr.length -1].active = false;
+        this._Seted = true;
         if( ! this.JugeIsLessLine())
         {
             this.LogicLength = stepArr.length-2;
@@ -68,6 +76,7 @@ export default class MountLine extends Laya.Sprite3D
             stepArr[stepArr.length -2].active = false;
             this.LogicLength = stepArr.length -3;
         }
+        
     }
     
     //判断是否收缩的那层
@@ -106,6 +115,7 @@ export default class MountLine extends Laya.Sprite3D
     {
         this.active = false;
     }
+    private _Seted:boolean;
     constructor(lineIdx:number,floor:number = 0)
     {
         var columns:number = Controler.GameControler.LineStepNum;
@@ -115,6 +125,7 @@ export default class MountLine extends Laya.Sprite3D
         this.StepList = [];
         this.LogicLength = 0;
         this.LayOutDirty = false;
+        this._Seted = false;
         for( var StartIdx:number = (columns -1);StartIdx>=0;--StartIdx )
         {
             var newStep:Step = new Step(this,StartIdx);

@@ -42,13 +42,15 @@ export default class CharacterUI extends BaseUI
     }
     SetList()
     {
-        
         var listArray:Array<any> = ["","","","","","","","","",""];
         this._UI._List.hScrollBarSkin = "";
         this._UI._List.renderHandler = new Laya.Handler(this,this._RenderHandler);
         this._UI._List.array = listArray;
         this._UI._List.scrollBar.elasticBackTime = 200;//设置橡皮筋回弹时间。单位为毫秒。
         this._UI._List.scrollBar.elasticDistance = 50
+    }
+    Update()
+    {
         
     }
 }

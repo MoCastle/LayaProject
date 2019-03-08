@@ -17,6 +17,11 @@ export module Item
 {
     //物品标识
     const ItemID:string = "Item";
+    const ModelID:string ="Model"
+    export enum ModelType
+    {
+        Coin
+    }
     export enum ItemType {
         None=0,
         Empty,
@@ -51,17 +56,20 @@ export module Item
         {
             this.RewardList = new Array<LayItemMgr>();
             this.BarrierList = new Array<LayItemMgr>();
-        
-            this.BarrierList.push(new LayItemMgr(10,8,ItemType.Empty,10));
-            this.BarrierList.push(new LayItemMgr(10,8,ItemType.Rock,10));
-            this.BarrierList.push(new LayItemMgr(10,8,ItemType.Thorn,10));
-            this.BarrierList.push(new LayItemMgr(10,4,ItemType.Protect,10));
-            this.BarrierList.push(new LayItemMgr(10,4,ItemType.HolyProtect,10));
-            this.BarrierList.push(new LayItemMgr(15,1,ItemType.Vine))
+            /*
+            this.BarrierList.push(new LayItemMgr(10,11,ItemType.Empty,10));
+            this.BarrierList.push(new LayItemMgr(10,4,ItemType.Rock,10));
+            this.BarrierList.push(new LayItemMgr(10,2,ItemType.Thorn,10));
+            this.BarrierList.push(new LayItemMgr(15,2,ItemType.Vine))
             
-            this.RewardList.push(new LayItemMgr(10,3,ItemType.Fly))
-            this.RewardList.push(new LayItemMgr(10,3,ItemType.Coin))
-            //this.RewardList.push(new LayItemMgr(10,1,ItemType.Collector))
+            this.RewardList.push(new LayItemMgr(10,4,ItemType.Coin))
+            this.RewardList.push(new LayItemMgr(10,1,ItemType.Collector))
+            this.RewardList.push(new LayItemMgr(10,2,ItemType.Fly))
+            this.RewardList.push(new LayItemMgr(20,2,ItemType.Protect,3));
+            this.RewardList.push(new LayItemMgr(20,2,ItemType.HolyProtect,3));
+            */
+            this.BarrierList.push(new LayItemMgr(10,60,ItemType.Empty,10));
+            this.RewardList.push(new LayItemMgr(10,60,ItemType.Fly))
         }
         
         TakeLineReward(floor:number)
@@ -125,6 +133,7 @@ export module Item
             //分布图 物品idx:层数
             this.ItemList = new Array<number>();
             this.FllorMark = 0;
+            ResetItemFactory( );
         }
         //层更新函数
         OnFloor(floor:number)
@@ -237,7 +246,29 @@ export module Item
         }
         return {ItemType:this.ItemType, Num:countNum};
     }
-    
+    var Reset:boolean;
+    export function ResetItemFactory( ):void
+    {
+        if(Reset)
+        {
+            return ;
+        }
+        Reset =true;
+        for(var theKey in GameStruct.ItemDictType)
+        {
+            var type = parseInt(theKey);
+            if(type <= 2)
+            {
+                continue ;
+            }
+            for( let count =0;count < 30;++count )
+            {
+                var clas: any = GameStruct.ItemDictType[type];
+                var item:Step = new clas(null);
+                Laya.Pool.recover(ItemID+theKey,item);
+            }
+        }
+    }
     export function StepItemFactory( itemType:ItemType,Step)
     {
         if(Step == undefined)
@@ -285,20 +316,12 @@ export module Item
         //重置
         ResetItem()
         {
-            this._InitItemModel();
+            //this._InitItemModel();
             this.SetEnable();
             if(this.Model!= null)
             {
                 this.Step.addChild(this.Model);
             }
-        }
-        SetDisable()
-        {
-            if(this.Model==null)
-            {
-                return;
-            }
-            this.Model.active = false;
         }
     
         SetEnable()
@@ -318,7 +341,6 @@ export module Item
         //消除 把自己存入内存池
         DesPawn()
         {
-            this.SetDisable();
             if(this.Model!=null)
                 this.Model.removeSelf();
             var objPool = Laya.Pool;//GM.ObjPool;
@@ -363,6 +385,7 @@ export module Item
             this.Step = Step;
             this.ItemType = itemType;
             this.Model= null;
+            this._InitItemModel();
         }
     
         _AddBuffToPlayer(player:Player,buff:BasePlayerBuff)
@@ -557,8 +580,11 @@ export module Item
         //由父类统一管理模型生成
         protected _GenItemModel()
         {
-            var model:Laya.Sprite3D = null;
-            model = new Laya.MeshSprite3D(Laya.PrimitiveMesh.createSphere(0.2,10,10));
+            var Idx = Math.floor(1+ Math.random()*2);
+            var name:string = path.GetLH("item_absord");
+            var theModel = Laya.loader.getRes(name);
+            var model:Laya.Sprite3D = theModel.clone(); 
+            
             this.Model = model;    
         }
     }
@@ -646,6 +672,7 @@ export module Item
         Start(player:Player)
         {
             super.Start(player)
+            var time:number = Laya.timer.currTimer;
             if(player.CurStep == null)
             {
                 this.Complete();
@@ -660,11 +687,12 @@ export module Item
             Controler.GameControler.GameDir.AddInputCtrler(new Input.DIYInput());
             Controler.GameControler.GameDir.SetSafePS(this._FinalLocation);
             player.FlyPrepare();
+            
         }
     
         private _FinalLocation:GameStruct.MLocation;
         private _FinalZ:number;   
-        constructor(speed:number=0.1,floor:number=10)
+        constructor(speed:number=0.15,floor:number=10)
         {
             super(ItemType.Rope,ProtectBuff.Idx);
             this.Speed = speed;
@@ -808,6 +836,9 @@ export module Item
         {
             var Idx = Math.floor(1+ Math.random()*2);
             var name:string = Idx == 1? path.GetLH("trap_entangle_01"):path.GetLH("trap_chomper_01")
+            //var name:string = path.GetLH("trap_entangle_01")
+            //var name:string = path.GetLH("trap_chomper_01")
+            
             var model:Laya.Sprite3D = Laya.loader.getRes(name).clone(); 
             this.Model = model;    
         }

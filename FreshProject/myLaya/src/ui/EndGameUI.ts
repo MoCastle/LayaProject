@@ -38,4 +38,8 @@ export default class EndGameUI extends BaseUI
         this.FixUI(this.UI);
         //this.UI._CharacterList.on(Laya.Event.CLICK,null,()=>{ this._UIManager.Show<PlayerListUI>(PlayerListUI)});
     }
+    Update()
+    {
+        
+    }
 }

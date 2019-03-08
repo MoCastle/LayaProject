@@ -63,10 +63,11 @@ export default class Step extends Laya.Sprite3D
         this.StepItem.PutItem(itemEnume);
     }
 
-    ResetStep(newPs:Laya.Vector3)
+    ResetStep(newPs:Laya.Vector3,ignoreActive:boolean = false)
     {
         this.Position = newPs;
-        this.active = true;
+        if(!ignoreActive)
+            this.active = true;
         var modelPs = this.transform.position;
         this.StepItem.PutItem(Item.ItemType.None);
 

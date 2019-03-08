@@ -29,7 +29,8 @@ export default class GameUI extends BaseUI
     //
     DistanceStr:Array<string>;
     GoldNumStr:Array<string>;
-    _Gold:number;
+    private _Gold:number;
+    private _Count:number;
     constructor(name:string)
     {
         super(name);
@@ -51,11 +52,14 @@ export default class GameUI extends BaseUI
         this._ShowGoldNum();
         
         this.ShowInputInfo("");
+        this.frameLoop(1,this,this.Update);
+        this._Count = 0;
     }
 
     private _ShowDistance()
     {
         this._UI._TxtDistance.text = this.DistanceStr[0]+this.DistanceStr[1];
+        this.SetDirty();
     }
     
     private _ShowGoldNum()
@@ -66,11 +70,12 @@ export default class GameUI extends BaseUI
     {
         return "GameUI";
     }
+    
     AddGold(goldNum:number)
     {
         this._Gold+= goldNum;
         this.GoldNumStr[1] = this._Gold.toString();
-        this._ShowGoldNum();
+        this.SetDirty();
     }
     SetLeftTouch(owner:any,Listener:()=>void):void
     {
@@ -91,10 +96,10 @@ export default class GameUI extends BaseUI
         }
         else
         {
-            this._UI.SetCountTime(info);
             this._UI._CountDownUI.visible=true;
             this.GamePanel = false;
         }
+        this._UI.SetCountTime(info);
     }
     set GamePanel(value:boolean)
     { 
@@ -103,15 +108,20 @@ export default class GameUI extends BaseUI
     set Distance(value:number)
     {
         this.DistanceStr[1] = value.toFixed(2);
-        this._ShowDistance();
     }
     set GoldNum(value:number)
     {
         this.GoldNumStr[1] = value.toString();
-        this._ShowGoldNum();
     }
     ShowInputInfo(info:string)
     {
         this._UI._GameInfo.text = info;
+    }
+    Update()
+    {
+        //显示金币信息
+        this._ShowGoldNum();
+        //显示距离信息
+        this._ShowDistance();
     }
 }

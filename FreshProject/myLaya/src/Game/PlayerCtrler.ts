@@ -105,9 +105,9 @@ export module PlayerControler
             {
                 return;
             }
-            var vector = new Laya.Vector3(0,Controler.GameControler.StepLength,-1*Controler.GameControler.StepDistance/2);
-            
-            Laya.Vector3.scale(vector,this.Speed,vector);
+            //var vector = new Laya.Vector3(0,Controler.GameControler.StepLength,-1*Controler.GameControler.StepDistance/2);
+           // Laya.Vector3.scale(vector,this.Speed,vector);
+           var vector:Laya.Vector3 = new Laya.Vector3(0,0.146,-0.10394)
             this.player.Translate(vector);
         }
     }

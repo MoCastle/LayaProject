@@ -16,6 +16,7 @@ import {Item} from "./../Game/GameItem"
 import Step from "./../Game/Step"
 import APP from "./../controler/APP"
 import Controler from "./../controler/GameControler"
+import BGUI from "../ui/BG";
 type ItemLayout = Item.ItemLayout;
 type LineItemInfo = Item.LineItemInfo;
 var ItemType = Item.ItemType;
@@ -32,6 +33,8 @@ export default class GameDirector extends BaseDirector
     CurLineRewards:Array<LineItemInfo>;
     CurLineBarriers:Array<LineItemInfo>;
     name:number;
+    FreshBGCount:number;
+
     get SafeLocation():GameStruct.MLocation
     {
         return this._SafeLocation;
@@ -228,6 +231,7 @@ export default class GameDirector extends BaseDirector
     private _PanelUI:GameUI;
     private _GoldNum:number;
     private _LogicGoldNum:number;
+    private _CurBG:BGUI;
     
     constructor()
     {
@@ -247,7 +251,8 @@ export default class GameDirector extends BaseDirector
         this._BootomFloor =0;
         this._StartPosition = new Laya.Vector3();
         this._PanelUI = null;
-        
+        this._CurBG = APP.SceneManager.BG as BGUI;
+        this.FreshBGCount = 0;
     }
     //创建相关放这 这里重新开始不会走
     protected _Start():void
@@ -336,7 +341,15 @@ export default class GameDirector extends BaseDirector
     private _RunGameUpdate()
     {
         this.PanelUI.Distance = this.PlayerDistance;
+        if(this.FreshBGCount > 10)
+        {
+            this._CurBG.UpdatePage(this.PlayerDistance);
+            this.FreshBGCount = 0;
+        }
+        ++this.FreshBGCount;
+
         var flooVector:Laya.Vector3 = this.TailFLoor.Position;
+        
         if(flooVector.z - this.Player.Position.z>3*Controler.GameControler.StepDistance/2)
         {
             this._PushFLoor();
@@ -373,8 +386,10 @@ export default class GameDirector extends BaseDirector
         var Headfloor:number = preHead.FloorNum + 1;
         this.HeadFloor.SetLine(Headfloor);
         preHead.SetNextFloor(this.HeadFloor);
-        
+        console.time("PutItem");
         this._PutItemInLine(Headfloor);   
+        console.timeEnd("PutItem");
+        
         return true;
     }
 
@@ -390,17 +405,18 @@ export default class GameDirector extends BaseDirector
         if(floorLine.LayOutDirty)
             return ;
         floorLine.LayOutDirty = true;
+        /*
         if(floor >= this._SafeLocation.Y + Controler.GameControler.MaxLineNum)
         {
             safeCol = this._CountOpenList(floor);
-        }else
+        }else*/
         {
             //摆放前先计算该层通路情况 
             safeCol = {}
             safeCol["o"] = this._CountRoadInfo(floor);
         }
-    
-        if(floor <1)
+        //出生点不放道具
+        if(floor <1 ||floor == this.SafeLocation.Y)
         {
             return;
         }
@@ -436,14 +452,7 @@ export default class GameDirector extends BaseDirector
         }
         //放陷阱
         var barriersList:Array<LineItemInfo> = this.CurLineBarriers;
-        if(floor<=this._SafeLocation.Y+1&&floor>=this._SafeLocation.Y)
-        {
-            for(let index:number = barriersList.length-1; index>-1;--index)
-            {
-                barriersList.shift();
-            }
-        }
-        this._OrginizePutItem(barriersList,randomPool);
+        this._OrginizePutItem(barriersList,randomPool,true);
         
         //摆放道具
         for(var safeStepIdx:number = 0;safeIdx<safeStepList.length;++safeIdx)
@@ -453,15 +462,16 @@ export default class GameDirector extends BaseDirector
         var rewardList = this.CurLineRewards;
         this._OrginizePutItem(rewardList,randomPool);
         //再次计算通路情况 
-        this._CountLastFloorRoad(floor);
+        //this._CountLastFloorRoad(floor);
     }
 
     /**
      * 摆放物品
      * @param {Array<LineItemInfo>} itemList 物品列表
      * @param {Array<Step>} randomPool 台阶集合
+     * @param {boolean} isDeadRoad 是否是死路
      */
-    _OrginizePutItem(itemList:Array<LineItemInfo>,randomPool:Array<Step>):void
+    _OrginizePutItem(itemList:Array<LineItemInfo>,randomPool:Array<Step>,isDeadRoad:boolean = null):void
     {
         for(var itemIdx:number = 0;itemIdx < itemList.length;++itemIdx)
         {
@@ -477,6 +487,8 @@ export default class GameDirector extends BaseDirector
                 var step:Step = randomPool[randomIdx];
                 randomPool.splice(randomIdx,1);
                 step.PutItem(info.Type);
+                if(isDeadRoad !=null)
+                    step.IsDeadRoad = isDeadRoad;
                 --info.Number;
             }
             if(randomPool.length<1)
@@ -644,33 +656,39 @@ export default class GameDirector extends BaseDirector
         var roadNum:number = 0;
         var lastFloor:MountLine = this.GetFloorByFloor(floor -1);
         if(floor == this._SafeLocation.Y)
-            this._ResetStepInfo(lastFloor);
-        for(var logicIdx:number = 0; logicIdx<thisFloor.LogicLength;++logicIdx)
+            this._ResetStepInfo(thisFloor);
+        else
         {
-            var step:Step = thisFloor.GetStep(logicIdx);
-            var leftChild:Step = step.LeftChild;
-            var rightChild:Step = step.RightChild;
-            if(leftChild!= null && !leftChild.IsDeadRoad)
+            for(var logicIdx:number = 0; logicIdx<thisFloor.LogicLength;++logicIdx)
             {
-                safeStepList.push(logicIdx);
-            }else if(rightChild!= null && !rightChild.IsDeadRoad)
-            {
-                safeStepList.push(logicIdx);
+                var step:Step = thisFloor.GetStep(logicIdx);
+                var leftChild:Step = step.LeftChild;
+                var rightChild:Step = step.RightChild;
+                if(leftChild!= null && !leftChild.IsDeadRoad)
+                {
+                    safeStepList.push(logicIdx);
+                }else if(rightChild!= null && !rightChild.IsDeadRoad)
+                {
+                    safeStepList.push(logicIdx);
+                }
+                else
+                {
+                    step.IsDeadRoad = true;
+                }
+                
             }
-            else
-            {
-                step.IsDeadRoad = true;
-            }
-            
         }
+        
         if(floor == this._SafeLocation.Y)
         {
             var safeStep = thisFloor.GetStep(this._SafeLocation.X);
             safeStep.IsDeadRoad = false;
+            safeStepList.push(this._SafeLocation.X);
         }
 
         return safeStepList;
     }
+    
     _ResetStepInfo(thisFloor:MountLine)
     {
         if(!thisFloor)
@@ -694,10 +712,16 @@ export default class GameDirector extends BaseDirector
         var itemList = new Array(line.LogicLength);
         var lineRewards = this.ItemLayout.TakeLineReward(floor);
         this.CurLineRewards = this.CurLineRewards.concat(lineRewards);
-        if(this.SafeLocation.Y<1|| this.SafeLocation.Y <floor || this.SafeLocation.Y+1>floor)
+        if(this.SafeLocation.Y >floor || floor>this.SafeLocation.Y+1)
         {
             var lineBarriers = this.ItemLayout.TakeLineDifficulty(floor);
-            this.CurLineBarriers = this.CurLineBarriers.concat(lineBarriers);                  
+            this.CurLineBarriers = this.CurLineBarriers.concat(lineBarriers);   
+            
+        }
+        else
+        {
+            if(this.CurLineBarriers.length > 0)
+                this.CurLineBarriers = new Array<LineItemInfo>();
         }
         
     }

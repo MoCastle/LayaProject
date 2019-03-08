@@ -8,6 +8,7 @@ export default class  UIManager extends BaseManager
     private _UINode:Laya.Sprite;
     private _MidleUINode:Laya.Sprite;
     private _UIDict:{[name:string]:BaseUI};
+    private _UpdateCount:number;
 
     constructor()
     {
@@ -20,14 +21,31 @@ export default class  UIManager extends BaseManager
         Laya.stage.addChild(this._UINode);
         Laya.stage.addChild(this._MidleUINode);
         this._UIDict = {};
+        this._UpdateCount = 0;
     }
 
     static Name():string
     {
         return  "UIManager";
     }
+
     public Update()
     {
+        //定帧刷新UI
+        if(this._UpdateCount>10)
+        {
+            this.UpdateUI(this._UINode);
+            this.UpdateUI(this._MidleUINode);
+        }
+    }
+
+    public UpdateUI(node:Laya.Sprite)
+    {
+        for(let idx:number;idx<node.numChildren; ++idx)
+        {
+            var ui:BaseUI = node.getChildAt(idx) as BaseUI;
+            ui.Update();
+        }
     }
     public AddUI()
     {

@@ -1,6 +1,6 @@
 export module path
 {
-    var IsEditor:boolean = false;
+    export var IsEditor:boolean = false;
 
     export var SceneAssetPath:string = "LayaScene_";
     export var ResourcePath:string = IsEditor?"D:/GIt/Resources/LayaProject/FreshProject/myLaya/NetResource/":"http://www.gsjgame.com/Resource/NetResource/";

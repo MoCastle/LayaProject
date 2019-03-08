@@ -48,6 +48,7 @@ export default abstract class BaseUI extends Laya.Sprite
     protected _IsMutex:boolean;
     protected _Name:string;    
     protected _UIManager:UIManager
+    private _Dirty:boolean;
     constructor(name:string)
     {
         super();
@@ -65,4 +66,21 @@ export default abstract class BaseUI extends Laya.Sprite
         UIFunc.FixUI(UI);
         this.addChild(UI);
     }
+    public SetDirty()
+    {
+        this._Dirty = true;
+    }
+    public ClearDirty()
+    {
+        this._Dirty = false;
+    }
+    UIUpdate():void
+    {
+        if(this._Dirty)
+        {
+            this.Update();
+            this.ClearDirty()
+        }
+    }
+    abstract Update():void;
 }

@@ -17,7 +17,7 @@ export default class SceneManager extends BaseManager {
         //添加场景管理
         this.SceneNode = Laya.stage.addChild(new Laya.Sprite());
     }
-    set BG(bg: Laya.View) {
+    set BG(bg: Laya.Sprite) {
         if (!bg) {
             return;
         }
@@ -30,6 +30,10 @@ export default class SceneManager extends BaseManager {
         this._BG.width = Laya.stage.width;
         this._BG.height = Laya.stage.height;
         this._BGLayer.addChild(this._BG);
+    }
+    get BG():Laya.Sprite
+    {
+        return  this._BG;
     }
     SceneNode: Laya.Node;
 

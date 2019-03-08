@@ -97,21 +97,23 @@ class LoadDirctor extends BaseDirector
         Laya.loader.on(Laya.Event.ERROR,this,this._onError);
         Laya.loader.on(Laya.Event.COMPLETE,this,this._onComplete);
         //var resource3DArr = ["C:/Users/Administrator/Desktop/Resource/LayaScene_L01_aut_barrier_02/LayaScene_L01_aut_barrier_02/Conventional/L01_aut_barrier_02.lh"];
-        var resource3DArr = [ path.GetLH("c001_child_01") ,
-        path.GetLH("L01_spr_barrier_01"),
-        path.GetLH("L01_spr_barrier_02"),
-        path.GetLH("L01_spr_barrier_03"),
-        path.GetLH("L01_spr_barrier_04"),
-        path.GetLH("L01_spr_plat_01"),
-        path.GetLH("L01_spr_plat_02"),
-        path.GetLH("L01_spr_plat_03"),
-        path.GetLH("item_coin_01"),
-        path.GetLH("item_flyer_01"),
-        path.GetLH("item_shield_01"),
-        path.GetLH("item_untouchable_01"),
-        path.GetLH("trap_chomper_01"),
-        path.GetLH("trap_entangle_01"),
-        path.GetLH("trap_sting_01"),
+        var resource3DArr = [ 
+            path.GetLH("c001_child_01") ,
+            path.GetLH("L01_spr_barrier_01"),
+            path.GetLH("L01_spr_barrier_02"),
+            path.GetLH("L01_spr_barrier_03"),
+            path.GetLH("L01_spr_barrier_04"),
+            path.GetLH("L01_spr_plat_01"),
+            path.GetLH("L01_spr_plat_02"),
+            path.GetLH("L01_spr_plat_03"),
+            path.GetLH("item_coin_01"),
+            path.GetLH("item_flyer_01"),
+            path.GetLH("item_shield_01"),
+            path.GetLH("item_untouchable_01"),
+            path.GetLH("trap_chomper_01"),
+            path.GetLH("trap_entangle_01"),
+            path.GetLH("trap_sting_01"),
+            path.GetLH("item_absord"),
         //path.GetSkyBox("skyCube")
         /*
         path.ResourcePath +"LayaScene_L01_spr_plat_03/Conventional/L01_spr_plat_03.lh",
