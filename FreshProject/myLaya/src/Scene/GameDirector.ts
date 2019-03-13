@@ -42,6 +42,7 @@ export default class GameDirector extends BaseDirector
     private _SafeLocation:GameStruct.MLocation;
     AddInputCtrler(value:Input.BaseGameInput)
     {
+        this.InputCtrl.Clear();
         value.NextInput = this.InputCtrl;
         this.InputCtrl = value;
     }
@@ -142,11 +143,6 @@ export default class GameDirector extends BaseDirector
     //左右移动
     MoveStep( isRight:boolean )
     {
-        //移动中不让输入
-        if(this.Player.BaseCtrler.Time>0)
-        {
-            return;
-        }
         //var buff = this.Buffer;
         //获取下一层的Step
         var step:Step = this.Player.CurStep;
@@ -360,6 +356,7 @@ export default class GameDirector extends BaseDirector
             this._DestroyLine(this._BootomFloor);
             this._BootomFloor += 1; 
         }
+        this.InputCtrl.Update();
     }
 
     //开始倒计时期间的每帧逻辑
@@ -455,9 +452,9 @@ export default class GameDirector extends BaseDirector
         this._OrginizePutItem(barriersList,randomPool,true);
         
         //摆放道具
-        for(var safeStepIdx:number = 0;safeIdx<safeStepList.length;++safeIdx)
+        for(var safeStepIdx:number = 0;safeStepIdx<safeStepList.length;++safeStepIdx)
         {
-            randomPool.push(safeStepList[safeIdx]);
+            randomPool.push(safeStepList[safeStepIdx]);
         }
         var rewardList = this.CurLineRewards;
         this._OrginizePutItem(rewardList,randomPool);

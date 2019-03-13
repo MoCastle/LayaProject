@@ -3,7 +3,7 @@ export module path
     export var IsEditor:boolean = false;
 
     export var SceneAssetPath:string = "LayaScene_";
-    export var ResourcePath:string = IsEditor?"D:/GIt/Resources/LayaProject/FreshProject/myLaya/NetResource/":"http://www.gsjgame.com/Resource/NetResource/";
+    export var ResourcePath:string = IsEditor?"D:/GIt/Resources/LayaProject/FreshProject/myLaya/NetResource_3_8/":"http://www.gsjgame.com/Resource/NetResource_3_8/";
     export var UIPath:string = ResourcePath + "UI/";
     export var ModelPath:string = ResourcePath+"3D/"
     

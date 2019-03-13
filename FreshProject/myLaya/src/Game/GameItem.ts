@@ -56,7 +56,6 @@ export module Item
         {
             this.RewardList = new Array<LayItemMgr>();
             this.BarrierList = new Array<LayItemMgr>();
-            /*
             this.BarrierList.push(new LayItemMgr(10,11,ItemType.Empty,10));
             this.BarrierList.push(new LayItemMgr(10,4,ItemType.Rock,10));
             this.BarrierList.push(new LayItemMgr(10,2,ItemType.Thorn,10));
@@ -67,9 +66,10 @@ export module Item
             this.RewardList.push(new LayItemMgr(10,2,ItemType.Fly))
             this.RewardList.push(new LayItemMgr(20,2,ItemType.Protect,3));
             this.RewardList.push(new LayItemMgr(20,2,ItemType.HolyProtect,3));
-            */
-            this.BarrierList.push(new LayItemMgr(10,60,ItemType.Empty,10));
-            this.RewardList.push(new LayItemMgr(10,60,ItemType.Fly))
+           //this.RewardList.push(new LayItemMgr(10,10,ItemType.Coin))
+           
+            //this.BarrierList.push(new LayItemMgr(10,60,ItemType.Fly))
+            ResetItemFactory( );
         }
         
         TakeLineReward(floor:number)
@@ -110,9 +110,8 @@ export module Item
         //开始分布的层数
         StartFloor:number;
         //分布区间
-        Range:number;
         //已获取层标记
-        FllorMark:number;
+        TouchedFloor:number;
         ItemList:Array<number>;
         //range区间范围
         //num 区间范围数量
@@ -128,124 +127,51 @@ export module Item
             this.ItemType = itemType;
             this.CurFloor = 0;
             this.ItemNum = num;
-            this.StartFloor = startFloor;
-            this.Range = range;
             //分布图 物品idx:层数
-            this.ItemList = new Array<number>();
-            this.FllorMark = 0;
-            ResetItemFactory( );
+            this.ItemList = new Array<number>(range);
+            this.TouchedFloor = 0;
+            this.GenMap(startFloor)
+        }
+        get Range():number
+        {
+            return  this.ItemList.length;
         }
         //层更新函数
         OnFloor(floor:number)
         {
-            if(floor<this.FllorMark)
+            if(floor<this.TouchedFloor)
             {
-                this.StartFloor = floor;
-                this.GenMap();
+                this.GenMap(floor);
             }
-            if(floor>=this.StartFloor)
+            if(floor>=this.StartFloor + this.Range)
             {
-                this.GenMap();
+                this.GenMap(floor);
             }
         }
         //生成分布图
-        GenMap()
+        GenMap(startFloor:number)
         {
-            var startFloor = this.StartFloor;
+            this.StartFloor = startFloor;
             var itemNum = this.ItemNum;
-            this.ItemList = new Array();
+            for(let count:number = 0; count< this.ItemList.length;++count)
+            {
+                this.ItemList[count] = 0;
+            }
             var itemList = this.ItemList;
             for(var countNum:number = 0; countNum<itemNum;++countNum)
             {   
-                var ItemFloor:number = Math.floor(Math.random()*this.Range) + startFloor;
-                itemList.push(ItemFloor);
+                var ItemFloor:number = Math.floor(Math.random()*this.Range);
+                this.ItemList[ItemFloor] +=1;
             }
-            this.StartFloor += this.Range;
         }
     
         TakeItems( floor:number )
         {
-            this.FllorMark = floor;
-            var countNum = 0;
-            var itemList = this.ItemList;
-            for(var itemIdx = 0;itemIdx<itemList.length;++itemIdx)
-            {
-                if(itemList[itemIdx] == floor)
-                {
-                    ++countNum;
-                    itemList.splice(itemIdx,1);
-                    --itemIdx;
-                }
-            }
-            return new LineItemInfo(this.ItemType,countNum);
+            this.TouchedFloor = floor;
+            return new LineItemInfo(this.ItemType,this.ItemList[floor - this.StartFloor]);
         }
     }
     
-    //该对象的分布图每层等概率分布
-    //range区间范围
-    //num 区间范围数量
-    //itemType 生产的道具类型
-    //startFloor 从哪一行开始投掷
-    export function ItemFactory( range,num,itemType,startFloor )
-    {
-        if(num == undefined)
-            num = 1;
-        if(startFloor == undefined)
-            //第0层是玩家起步位置
-            startFloor = 1;
-        //道具类型
-        this.ItemType = itemType;
-        //当前层数
-        this.CurFloor = 0;
-        //区间分布总数量
-        this.rangeNum = num;
-        //开始分布的层数
-        this.StartFloor = startFloor;
-        //分布区间
-        this.Range = range;
-        //分布图 物品idx:层数
-        this.ItemList = new Array();
-    }
-    //层更新函数
-    //floor 当前层
-    ItemFactory.prototype.onFloor= function(floor)
-    {
-        if(floor>=this.StartFloor)
-        {
-            this.GenMap();
-        }
-    }
-    //生成分布图
-    ItemFactory.prototype.GenMap = function()
-    {
-        var startFloor = this.StartFloor;
-        var rangeNum = this.rangeNum;
-        this.ItemList = new Array();
-        var itemList = this.ItemList;
-        for(var ItemNum = 0; ItemNum<rangeNum;++ItemNum)
-        {
-            var ItemFloor = Math.floor(Math.random()*this.Range) + startFloor;
-            itemList.push(ItemFloor);
-        }
-        
-        this.StartFloor += this.Range;
-    }
-    //拿某层物品数据
-    ItemFactory.prototype.TakeItems = function( floor )
-    {
-        var countNum = 0;
-        var itemList = this.ItemList;
-        for(var itemIdx = 0;itemIdx<itemList.length;++itemIdx)
-        {
-            if(itemList[itemIdx] == floor)
-            {
-                ++countNum;
-                itemList.splice(itemIdx,1);
-                --itemIdx;
-            }
-        }
-        return {ItemType:this.ItemType, Num:countNum};
-    }
     var Reset:boolean;
     export function ResetItemFactory( ):void
     {

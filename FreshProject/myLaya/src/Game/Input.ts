@@ -11,7 +11,6 @@ export abstract class BaseGameInput
     NextInput:BaseGameInput;
     abstract Input(isRight:boolean);
 
-    //私有
     constructor( input :BaseGameInput = null )
     {
         if(input == null)
@@ -20,7 +19,9 @@ export abstract class BaseGameInput
         }
         this.NextInput = input;
     }
-    
+    Update()
+    {}
+    Clear(){}
 }
 
 export class DIYInput extends BaseGameInput
@@ -30,7 +31,6 @@ export class DIYInput extends BaseGameInput
         if(this._Listener)
             this._Listener.call(this._Owner,isRight);
     }
-
     private _Owner:any;
     private _Listener:(isring:boolean)=>void;
     constructor(owner:any = null,listener:(isring:boolean)=>void = null)
@@ -43,14 +43,32 @@ export class DIYInput extends BaseGameInput
 export class NormGameInput extends BaseGameInput
 {
     GameDir:GameDirector;
+    _Dirty:boolean;
+    _IsRight:boolean;
     constructor( dir:GameDirector,input:BaseGameInput = null )
     {
         super(input);
         this.GameDir = dir;
+        this._Dirty = false;
+        this._IsRight = false;
     }
     Input( isRight:boolean )
     {
-        this.GameDir.MoveStep(isRight);
+        //this.GameDir.MoveStep(isRight);
+        this._Dirty = true;
+        this._IsRight = isRight;
+    }
+    Update()
+    {
+        if(this._Dirty&&this.GameDir.Player.BaseCtrler.Time<=0.1)
+        {
+            this._Dirty = false;
+            this.GameDir.MoveStep(this._IsRight);
+        }
+    }
+    Clear()
+    {
+        this._Dirty=false;
     }
 }
 }
