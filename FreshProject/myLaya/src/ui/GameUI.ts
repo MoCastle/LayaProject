@@ -29,8 +29,6 @@ export default class GameUI extends BaseUI
     //
     DistanceStr:Array<string>;
     GoldNumStr:Array<string>;
-    private _Gold:number;
-    private _Count:number;
     constructor(name:string)
     {
         super(name);
@@ -38,7 +36,6 @@ export default class GameUI extends BaseUI
         this._UI = new ExtendsGameUI();
         this.FixUI(this._UI);
         
-        this._Gold = 0;
         var opIsRight = GameControler.GameControler.SetInfo.OPIsRight;
         this._UI._ItemListBtn.on(Laya.Event.CLICK,null,()=>{ this._UIManager.Show<ItemListUI>(ItemListUI)})
         this.SetCountTime();
@@ -52,14 +49,11 @@ export default class GameUI extends BaseUI
         this._ShowGoldNum();
         
         this.ShowInputInfo("");
-        this.frameLoop(1,this,this.Update);
-        this._Count = 0;
     }
 
     private _ShowDistance()
     {
         this._UI._TxtDistance.text = this.DistanceStr[0]+this.DistanceStr[1];
-        this.SetDirty();
     }
     
     private _ShowGoldNum()
@@ -71,10 +65,9 @@ export default class GameUI extends BaseUI
         return "GameUI";
     }
     
-    AddGold(goldNum:number)
+    set Gold(gold:number)
     {
-        this._Gold+= goldNum;
-        this.GoldNumStr[1] = this._Gold.toString();
+        this.GoldNumStr[1] = gold.toString();
         this.SetDirty();
     }
     SetLeftTouch(owner:any,Listener:()=>void):void
@@ -107,11 +100,18 @@ export default class GameUI extends BaseUI
     }
     set Distance(value:number)
     {
-        this.DistanceStr[1] = value.toFixed(2);
+        var dis = "" + value;
+        if(dis == this.DistanceStr[1])
+        {
+            return
+        }
+        this.DistanceStr[1] = dis;
+        this.SetDirty();
     }
     set GoldNum(value:number)
     {
         this.GoldNumStr[1] = value.toString();
+        this.SetDirty();
     }
     ShowInputInfo(info:string)
     {

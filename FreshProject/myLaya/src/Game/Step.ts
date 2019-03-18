@@ -91,7 +91,7 @@ export default class Step extends Laya.Sprite3D
             var model = Laya.loader.getRes(name);
         }
         
-        //var model:Laya.Sprite3D = new Laya.MeshSprite3D( Laya.PrimitiveMesh.createBox(0.5, 0.5, 0.5)) ;//loader.getRes(name);
+        //model = new Laya.MeshSprite3D( Laya.PrimitiveMesh.createBox(0.5, 0.5, 0.5)) ;//loader.getRes(name);
         
         var cloneModel = model.clone();
         cloneModel.transform.position = new Laya.Vector3();

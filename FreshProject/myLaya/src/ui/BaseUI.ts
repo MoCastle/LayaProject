@@ -5,14 +5,35 @@ import {UIFunc} from "./../Utility/UIFunc"
 //UI基类
 export default abstract class BaseUI extends Laya.Sprite
 {
+    
+    
+    //
+    protected _UIType:BaseEnum.UITypeEnum;
+    protected _IsMutex:boolean;
+    protected _Name:string;    
+    protected _UIManager:UIManager
+    private _Dirty:boolean;
+    private _Showing:boolean;
+    constructor(name:string)
+    {
+        super();
+        this._UIType = BaseEnum.UITypeEnum.Low;
+        this._IsMutex = false;
+        this._Name = name;
+        this._UIManager = FW.FM.GetManager<UIManager>(UIManager);
+        this._Showing = true;
+    }
+    Hide()
+    {
+        this.visible = false;
+    }
+
     Open()
     {
     }
 
     Close()
     {
-        //UIManager..Close(this);
-        var uiMgr:UIManager = FW.FM.GetManager<UIManager>(UIManager);
     }
 
     OpenOP()
@@ -21,6 +42,7 @@ export default abstract class BaseUI extends Laya.Sprite
     }
     CloseOP()
     {
+        this.visible = false;
     }
 
     Destroy( )
@@ -42,21 +64,7 @@ export default abstract class BaseUI extends Laya.Sprite
     {
         return this._Name;
     }
-    
-    //
-    protected _UIType:BaseEnum.UITypeEnum;
-    protected _IsMutex:boolean;
-    protected _Name:string;    
-    protected _UIManager:UIManager
-    private _Dirty:boolean;
-    constructor(name:string)
-    {
-        super();
-        this._UIType = BaseEnum.UITypeEnum.Low;
-        this._IsMutex = false;
-        this._Name = name;
-        this._UIManager = FW.FM.GetManager<UIManager>(UIManager);
-    }
+
     /**
      * 对UI进行适配
      * @param UI 适配UI
@@ -70,6 +78,12 @@ export default abstract class BaseUI extends Laya.Sprite
     {
         this._Dirty = true;
     }
+
+    public get Dirty():boolean
+    {
+        return this._Dirty;
+    }
+
     public ClearDirty()
     {
         this._Dirty = false;
@@ -82,5 +96,5 @@ export default abstract class BaseUI extends Laya.Sprite
             this.ClearDirty()
         }
     }
-    abstract Update():void;
+    protected abstract Update():void;
 }

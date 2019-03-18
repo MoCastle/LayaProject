@@ -61,7 +61,9 @@ export default class GameDirector extends BaseDirector
     }
     AddLogicGold(num:number)
     {
-        this.PanelUI.AddGold(num);
+        
+        this._LogicGoldNum +=num;
+        this.PanelUI.Gold = this._LogicGoldNum;
     }
 
     //设置安全位置
@@ -114,10 +116,6 @@ export default class GameDirector extends BaseDirector
     get TailFLoor():MountLine
     {
         return this.MountLines[this._TailFLoorIdx];
-    }
-    get PlayerDistance():number
-    {
-        return Math.abs((this.Player.Position.z - this._StartPosition.z)/(Controler.GameControler.StepDistance/2));
     }
 
     Death():void
@@ -320,6 +318,7 @@ export default class GameDirector extends BaseDirector
 
         super._StartComplete();
         this.PanelUI = this._UIMgr.Show(GameUI);
+        this.PanelUI.Gold = 0;
         this._CountTime = this.GameTime +6000;
         this._BootomFloor = 0;
         this._GameUpdate = this._StartCount;
@@ -336,10 +335,11 @@ export default class GameDirector extends BaseDirector
     //正常运行时的每帧逻辑
     private _RunGameUpdate()
     {
-        this.PanelUI.Distance = this.PlayerDistance;
+        var dist:number = this.PlayerFloor;
+        this.PanelUI.Distance = Math.floor(dist) ;
         if(this.FreshBGCount > 10)
         {
-            this._CurBG.UpdatePage(this.PlayerDistance);
+            this._CurBG.UpdatePage(dist);
             this.FreshBGCount = 0;
         }
         ++this.FreshBGCount;

@@ -212,6 +212,41 @@ export module BaseFunc {
             }
         }
     }
+
+    export class Queue<T>
+    {
+        private _NodePool:NodePool<T>;
+        private _NodeQueue:NodeQueue<T>;
+        
+        constructor()
+        {
+            this._NodePool = new NodePool<T>();
+            this._NodeQueue = new NodeQueue<T>();
+        }
+
+        public Push(value:T)
+        {
+            var node:Node<T> = this._NodePool.Aquire();
+            node.Value = value;
+            this._NodeQueue.PushNode(node);
+        }
+
+        public Pop():T
+        {
+            var node:Node<T> = this._NodeQueue.PopNode();
+            if(node)
+            {
+                return node.Value;
+            }
+            this._NodePool.PullBack(node);
+            return null;
+        }
+
+        get Count():number
+        {
+            return this._NodeQueue.Count;
+        }
+    }
 /*
     export class LinkNodeList<T>
     {

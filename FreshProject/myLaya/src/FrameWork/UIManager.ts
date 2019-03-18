@@ -2,6 +2,7 @@ import BaseManager from "./BaseManager";
 import BaseUI from "./../ui/BaseUI"
 import {BaseEnum} from "./../Base/BaseEnum"
 import {UIFunc} from "./../Utility/UIFunc"
+import {BaseFunc} from "./../Base/BaseFunc"
 export default class  UIManager extends BaseManager
 {
     //内部功能
@@ -9,6 +10,7 @@ export default class  UIManager extends BaseManager
     private _MidleUINode:Laya.Sprite;
     private _UIDict:{[name:string]:BaseUI};
     private _UpdateCount:number;
+    private _DirtyUIQue:BaseFunc.Queue<BaseUI>;
 
     constructor()
     {
@@ -22,6 +24,7 @@ export default class  UIManager extends BaseManager
         Laya.stage.addChild(this._MidleUINode);
         this._UIDict = {};
         this._UpdateCount = 0;
+        this._DirtyUIQue = new BaseFunc.Queue<BaseUI>();
     }
 
     static Name():string
@@ -36,15 +39,27 @@ export default class  UIManager extends BaseManager
         {
             this.UpdateUI(this._UINode);
             this.UpdateUI(this._MidleUINode);
+            this._UpdateCount = 0;
+        }
+        ++this._UpdateCount;
+        if(this._DirtyUIQue.Count<1)
+        {
+            return ;
+        }
+        var updateUI:BaseUI = this._DirtyUIQue.Pop();
+        if(updateUI)
+        {
+            updateUI.UIUpdate();
         }
     }
 
     public UpdateUI(node:Laya.Sprite)
     {
-        for(let idx:number;idx<node.numChildren; ++idx)
+        for(let idx:number = 0;idx<node.numChildren; ++idx)
         {
             var ui:BaseUI = node.getChildAt(idx) as BaseUI;
-            ui.Update();
+            if(ui.Dirty)
+                this._DirtyUIQue.Push(ui);
         }
     }
     public AddUI()
@@ -80,7 +95,8 @@ export default class  UIManager extends BaseManager
         if(newUI.IsMutex&&childNum>0)
         {
             var lastUI = node.getChildAt(node.numChildren-1) as BaseUI;
-            lastUI.visible = !lastUI.IsMutex;
+            if(!lastUI.IsMutex)
+                lastUI.Hide();
         }
 
         node.addChild(newUI);
@@ -113,7 +129,7 @@ export default class  UIManager extends BaseManager
         if(childNum>0)
         {
             var lastUI:BaseUI = node.getChildAt(childNum-1) as BaseUI;
-            lastUI.visible = true;
+            lastUI.OpenOP();
         }
     }
 

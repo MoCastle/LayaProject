@@ -56,6 +56,7 @@ export module Item
         {
             this.RewardList = new Array<LayItemMgr>();
             this.BarrierList = new Array<LayItemMgr>();
+            
             this.BarrierList.push(new LayItemMgr(10,11,ItemType.Empty,10));
             this.BarrierList.push(new LayItemMgr(10,4,ItemType.Rock,10));
             this.BarrierList.push(new LayItemMgr(10,2,ItemType.Thorn,10));
@@ -66,9 +67,7 @@ export module Item
             this.RewardList.push(new LayItemMgr(10,2,ItemType.Fly))
             this.RewardList.push(new LayItemMgr(20,2,ItemType.Protect,3));
             this.RewardList.push(new LayItemMgr(20,2,ItemType.HolyProtect,3));
-           //this.RewardList.push(new LayItemMgr(10,10,ItemType.Coin))
            
-            //this.BarrierList.push(new LayItemMgr(10,60,ItemType.Fly))
             ResetItemFactory( );
         }
         
@@ -328,10 +327,29 @@ export module Item
                 return;
             }
             var ps = new Laya.Vector3(0,Controler.GameControler.StepLength,0);
+            
             this._GenItemModel();
             if(this.Model)
                 this.Model.transform.position = ps;
             return this.Model;
+        }
+        protected _TestGentItemModel()
+        {
+            var model:Laya.Sprite3D = null;
+            switch(this.ItemType)
+            {
+                case ItemType.Rock:
+                    model = new Laya.MeshSprite3D(Laya.PrimitiveMesh.createBox(0.3, 0.3, 0.5));
+                break;
+                
+                case ItemType.None:
+                break;
+
+                default:      
+                    model = new Laya.MeshSprite3D(Laya.PrimitiveMesh.createBox(0.3, 0.3, 0.5));  
+                break;
+            }
+            this.Model = model;  
         }
     
         protected _GenItemModel()
