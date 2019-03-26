@@ -1,13 +1,16 @@
 import BaseManager from "./BaseManager";
 import BaseUI from "./../ui/BaseUI"
 import {BaseEnum} from "./../Base/BaseEnum"
-import {ui} from "./../ui/layaMaxUI"
+import {UIFunc} from "./../Utility/UIFunc"
+import {BaseFunc} from "./../Base/BaseFunc"
 export default class  UIManager extends BaseManager
 {
     //内部功能
     private _UINode:Laya.Sprite;
     private _MidleUINode:Laya.Sprite;
     private _UIDict:{[name:string]:BaseUI};
+    private _UpdateCount:number;
+    private _DirtyUIQue:BaseFunc.Queue<BaseUI>;
 
     constructor()
     {
@@ -15,19 +18,49 @@ export default class  UIManager extends BaseManager
         this._UINode = new Laya.Sprite();
         this._UINode.width = Laya.stage.width;
         this._UINode.height = Laya.stage.height;
+        this._UINode.name = "UINode";
         this._MidleUINode = new Laya.Sprite();
         Laya.stage.addChild(this._UINode);
         Laya.stage.addChild(this._MidleUINode);
         this._UIDict = {};
+        this._UpdateCount = 0;
+        this._DirtyUIQue = new BaseFunc.Queue<BaseUI>();
     }
 
     static Name():string
     {
         return  "UIManager";
     }
+
     public Update()
     {
+        //定帧刷新UI
+        if(this._UpdateCount>10)
+        {
+            this.UpdateUI(this._UINode);
+            this.UpdateUI(this._MidleUINode);
+            this._UpdateCount = 0;
+        }
+        ++this._UpdateCount;
+        if(this._DirtyUIQue.Count<1)
+        {
+            return ;
+        }
+        var updateUI:BaseUI = this._DirtyUIQue.Pop();
+        if(updateUI)
+        {
+            updateUI.UIUpdate();
+        }
+    }
 
+    public UpdateUI(node:Laya.Sprite)
+    {
+        for(let idx:number = 0;idx<node.numChildren; ++idx)
+        {
+            var ui:BaseUI = node.getChildAt(idx) as BaseUI;
+            if(ui.Dirty)
+                this._DirtyUIQue.Push(ui);
+        }
     }
     public AddUI()
     {
@@ -39,8 +72,6 @@ export default class  UIManager extends BaseManager
         var str:string = uiClass.Name();    
         var newUI:BaseUI = this.GetUIByName(str);
         newUI = newUI==null?this.AddUIByName(str,new uiClass(str)):newUI;
-        newUI.width = 10;//Laya.stage.width;
-		newUI.height = 10;//Laya.stage.height;
         var node:Laya.Sprite = null;
         switch(newUI.UIType)
         {
@@ -64,7 +95,8 @@ export default class  UIManager extends BaseManager
         if(newUI.IsMutex&&childNum>0)
         {
             var lastUI = node.getChildAt(node.numChildren-1) as BaseUI;
-            lastUI.visible = !lastUI.IsMutex;
+            if(!lastUI.IsMutex)
+                lastUI.Hide();
         }
 
         node.addChild(newUI);
@@ -97,7 +129,7 @@ export default class  UIManager extends BaseManager
         if(childNum>0)
         {
             var lastUI:BaseUI = node.getChildAt(childNum-1) as BaseUI;
-            lastUI.visible = true;
+            lastUI.OpenOP();
         }
     }
 

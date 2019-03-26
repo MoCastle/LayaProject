@@ -1,14 +1,16 @@
 import {ui} from "./layaMaxUI"
-import BaseUI from "./BaseUI"
 import {path} from "./../Utility/Path"
+import BaseUI from "./BaseUI"
+import FM from "./../FrameWork/FrameWork"
+import UIManager from "./../FrameWork/UIManager"
+import PlayerListUI from "./../ui/PlayerListUI"
+import GameControler from "./../controler/GameControler"
 
-export class ExtendEnterGameUI extends ui.EnterUIUI {
+class ExtendEnterGameUI extends ui.EnterUI {
     Panel:Laya.Panel;
     createChildren():void
     {
-        var res:JSON = Laya.loader.getRes("res/uijson/EnterScene.json");
-        this.createView(res);
-        super.createChildren();
+        this.createView(Laya.loader.getRes(path.GetDepathUIJS("Enter")));
     }
     constructor()
     {
@@ -16,13 +18,13 @@ export class ExtendEnterGameUI extends ui.EnterUIUI {
         this.Panel = this._Panel;
         this.Panel.vScrollBarSkin = "";
         this.Panel.hScrollBarSkin = "";
-        //this._Character.on(Laya.Event.CLICK,null,ControlAPP.GameControler.ShowCharacterPanel);
-        //this._SetPanel.on(Laya.Event.CLICK,null,ControlAPP.GameControler.ShowSetPanel);
-        //this._Start.on(Laya.Event.CLICK,null,ControlAPP.GameControler.EnterGame);
+        this._Character.on(Laya.Event.CLICK,GameControler.GameControler,GameControler.GameControler.ShowCharacterPanel);
+        this._SetPanel.on(Laya.Event.CLICK,GameControler.GameControler,GameControler.GameControler.ShowSetPanel);
+        this._Start.on(Laya.Event.CLICK,GameControler.GameControler,GameControler.GameControler.EnterGame);
     }        
 }
 
-class EnterGameUI extends BaseUI
+export default class EnterGameUI extends BaseUI
 {
     static Name():string
     {
@@ -34,6 +36,11 @@ class EnterGameUI extends BaseUI
         super(name);
         this._UI= new ExtendEnterGameUI();
         this.FixUI(this._UI);
-        //this._UI._CharacterList.on(Laya.Event.CLICK,null,()=>{APP.UIManager.Show<PlayerListUI>(PlayerListUI)});
+        var uiMgr:UIManager = this._UIManager;
+        this._UI._CharacterList.on(Laya.Event.CLICK,null,()=>{ uiMgr.Show<PlayerListUI>(PlayerListUI)});
+    }
+    Update()
+    {
+        
     }
 }

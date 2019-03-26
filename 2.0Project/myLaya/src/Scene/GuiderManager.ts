@@ -1,6 +1,11 @@
 import SceneManager from "./../FrameWork/SceneManager"
 import BaseScene from "./BaseScene"
 import BaseDirector from "./BaseDirector"
+import FW from "./../FrameWork/FrameWork"
+import UIManager from "./../FrameWork/UIManager"
+import EnterGameUI from "./../ui/EnterGameUI"
+import {path} from "./../Utility/Path"
+
 export default class GuiderManager 
 {
 //对外接口
@@ -23,14 +28,15 @@ export default class GuiderManager
     EnterScene():void
     {
         var newGameScene = new GuiderScene();
-        SceneManager.Mgr.EnterScene(newGameScene);
+        this.SceneMgr.EnterScene(newGameScene);
         this.CurScene = newGameScene;
     }
 
     //内部功能
     constructor()
     {
-        this.SceneMgr = SceneManager.Mgr;
+        this.SceneMgr = FW.FM.GetManager<SceneManager>(SceneManager);
+        this.CurScene = null;
     }
 }
 
@@ -44,7 +50,7 @@ class GuiderScene extends BaseScene
     }
     StartLoad( )
     {
-        Laya.loader.load([{url:"res/uijson/ItemList.json",type:Laya.Loader.JSON},{url:"res/uijson/EnterScene.json",type:Laya.Loader.JSON},{url:"res/atlas/comp.atlas",type: Laya.Loader.ATLAS }],Laya.Handler.create(this,this._LoadComplete));
+        Laya.loader.load([{url:path.GetDepathUIJS("Enter") ,type:Laya.Loader.JSON},{url:path.GetDepathUIJS("ItemList") ,type:Laya.Loader.JSON},{url:path.GetAtlPath("comp"),type: Laya.Loader.ATLAS }],Laya.Handler.create(this,this._LoadComplete));
     }
     protected _GenDir():void
     {
@@ -55,7 +61,7 @@ class GuiderScene extends BaseScene
 
 class GuiderDirector extends BaseDirector
 {
-    UI//:EnterGameUI;
+    UI:EnterGameUI;
     ReStart():void
     {
         
@@ -73,7 +79,7 @@ class GuiderDirector extends BaseDirector
     protected _StartComplete():void
     {
         super._StartComplete();
-        //this.UI = APP.UIManager.Show<EnterGameUI>(EnterGameUI);
+        this.UI = FW.FM.GetManager<UIManager>(UIManager).Show<EnterGameUI>(EnterGameUI);
     }
     protected _Update():void
     {

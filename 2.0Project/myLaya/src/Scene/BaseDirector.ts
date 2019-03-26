@@ -1,43 +1,22 @@
 import SceneManager from "./../FrameWork/SceneManager"
-import FrameWork from "./../FrameWork/FrameWork"
+import FW from "./../FrameWork/FrameWork"
 import UIManager from "./../FrameWork/UIManager"
 import LifeObj from "./../Base/LifeObj"
+import BaseScene from "./BaseScene";
+import APP from "./../controler/APP"
+import {MessageMD} from "./../FrameWork/MessageCenter"
+import BG from "./../ui/BG"
+
 //导演基类
 export default abstract class BaseDirector extends LifeObj
 {
-    SceneMgr:SceneManager;
-    get GameTime():number
-    {
-        if(this._TimeUpClock>0)
-        {
-            return this._TimeUpClock- this._StartGameTime - this._TimeUpCount;
-        }else
-        {
-            return Laya.timer.currTimer- this._StartGameTime - this._TimeUpCount;
-        }
-    }
-    set GameTime(value:number)
-    {
-        this._StartGameTime = value;
-    }
-    //外部接口
-    Start():void
-    {
-        this._Start();
-    }
-    protected _Start():void
-    {
-        this._StartGameTime = Laya.timer.currTimer;
-        super._Start();
-    }
-
-    abstract ReStart():void;
+    
     _Leave():void
     {
-        /*
-        APP.MessageCenter.DesRgistIDK(GameEvent.GameTimeUp);
-        APP.MessageCenter.DesRgistIDK(GameEvent.GameContinue);
-        */
+        
+        APP.MessageManager.DesRgistIDK(MessageMD.GameEvent.GameTimeUp);
+        APP.MessageManager.DesRgistIDK(MessageMD.GameEvent.GameContinue);
+        
         super._Leave();
     }
 
@@ -74,20 +53,53 @@ export default abstract class BaseDirector extends LifeObj
     private _StartGameTime:number;
     private _TimeUpCount:number;
     private _TimeUpClock:number;
-
+    protected _UIMgr:UIManager;
+    private _BG:BG;
     constructor()
     {
         super();
         this._TimeUpCount = 0;
         this._StartGameTime = 0;
         this._TimeUpClock = -1;
+        this._UIMgr = FW.FM.GetManager<UIManager>(UIManager);
+        this.SceneMgr = APP.SceneManager;
+        this._BG = APP.SceneManager.BG as BG;
+        
     }
     protected _StartComplete()
     {
         this._TimeUpCount = 0;
         this._StartGameTime = 0;
         this._TimeUpClock = -1;
-        FrameWork.FM.GetManager<UIManager>(UIManager).Clear();
+        this._UIMgr.Clear();
         super._StartComplete();
     }
+    SceneMgr:SceneManager;
+
+    get GameTime():number
+    {
+        if(this._TimeUpClock>0)
+        {
+            return this._TimeUpClock- this._StartGameTime - this._TimeUpCount;
+        }else
+        {
+            return Laya.timer.currTimer- this._StartGameTime - this._TimeUpCount;
+        }
+    }
+    set GameTime(value:number)
+    {
+        this._StartGameTime = value;
+    }
+    //外部接口
+    Start():void
+    {
+        this._Start();
+    }
+    protected _Start():void
+    {
+        this._StartGameTime = Laya.timer.currTimer;
+        super._Start();
+    }
+
+    abstract ReStart():void;
 }

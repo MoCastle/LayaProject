@@ -8,7 +8,7 @@ export default class FrameWork
     {
         this._MgrMap = new BaseFunc.Map<BaseManager>();
     }
-    static _FM:FrameWork;
+    private static _FM:FrameWork;
     static get FM():FrameWork
     {
         if(FrameWork._FM==null)

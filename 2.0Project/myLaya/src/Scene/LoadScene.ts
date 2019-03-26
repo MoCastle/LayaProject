@@ -3,9 +3,13 @@ import BaseDirector from "./BaseDirector"
 import {ui} from "./../ui/layaMaxUI"
 import FrameWork from "./../FrameWork/FrameWork"
 import UIManager from "./../FrameWork/UIManager"
-import LoadingUI from "./../ui/LoadingUI"
+import LoadingUI from "./../ui/UnDownload/LoadingUI"
 import FMWork from "./../FrameWork/FrameWork"
 import GuiderManager from "./GuiderManager"
+import {path} from "./../Utility/Path"
+import APP from "./../controler/APP"
+import BG from "./../ui/BG"
+
 export default class LoadScene extends BaseScene
 {
     CurDir:BaseDirector;
@@ -21,8 +25,7 @@ export default class LoadScene extends BaseScene
     
     StartLoad():void
     {
-        var resCol = [{url:"ui/LoadUI.json",type:Laya.Loader.JSON},{url:"ui/Resource/comp.atlas",type:Laya.Loader.ATLAS}];
-        
+        var resCol = [{url:"ui/Resource/LoadUI.json",type:Laya.Loader.JSON},{url:"ui/Resource/localcomp.atlas",type:Laya.Loader.ATLAS}];
         Laya.loader.load(resCol,Laya.Handler.create(this,this._LoadComplete));
     }
     
@@ -47,8 +50,6 @@ class LoadDirctor extends BaseDirector
         this._Count2DLoad = 0.5;
     }
 
-    //
-    
     protected _Start()
     {
         Laya.loader.on(Laya.Event.ERROR,this,this._onError);
@@ -57,11 +58,11 @@ class LoadDirctor extends BaseDirector
         super._Start();
         this._LoadFaile = false;
     }
+
     protected _StartComplete()
     {
         super._StartComplete();
-        this.UI = FrameWork.FM.GetManager<UIManager>(UIManager).Show<LoadingUI>(LoadingUI);
-        Laya.stage.addChild(this.UI);
+        this.UI = APP.UIManager.Show<LoadingUI>(LoadingUI);
         this.UI.Update();
     }
     protected Load()
@@ -76,8 +77,15 @@ class LoadDirctor extends BaseDirector
             {url:"res/uijson/Characters.json",type:Laya.Loader.JSON},
             {url:"res/uijson/SetPanel.json",type:Laya.Loader.JSON},
             */
+            path.GetDepathUIJS("Enter"),
+            path.GetDepathUIJS("SetPanel"),
+            path.GetDepathUIJS("ItemList"),
+            path.GetDepathUIJS("Character"),
+            path.GetDepathUIJS("PlayerList"),
+            path.GetDepathUIJS("BG"),
+            path.GetAtlPath("comp")
             ];
-        resource2DArr = null;
+        //resource2DArr = null;
         /*
         var resource3DArr = ["http://www.gsjgame.com/Resource/LayaScene_L01_spr_plat_01/L01_spr_plat_01.lh",
         "http://www.gsjgame.com/Resource/LayaScene_L01_spr_plat_02/L01_spr_plat_02.lh",
@@ -88,14 +96,38 @@ class LoadDirctor extends BaseDirector
         "http://www.gsjgame.com/Resource/LayaScene_child_01/child_01.lh"]*/
         Laya.loader.on(Laya.Event.ERROR,this,this._onError);
         Laya.loader.on(Laya.Event.COMPLETE,this,this._onComplete);
-        var resource3DArr = ["C:/Users/Administrator/Desktop/Resource/LayaScene_L01_aut_barrier_02/LayaScene_L01_aut_barrier_02/Conventional/L01_aut_barrier_02.lh"]
+        //var resource3DArr = ["C:/Users/Administrator/Desktop/Resource/LayaScene_L01_aut_barrier_02/LayaScene_L01_aut_barrier_02/Conventional/L01_aut_barrier_02.lh"];
+        var resource3DArr = [ 
+            path.GetLH("c001_child_01") ,
+            path.GetLH("L01_spr_barrier_01"),
+            path.GetLH("L01_spr_barrier_02"),
+            path.GetLH("L01_spr_barrier_03"),
+            path.GetLH("L01_spr_barrier_04"),
+            path.GetLH("L01_spr_plat_01"),
+            path.GetLH("L01_spr_plat_02"),
+            path.GetLH("L01_spr_plat_03"),
+            path.GetLH("item_coin_01"),
+            path.GetLH("item_flyer_01"),
+            path.GetLH("item_shield_01"),
+            path.GetLH("item_untouchable_01"),
+            path.GetLH("trap_chomper_01"),
+            path.GetLH("trap_entangle_01"),
+            path.GetLH("trap_sting_01"),
+            path.GetLH("item_absord"),
+        //path.GetSkyBox("skyCube")
+        /*
+        path.ResourcePath +"LayaScene_L01_spr_plat_03/Conventional/L01_spr_plat_03.lh",
+        */
+        ]// "C:/Users/Administrator/Desktop/Resource/LayaScene_L01_aut_barrier_02/LayaScene_L01_aut_barrier_02/Conventional/L01_aut_barrier_02.lh"];
         this._Load(resource2DArr,resource3DArr);
     }
+    
     protected _Load(arr2D:Array<any> = null,arr3D:Array<any>=null)
     {
+        
         if(arr2D!=null)
         {
-            //Laya.loader.load(arr2D,Laya.Handler.create(this,this._onLoaded),Laya.Handler.create(this,this._on2DProgress,null,false));
+           // Laya.loader.load(arr2D,Laya.Handler.create(this,this._onLoaded),Laya.Handler.create(this,this._on2DProgress,null,false));
             Laya.loader.load(arr2D,null,Laya.Handler.create(this,this._on2DProgress,null,false));
             
         }else
@@ -145,8 +177,8 @@ class LoadDirctor extends BaseDirector
             this.UI.Reload(function():void{thiDir.Load()} );
         }else
         {
-            this.UI.Complete(GuiderManager.Mgr.EnterScene);
-            
+            APP.SceneManager.BG = new BG();
+            this.UI.Complete(()=>{GuiderManager.Mgr.EnterScene()});
         }
         return;
     }
