@@ -28,7 +28,7 @@ export module AnimObj
         Reset()
         {
             this.active = true;
-            APP.SceneManager.CurScene.Scene.addChild(this);
+            APP.SceneManager.CurScene.SceneObj.addChild(this);
             this.frameLoop(1,this,this._FrameFunc)
         }
         Model:Laya.Sprite3D;
@@ -103,7 +103,7 @@ export module AnimObj
         protected _LeaveStage():void
         {
             super._LeaveStage();
-            Controler.GameControler.GameDir.AddLogicGold(1);
+            Controler.GameControler.GameDir.GamePlay.AddLogicGold(1);
             Laya.Pool.recover(this.name,this);
         }
         

@@ -118,12 +118,12 @@ class GameControler {
         this.EnterScene();
     }
     get GameDir(): GameDirector {
-        return APP.SceneManager.CurScene.CurDir as GameDirector;
+        return APP.SceneManager.CurScene.Director as GameDirector;
     }
     //进入游戏场景走这个接口
     EnterScene(): void {
         var newGameScene = new GameScene();
-        APP.SceneManager.EnterScene(newGameScene);
+        APP.SceneManager.ChangeScene(newGameScene);
     }
 
     //生成BUFF表现效果

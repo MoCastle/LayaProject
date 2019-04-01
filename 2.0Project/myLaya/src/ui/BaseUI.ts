@@ -3,7 +3,7 @@ import FW from "./../FrameWork/FrameWork"
 import {BaseEnum} from "./../Base/BaseEnum"
 import {UIFunc} from "./../Utility/UIFunc"
 //UI基类
-export default abstract class BaseUI extends Laya.Sprite
+export default abstract class BaseUI extends Laya.Box
 {
     
     
@@ -22,6 +22,10 @@ export default abstract class BaseUI extends Laya.Sprite
         this._Name = name;
         this._UIManager = FW.FM.GetManager<UIManager>(UIManager);
         this._Showing = true;
+        this.left = 0;
+	    this.right = 0;
+		this.bottom = 0;
+		this.top = 0;
     }
     Hide()
     {
@@ -71,7 +75,7 @@ export default abstract class BaseUI extends Laya.Sprite
      */
     public FixUI(UI:Laya.View)
     {
-        UIFunc.FixUI(UI);
+       // UIFunc.FixUI(UI);
         this.addChild(UI);
     }
     public SetDirty()

@@ -5,6 +5,8 @@ import FW from "./../FrameWork/FrameWork"
 import UIManager from "./../FrameWork/UIManager"
 import EnterGameUI from "./../ui/EnterGameUI"
 import {path} from "./../Utility/Path"
+import {Scene} from "./../Scene/Scene"
+import APP from "../controler/APP";
 
 export default class GuiderManager 
 {
@@ -28,19 +30,18 @@ export default class GuiderManager
     EnterScene():void
     {
         var newGameScene = new GuiderScene();
-        this.SceneMgr.EnterScene(newGameScene);
+        APP.SceneManager.ChangeScene(newGameScene);
         this.CurScene = newGameScene;
     }
 
     //内部功能
     constructor()
     {
-        this.SceneMgr = FW.FM.GetManager<SceneManager>(SceneManager);
         this.CurScene = null;
     }
 }
 
-class GuiderScene extends BaseScene
+class GuiderScene extends Scene.BaseScene
 {
     GuidDir:GuiderDirector;
     CurDir:BaseDirector;
@@ -48,20 +49,16 @@ class GuiderScene extends BaseScene
     {
         super();
     }
-    StartLoad( )
+    
+    protected GenDirector():Scene.BaseDirector
     {
-        Laya.loader.load([{url:path.GetDepathUIJS("Enter") ,type:Laya.Loader.JSON},{url:path.GetDepathUIJS("ItemList") ,type:Laya.Loader.JSON},{url:path.GetAtlPath("comp"),type: Laya.Loader.ATLAS }],Laya.Handler.create(this,this._LoadComplete));
-    }
-    protected _GenDir():void
-    {
-        this.GuidDir = new GuiderDirector();
-        this.CurDir = this.GuidDir;
+        var Director:Scene.BaseDirector = new GuiderDirector();
+        return Director;
     }
 }
 
-class GuiderDirector extends BaseDirector
+class GuiderDirector extends Scene.BaseDirector
 {
-    UI:EnterGameUI;
     ReStart():void
     {
         
@@ -72,16 +69,37 @@ class GuiderDirector extends BaseDirector
         super();
     }
 
-    protected _Start():void
+    public Start():void
     {
-        super._Start();
+        var load2DList = [{url:path.GetDepathUIJS("Enter") ,type:Laya.Loader.JSON},{url:path.GetDepathUIJS("ItemList") ,type:Laya.Loader.JSON},{url:path.GetAtlPath("comp"),type: Laya.Loader.ATLAS }];
+        this.ChangeGamePlay(new Scene.LoadSceneLogic(load2DList,null,new GuiderScenePlay()));
     }
-    protected _StartComplete():void
+    public Update():void
     {
-        super._StartComplete();
-        this.UI = FW.FM.GetManager<UIManager>(UIManager).Show<EnterGameUI>(EnterGameUI);
+        
     }
-    protected _Update():void
+    public End():void
+    {
+
+    }
+}
+
+class GuiderScenePlay extends Scene.BaseScenePlaye
+{
+    UI:EnterGameUI;
+    constructor()
+    {
+        super();
+    }    
+    public Start()
+    {
+        this.UI = APP.UIManager.Show<EnterGameUI>(EnterGameUI);
+    }
+    public End()
+    {
+
+    }
+    public Update()
     {
         
     }

@@ -61,6 +61,7 @@ export default class LoadingUI extends BaseUI
     set Value(num:number)
     {
         this._UI._Progress.value = num;
+        this.Update();
     }
 
     get value():number

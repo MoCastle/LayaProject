@@ -57,16 +57,17 @@ export module Item
             this.RewardList = new Array<LayItemMgr>();
             this.BarrierList = new Array<LayItemMgr>();
             
-            this.BarrierList.push(new LayItemMgr(10,11,ItemType.Empty,10));
-            this.BarrierList.push(new LayItemMgr(10,4,ItemType.Rock,10));
+            this.BarrierList.push(new LayItemMgr(10,1,ItemType.Empty,10));
+            this.BarrierList.push(new LayItemMgr(10,5,ItemType.Rock,10));
             this.BarrierList.push(new LayItemMgr(10,2,ItemType.Thorn,10));
-            this.BarrierList.push(new LayItemMgr(15,2,ItemType.Vine))
+            this.BarrierList.push(new LayItemMgr(10,2,ItemType.Vine,10))
+            this.RewardList.push(new LayItemMgr(10,1,ItemType.Coin))
+
+            this.RewardList.push(new LayItemMgr(50,1,ItemType.Fly,20))
             
-            this.RewardList.push(new LayItemMgr(10,4,ItemType.Coin))
-            this.RewardList.push(new LayItemMgr(10,1,ItemType.Collector))
-            this.RewardList.push(new LayItemMgr(10,2,ItemType.Fly))
-            this.RewardList.push(new LayItemMgr(20,2,ItemType.Protect,3));
-            this.RewardList.push(new LayItemMgr(20,2,ItemType.HolyProtect,3));
+            this.RewardList.push(new LayItemMgr(50,1,ItemType.Collector))
+            this.RewardList.push(new LayItemMgr(50,1,ItemType.Protect));
+            this.RewardList.push(new LayItemMgr(50,1,ItemType.HolyProtect));
            
             ResetItemFactory( );
         }
@@ -228,6 +229,7 @@ export module Item
         Step:Step;
         ItemType:ItemType;
         Model:Laya.Sprite3D;
+        private m_Animator:Laya.Animator;
         get IsDifficulty():boolean
         {
             return this.ItemType>0&&this.ItemType<10;
@@ -271,6 +273,7 @@ export module Item
             var objPool = Laya.Pool;//GM.ObjPool;
             objPool.recover(ItemID+this.ItemType,this);
         }
+        
         /**
          * 触发
          * @param player 
@@ -311,6 +314,7 @@ export module Item
             this.ItemType = itemType;
             this.Model= null;
             this._InitItemModel();
+            this.m_Animator = null;
         }
     
         _AddBuffToPlayer(player:Player,buff:BasePlayerBuff)
@@ -330,7 +334,10 @@ export module Item
             
             this._GenItemModel();
             if(this.Model)
+            {
                 this.Model.transform.position = ps;
+                this.m_Animator = this.Model.getComponent(Laya.Animator);
+            }
             return this.Model;
         }
         protected _TestGentItemModel()
@@ -403,7 +410,11 @@ export module Item
             if(this.BreakProtect(player))
                 this.PutItem();
             else
+            {
                 APP.MessageManager.Trigger(MessageMD.GameEvent.PlayerDeath);
+                var anim:Laya.Animator = this.Model.getChildAt(0).getComponent(Laya.Animator);
+                anim.play("touch");
+            }
         }
     }
     GameStruct.ItemDictType[ItemType.Thorn] = Thorn;
@@ -446,11 +457,11 @@ export module Item
         constructor(time:number = 0, IsHoly:boolean = false)
         {
             super(IsHoly ? ItemType.HolyProtect:ItemType.Protect,ProtectBuff.Idx);
-            this.Time = APP.SceneManager.CurDir.GameTime+time;
+            this.Time = Controler.GameControler.GameDir.GameTime+time;
         }
         Update()
         {
-            if(this.Time<APP.SceneManager.CurDir.GameTime)
+            if(this.Time<Controler.GameControler.GameDir.GameTime)
             {
                 this.Complete();
             }
@@ -481,16 +492,19 @@ export module Item
 
     class Coin extends StepItem
     {
+        //ToDo
+        private m_touched:Boolean
         FlyToPlayer(player:Player)
         {
             var conin:AnimCoin = AnimObj.GenAnimObj<AnimCoin>(AnimObj.AnimCoin,this.Model);
             conin.SetTarget(player);
-            Controler.GameControler.GameDir.AddGoldUnLogicGold(1);
+            Controler.GameControler.GameDir.GamePlay.AddGoldUnLogicGold(1);
             this.PutItem();
         }
         TouchItem( player:Player )
         {
-            Controler.GameControler.GameDir.AddGold(1);
+            Controler.GameControler.GameDir.GamePlay.AddGold(1);
+            
             this.PutItem();
         }
         constructor(step:Step)
@@ -525,7 +539,7 @@ export module Item
         protected _GenItemModel()
         {
             var Idx = Math.floor(1+ Math.random()*2);
-            var name:string = path.GetLH("item_absord");
+            var name:string = path.GetLH("item_absord_01");
             var theModel = Laya.loader.getRes(name);
             var model:Laya.Sprite3D = theModel.clone(); 
             
@@ -553,7 +567,7 @@ export module Item
         Start(player:Player)
         {
             super.Start(player);
-            this.CountFloor = this.GameDir.PlayerFloor - 2;
+            this.CountFloor = this.GameDir.GamePlay.PlayerFloor - 2;
         }
         Update()
         {
@@ -562,11 +576,11 @@ export module Item
                 this.Complete();
             }else
             {
-                if(this.GameDir.PlayerFloor - this.CountFloor+1<0)
+                if(this.GameDir.GamePlay.PlayerFloor - this.CountFloor+1<0)
                 {
                     return;
                 }
-                this.GameDir.LoopDoFloorStep(this.CountFloor,this,this.CountCoins);
+                this.GameDir.GamePlay.LoopDoFloorStep(this.CountFloor,this,this.CountCoins);
                 ++this.CountFloor;
             }
         }
@@ -628,8 +642,8 @@ export module Item
             var flyCtrl = new PlayerControler.PlayerFly(this.Speed);
             flyCtrl.SetPlayer(player)
             player.AddCtrler(flyCtrl);
-            Controler.GameControler.GameDir.AddInputCtrler(new Input.DIYInput());
-            Controler.GameControler.GameDir.SetSafePS(this._FinalLocation);
+            Controler.GameControler.GameDir.GamePlay.AddInputCtrler(new Input.DIYInput());
+            Controler.GameControler.GameDir.GamePlay.SetSafePS(this._FinalLocation);
             player.FlyPrepare();
             
         }
@@ -638,7 +652,7 @@ export module Item
         private _FinalZ:number;   
         constructor(speed:number=0.15,floor:number=10)
         {
-            super(ItemType.Rope,ProtectBuff.Idx);
+            super(ItemType.Fly,ProtectBuff.Idx);
             this.Speed = speed;
             this.Floor = floor;
             this._FinalLocation = null;
@@ -653,12 +667,12 @@ export module Item
             }
             if(this._FinalZ - this.Player.Position.z>-0.2)
             {
-                var step:Step = Controler.GameControler.GameDir.GetStepByLocation(this._FinalLocation);
+                var step:Step = Controler.GameControler.GameDir.GamePlay.GetStepByLocation(this._FinalLocation);
                 this.Player.LayStep(step);
                 this.Player.BaseCtrler.StartMove();
                 this.Player.PopCtrler();
     
-                Controler.GameControler.GameDir.PopInputCtrler();
+                Controler.GameControler.GameDir.GamePlay.PopInputCtrler();
                 super.Complete();
             }
         }
@@ -703,7 +717,7 @@ export module Item
             }
             if(this._FinalZ - this.Player.Position.z>-0.2)
             {
-                var step:Step = Controler.GameControler.GameDir.GetStepByLocation(this._FinalLocation);
+                var step:Step = Controler.GameControler.GameDir.GamePlay.GetStepByLocation(this._FinalLocation);
                 this.End(step);
             }
         }
@@ -712,7 +726,7 @@ export module Item
             this.Player.LayStep(step);
             this.Player.BaseCtrler.StartMove();
             this.Player.PopCtrler();
-            Controler.GameControler.GameDir.PopInputCtrler();
+            Controler.GameControler.GameDir.GamePlay.PopInputCtrler();
             super.Complete();
         }
         Start(player:Player)
@@ -725,8 +739,8 @@ export module Item
             var flyCtrl = new PlayerControler.PlayerFly(this.Speed);
             flyCtrl.SetPlayer(player)
             player.AddCtrler(flyCtrl);
-            Controler.GameControler.GameDir.AddInputCtrler(new Input.DIYInput(this,this._Input));
-            Controler.GameControler.GameDir.SetSafePS(this._FinalLocation);
+            Controler.GameControler.GameDir.GamePlay.AddInputCtrler(new Input.DIYInput(this,this._Input));
+            Controler.GameControler.GameDir.GamePlay.SetSafePS(this._FinalLocation);
         }
     
         private _FinalLocation:GameStruct.MLocation;
@@ -742,10 +756,10 @@ export module Item
         }
         private _Input(isRight:boolean):void
         {
-            var closeFloor = Controler.GameControler.GameDir.PlayerFloorLine;
+            var closeFloor = Controler.GameControler.GameDir.GamePlay.PlayerFloorLine;
             if(closeFloor.FloorNum%2!= this._FinalLocation.Y%2)
             {
-                closeFloor = Controler.GameControler.GameDir.GetFloorByFloor(closeFloor.FloorNum +1 );
+                closeFloor = Controler.GameControler.GameDir.GamePlay.GetFloorByFloor(closeFloor.FloorNum +1 );
             }
             var step:Step = closeFloor.GetStep( this._FinalLocation.X );
             if(isRight)
@@ -796,11 +810,11 @@ export module Item
         Start(player:Player)
         {
             super.Start(player)
-            Controler.GameControler.GameDir.AddInputCtrler(new Input.DIYInput(this,this._Input));
+            Controler.GameControler.GameDir.GamePlay.AddInputCtrler(new Input.DIYInput(this,this._Input));
         }
         Complete()
         {
-            Controler.GameControler.GameDir.PopInputCtrler();
+            Controler.GameControler.GameDir.GamePlay.PopInputCtrler();
             super.Complete();
         }
         constructor(countTime:number = 4,inputDir:boolean = true)
@@ -831,7 +845,7 @@ export module Item
                 info = "";
             else
                 info = this.InputDir == true?"Right":"Left";
-            Controler.GameControler.GameDir.ShowInputInfo(info);
+            Controler.GameControler.GameDir.GamePlay.ShowInputInfo(info);
         }
     }
     

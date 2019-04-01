@@ -71,7 +71,7 @@ export default abstract class BaseUI extends Laya.Sprite
      */
     public FixUI(UI:Laya.View)
     {
-        UIFunc.FixUI(UI);
+       // UIFunc.FixUI(UI);
         this.addChild(UI);
     }
     public SetDirty()

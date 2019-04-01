@@ -1,7 +1,7 @@
 /**作者:Mo
  * 输入管理相关
  */
-import GameDirector from "./../Scene/GameDirector"
+import GameScenePlay from "./../Scene/ScenePlay/GameScenePlay"
 export module Input
 {
 //基础输入控制器
@@ -42,10 +42,10 @@ export class DIYInput extends BaseGameInput
 }
 export class NormGameInput extends BaseGameInput
 {
-    GameDir:GameDirector;
+    GameDir:GameScenePlay;
     _Dirty:boolean;
     _IsRight:boolean;
-    constructor( dir:GameDirector,input:BaseGameInput = null )
+    constructor( dir:GameScenePlay,input:BaseGameInput = null )
     {
         super(input);
         this.GameDir = dir;

@@ -93,7 +93,7 @@ export default abstract class BaseScene extends LifeObj
             }
         }
         this._UIManager.Clear();
-        APP.SceneManager.CurScene = this._NextScene;
+        //APP.SceneManager.CurScene = this._NextScene;
         //zerg 场景不知道会不会内存泄漏
     }
 
@@ -121,7 +121,7 @@ export default abstract class BaseScene extends LifeObj
         super._Start();
         if(this.Scene)
         {
-            APP.SceneManager.CurScene = this;
+            //APP.SceneManager.CurScene = this;
         }
     }
     protected _Starting()

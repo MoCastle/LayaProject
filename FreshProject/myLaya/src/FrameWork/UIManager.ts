@@ -1,101 +1,110 @@
 import BaseManager from "./BaseManager";
 import BaseUI from "./../ui/BaseUI"
-import {BaseEnum} from "./../Base/BaseEnum"
-import {UIFunc} from "./../Utility/UIFunc"
-import {BaseFunc} from "./../Base/BaseFunc"
-export default class  UIManager extends BaseManager
-{
+import { BaseEnum } from "./../Base/BaseEnum"
+import { UIFunc } from "./../Utility/UIFunc"
+import { BaseFunc } from "./../Base/BaseFunc"
+enum NodeType {
+    Bottom,
+    Middle,
+}
+export default class UIManager extends BaseManager {
+    static g_UIWidth = 750;
+    static g_UIHeight = 1334;
     //内部功能
-    private _UINode:Laya.Sprite;
-    private _MidleUINode:Laya.Sprite;
-    private _UIDict:{[name:string]:BaseUI};
-    private _UpdateCount:number;
-    private _DirtyUIQue:BaseFunc.Queue<BaseUI>;
+    private m_RootNode: Laya.Box;
+    private m_BottomNode: Laya.Box;
+    private m_MidleNode: Laya.Box;
+    private _UIDict: { [name: string]: BaseUI };
+    private _UpdateCount: number;
+    private m_UpdateTime:number;
 
-    constructor()
-    {
+    private AddNode(node: NodeType): void  {
+        var nodeBox: Laya.Box = new Laya.Box();
+        nodeBox.top = 0;
+        nodeBox.bottom = 0;
+        nodeBox.left = 0;
+        nodeBox.right = 0;
+        switch (node)  {
+            case NodeType.Bottom:
+                this.m_BottomNode = nodeBox;
+                break;
+            default:
+                this.m_MidleNode = nodeBox;
+                break;
+        }
+        this.m_RootNode.addChild(nodeBox);
+    }
+
+    constructor()  {
         super();
-        this._UINode = new Laya.Sprite();
-        this._UINode.width = Laya.stage.width;
-        this._UINode.height = Laya.stage.height;
-        this._UINode.name = "UINode";
-        this._MidleUINode = new Laya.Sprite();
-        Laya.stage.addChild(this._UINode);
-        Laya.stage.addChild(this._MidleUINode);
+        var rootBox = new Laya.Box();
+        Laya.stage.addChild(rootBox);
+        this.m_RootNode = rootBox;
+        var scale = UIFunc.CountScaleFix(UIManager.g_UIWidth);
+        rootBox.scaleX = scale;
+        rootBox.scaleY = scale;
+        rootBox.height = UIManager.g_UIHeight / scale;
+        rootBox.size(Laya.stage.width, Laya.stage.height);
+        Laya.stage.addChild(this.m_RootNode);
+        this.m_UpdateTime = 0;
+
+        this.AddNode(NodeType.Bottom);
+        this.AddNode(NodeType.Middle);
+        
         this._UIDict = {};
         this._UpdateCount = 0;
-        this._DirtyUIQue = new BaseFunc.Queue<BaseUI>();
     }
 
-    static Name():string
-    {
-        return  "UIManager";
+    static Name(): string  {
+        return "UIManager";
     }
 
-    public Update()
-    {
+    public Update()  {
         //定帧刷新UI
-        if(this._UpdateCount>10)
-        {
-            this.UpdateUI(this._UINode);
-            this.UpdateUI(this._MidleUINode);
+        if (this.m_UpdateTime < Laya.timer.currTimer)  {
+            this.UpdateUI(this.m_BottomNode);
+            this.UpdateUI(this.m_MidleNode);
             this._UpdateCount = 0;
-        }
-        ++this._UpdateCount;
-        if(this._DirtyUIQue.Count<1)
-        {
-            return ;
-        }
-        var updateUI:BaseUI = this._DirtyUIQue.Pop();
-        if(updateUI)
-        {
-            updateUI.UIUpdate();
+            this.m_UpdateTime = Laya.timer.currTimer + 30;
         }
     }
 
-    public UpdateUI(node:Laya.Sprite)
-    {
-        for(let idx:number = 0;idx<node.numChildren; ++idx)
-        {
-            var ui:BaseUI = node.getChildAt(idx) as BaseUI;
-            if(ui.Dirty)
-                this._DirtyUIQue.Push(ui);
+    public UpdateUI(node: Laya.Sprite)  {
+        for (let idx: number = 0; idx < node.numChildren; ++idx)  {
+            var ui: BaseUI = node.getChildAt(idx) as BaseUI;
+            ui.UIUpdate();
         }
     }
-    public AddUI()
-    {
+    
+    public AddUI()  {
 
     }
 
-    Show<T extends BaseUI>(uiClass:{new (name:string): T; Name():string }):T
-    {
-        var str:string = uiClass.Name();    
-        var newUI:BaseUI = this.GetUIByName(str);
-        newUI = newUI==null?this.AddUIByName(str,new uiClass(str)):newUI;
-        var node:Laya.Sprite = null;
-        switch(newUI.UIType)
-        {
+    Show<T extends BaseUI>(uiClass: { new(name: string): T; Name(): string }): T  {
+        var str: string = uiClass.Name();
+        var newUI: BaseUI = this.GetUIByName(str);
+        newUI = newUI == null ? this.AddUIByName(str, new uiClass(str)) : newUI;
+        var node: Laya.Sprite = null;
+        switch (newUI.UIType)  {
             //中层次UI
             case BaseEnum.UITypeEnum.Midle:
-                node = this._MidleUINode;
-                if(this._MidleUINode.numChildren<=0)
-                {
+                node = this.m_MidleNode;
+                if (this.m_MidleNode.numChildren <= 0)  {
                     //通知导演暂停游戏
                     //APP.SceneManager.CurScene.CurDir.TimeUp();
                 }
-            break;
+                break;
             //默认Ui全是低层次UI
             default:
-                node = this._UINode;
-            break;
+                node = this.m_BottomNode;
+                break;
         }
 
-        var childNum:number = node.numChildren;
+        var childNum: number = node.numChildren;
         //把互斥的窗口关掉
-        if(newUI.IsMutex&&childNum>0)
-        {
-            var lastUI = node.getChildAt(node.numChildren-1) as BaseUI;
-            if(!lastUI.IsMutex)
+        if (newUI.IsMutex && childNum > 0)  {
+            var lastUI = node.getChildAt(node.numChildren - 1) as BaseUI;
+            if (!lastUI.IsMutex)
                 lastUI.Hide();
         }
 
@@ -105,65 +114,58 @@ export default class  UIManager extends BaseManager
         return newUI as T;
     }
 
-    Close(ui:BaseUI)
-    {
+    Close(ui: BaseUI)  {
         ui.removeSelf();
 
         ui.CloseOP();
-        var node:Laya.Sprite = null;
-        switch(ui.UIType)
-        {
+        var node: Laya.Sprite = null;
+        switch (ui.UIType)  {
             //中层次UI
             case BaseEnum.UITypeEnum.Midle:
-                node = this._MidleUINode;
-                if(node.numChildren<=0)
+                node = this.m_MidleNode;
+                if (node.numChildren <= 0)
                     //关闭窗口 通知游戏继续
                     //APP.SceneManager.CurScene.CurDir.ContinueTime();
-            break;
+                    break;
             //默认Ui全是低层次UI
             default:
-                node = this._UINode;
-            break;
+                node = this.m_BottomNode;
+                break;
         }
-        var childNum:number = node.numChildren;
-        if(childNum>0)
-        {
-            var lastUI:BaseUI = node.getChildAt(childNum-1) as BaseUI;
+        var childNum: number = node.numChildren;
+        if (childNum > 0)  {
+            var lastUI: BaseUI = node.getChildAt(childNum - 1) as BaseUI;
             lastUI.OpenOP();
         }
     }
 
-    CloseCurView()
-    {
-        var ui:BaseUI =this._UINode.getChildAt(this._UINode.numChildren-1) as BaseUI;
+    CloseCurView()  {
+        var ui: BaseUI = this.m_BottomNode.getChildAt(this.m_BottomNode.numChildren - 1) as BaseUI;
         this.Close(ui);
     }
 
     //删除所有节点上的UI
-    Clear()
-    {
-        var uiNode = this._UINode;
+    Clear()  {
+        var uiNode = this.m_BottomNode;
         while (uiNode.numChildren) {
-           var closeUI: BaseUI = uiNode.getChildAt(0) as BaseUI;//.removeSelf();
-           this.Close(closeUI);
+            var closeUI: BaseUI = uiNode.getChildAt(0) as BaseUI;//.removeSelf();
+            this.Close(closeUI);
         }
-        uiNode = this._MidleUINode
+        uiNode = this.m_MidleNode
         while (uiNode.numChildren) {
-           var closeUI: BaseUI = uiNode.getChildAt(0) as BaseUI;//.removeSelf();
-           this.Close(closeUI);
+            var closeUI: BaseUI = uiNode.getChildAt(0) as BaseUI;//.removeSelf();
+            this.Close(closeUI);
         }
     }
 
-    GetUIByName(name:string):BaseUI
-    {
+    GetUIByName(name: string): BaseUI  {
         var ui = this._UIDict[name];
-        ui = ui==undefined?null:ui;
+        ui = ui == undefined ? null : ui;
         return ui;
     }
-    AddUIByName(name:string,ui:BaseUI):BaseUI
-    {
+    AddUIByName(name: string, ui: BaseUI): BaseUI  {
         this._UIDict[name] = ui;
         return ui;
     }
-    
+
 }

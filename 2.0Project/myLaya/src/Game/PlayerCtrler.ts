@@ -35,9 +35,11 @@ export module PlayerControler
     export class PlayerNormCtrler extends BasePlayerCtrler
     {
         Time:number;
+        IsFalling:boolean;
         StartMove()
         {
-            this.Time = APP.SceneManager.CurScene.CurDir.GameTime + Controler.GameControler.PlayerMoveTime;
+            this.Time = APP.SceneManager.CurScene.Director.GameTime + Controler.GameControler.PlayerMoveTime;
+            this.IsFalling = false;
         }
         constructor(player:Player = null)
         {
@@ -48,7 +50,7 @@ export module PlayerControler
         {
             if(this.Time>0)
             {
-                if(this.Time<=APP.SceneManager.CurScene.CurDir.GameTime)
+                if(this.Time<=APP.SceneManager.CurScene.Director.GameTime)
                 {
                     this.Time = -1;
                     this.player.SetStep(this.player.CurStep);
@@ -57,6 +59,11 @@ export module PlayerControler
                 else
                 {
                     var lastTime = this.Time-Laya.timer.currTimer;
+                    if( this.IsFalling = false && lastTime*2 > this.Time-Laya.timer.currTimer)
+                    {
+                        this.IsFalling = true;
+                        this.player.JumpDown();
+                    }
                     var rate = (1-lastTime/ Controler.GameControler.PlayerMoveTime);
                     var StepPs:Laya.Vector3 = this.player.CurStep.Position;
                     StepPs.y +=Controler.GameControler.StepLength;

@@ -1,3 +1,5 @@
 /layaFramework/release/
 /fguiProject/.objs/
 /fguiProject/logs/
+chrome/
+*.sth

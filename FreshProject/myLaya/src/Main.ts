@@ -2,7 +2,6 @@
  * 作者:Mo
  * 启动场景
  */
-
 import FrameWork from "./FrameWork/FrameWork"
 import UIManager from "./FrameWork/UIManager"
 import SceneManager from "./FrameWork/SceneManager"
@@ -18,7 +17,6 @@ class Game
     constructor()
     {
         var ss = APP;
-        
         Laya3D.init(0,0,true);
         GameConfig.init();
         //Laya.stage.scaleMode = Laya.Stage.SCALE_FIXED_WIDTH;
@@ -39,9 +37,10 @@ class Game
         this._Frame.AddManager<MessageMD.MessageCenter>(MessageMD.MessageCenter);
         var sceneMgr:SceneManager = this._Frame.AddManager<SceneManager>(SceneManager);
         this._Frame.AddManager<UIManager>(UIManager);
-		sceneMgr.EnterScene(new LoadScene());
+		sceneMgr.ChangeScene(new LoadScene());
         Laya.timer.frameLoop(1,this,this.Update);
     }
+
     Update( )
     {
         this._Frame.Update();
