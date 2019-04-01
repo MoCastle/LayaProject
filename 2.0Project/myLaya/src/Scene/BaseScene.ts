@@ -3,62 +3,54 @@ import UIManager from "./../FrameWork/UIManager"
 import SceneManager from "./../FrameWork/SceneManager"
 import BaseDirector from "./BaseDirector"
 import LifeObj from "./../Base/LifeObj"
-import {Enum} from "./../Base/LifeObj"
-import {MessageMD} from "./../FrameWork/MessageCenter"
+import { Enum } from "./../Base/LifeObj"
+import { MessageMD } from "./../FrameWork/MessageCenter"
 import APP from "./../controler/APP"
 //场景基类
-export default abstract class BaseScene extends LifeObj
-{
+export default abstract class BaseScene extends LifeObj {
     //外部接口
-    CurDir:BaseDirector;
-    IsLoadComplete:boolean;
-    Scene:Laya.Scene3D;
-    IsLoading:boolean;
+    CurDir: BaseDirector;
+    IsLoadComplete: boolean;
+    Scene: Laya.Scene3D;
+    IsLoading: boolean;
 
     //结束场景
-    Leave(nextStage:BaseScene):void
-    {
+    Leave(nextStage: BaseScene): void  {
         this._NextScene = nextStage;
         nextStage.StartLoad();
         this._Leave();
     }
-    StartLoad( )//;//CallBack:()=>void);//)CallBack():void=>);
+    StartLoad()//;//CallBack:()=>void);//)CallBack():void=>);
     {
         this.IsLoading = true;
     }
-    
+
     //开始场景
-    Start():void
-    {
-        if(!this.IsLoadComplete && !this.IsLoading)
-        {
+    Start(): void  {
+        if (!this.IsLoadComplete && !this.IsLoading)  {
             this.StartLoad();
-            if(this._LoadCallBack == null)
-            {
+            if (this._LoadCallBack == null)  {
                 this._LoadCallBack = this._Start;
             }
         }
-        else if(!this.IsLoading)
+        else if (!this.IsLoading)
             this._Start();
     }
     //放对象
-    PutObj(node:Laya.Sprite3D ):void
-    {
-        if(node == null)
-        {
+    PutObj(node: Laya.Sprite3D): void  {
+        if (node == null)  {
             console.log("BaseScene PutObj Error:empty Sprite3D");
         }
-         this.Scene.addChild(node);  
+        this.Scene.addChild(node);
     }
 
     //内部功能
-    protected _NextScene:BaseScene;//下一个场景
-    protected _LoadCallBack:()=>void;
-    protected _UIManager:UIManager;
-    protected _MessageMgr:MessageMD.MessageCenter;
-    
-    constructor()
-    {
+    protected _NextScene: BaseScene;//下一个场景
+    protected _LoadCallBack: () => void;
+    protected _UIManager: UIManager;
+    protected _MessageMgr: MessageMD.MessageCenter;
+
+    constructor()  {
         super();
         this.IsLoading = false;
         this.IsLoadComplete = false
@@ -70,24 +62,19 @@ export default abstract class BaseScene extends LifeObj
         this._NextScene = null;
     }
 
-    protected _Leaving()
-    {
+    protected _Leaving()  {
         this._UIManager.Clear();
 
-        if(this.CurDir.ObjState == Enum.LifeObjState.Ended)
-        {
+        if (this.CurDir.ObjState == Enum.LifeObjState.Ended)  {
             super._Leaveing();
         }
     }
 
-    protected _LeaveComplete()
-    {
+    protected _LeaveComplete()  {
         super._LeaveComplete();
-        if(this.Scene)
-        {
+        if (this.Scene)  {
             this.Scene.removeSelf();
-            while(this.Scene.numChildren)
-            {
+            while (this.Scene.numChildren)  {
                 var actor = this.Scene.getChildAt(0);
                 actor.removeSelf();
             }
@@ -97,45 +84,37 @@ export default abstract class BaseScene extends LifeObj
         //zerg 场景不知道会不会内存泄漏
     }
 
-    protected _Update()
-    {
-        if( this.CurDir!= null)
+    protected _Update()  {
+        if (this.CurDir != null)
             this.CurDir.Update();
     }
 
-    protected abstract _GenDir():void;
-    
-    protected _LoadComplete()
-    {
-       this.IsLoadComplete = true;
-       this.IsLoading = false;
-        if(this._LoadCallBack!=null)
-        {
+    protected abstract _GenDir(): void;
+
+    protected _LoadComplete()  {
+        this.IsLoadComplete = true;
+        this.IsLoading = false;
+        if (this._LoadCallBack != null)  {
             this._LoadCallBack();
             this._LoadCallBack = null;
         }
     }
 
-    protected _Start()
-    {
+    protected _Start()  {
         super._Start();
-        if(this.Scene)
-        {
+        if (this.Scene)  {
             //APP.SceneManager.CurScene = this;
         }
     }
-    protected _Starting()
-    {
+    protected _Starting()  {
         //资源都没下完就不要走其它逻辑了
-        if(this.IsLoading&& this.IsLoadComplete )
-        {
+        if (this.IsLoading && this.IsLoadComplete)  {
             this._LoadComplete();
         }
         else
             super._Starting();
     }
-    protected _StartComplete()
-    {
+    protected _StartComplete()  {
         this._UIManager.Clear();
 
         this._GenDir();

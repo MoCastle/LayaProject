@@ -1,9 +1,9 @@
-import PlayerEntity from "./PlayerEntity"
+import * as PlayerEntity from "./PlayerEntity"
 export default class BaseAgent
 {
-    protected m_PlayerEntity:any;
+    protected m_PlayerEntity:PlayerEntity.Player.PlayerEntity;
     constructor()
     {
-        this.m_PlayerEntity = PlayerEntity.Entity;
+        this.m_PlayerEntity = PlayerEntity.Player.PlayerEntity.Entity;
     }
 }

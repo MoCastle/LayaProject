@@ -27,11 +27,11 @@ export module Item
         Empty,
         Rock,
         Thorn,
+        Vine,
         Protect=11,
         HolyProtect,
         Fly,
         Rope,
-        Vine,
         Collector,
         Coin=20,
     }
@@ -232,7 +232,7 @@ export module Item
         private m_Animator:Laya.Animator;
         get IsDifficulty():boolean
         {
-            return this.ItemType>0&&this.ItemType<10;
+            return this.ItemType>0&&this.ItemType<10&&this.ItemType!= ItemType.Vine;
         }
     
         //判断能不能走上去
@@ -411,7 +411,7 @@ export module Item
                 this.PutItem();
             else
             {
-                APP.MessageManager.Trigger(MessageMD.GameEvent.PlayerDeath);
+                APP.MessageManager.Fire(MessageMD.GameEvent.PlayerDeath);
                 var anim:Laya.Animator = this.Model.getChildAt(0).getComponent(Laya.Animator);
                 anim.play("touch");
             }

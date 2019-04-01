@@ -85,7 +85,7 @@ export module MessageMD
          * @param {string} name 消息名字
          * @param {any} param 消息名字
          */
-        Trigger(name:string,param:any = null)
+        Fire(name:string,param:any = null)
         {
             var getEvent:MEvent = this._GetEvent(name);
             getEvent.Execute(param);

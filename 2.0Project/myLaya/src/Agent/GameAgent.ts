@@ -1,4 +1,4 @@
-import PlayerEntity from "./PlayerEntity"
+import {Player} from "./PlayerEntity"
 import BaseAgent from "./BaseAgent"
 
 export class GameAgent extends BaseAgent {
@@ -12,13 +12,19 @@ export class GameAgent extends BaseAgent {
     }
     constructor()  {
         super();
-        var playerEntity: any = PlayerEntity.Entity;
-        playerEntity.CurLevel = playerEntity.CurLevel ? playerEntity.CurLevel : 0;
-
     }
-    /*
+    
     public get CurLevel():number
     {
-        return PlayerEntity
-    }*/
+        return this.m_PlayerEntity.HistoryMaxLevel;
+    }
+
+    public get CurCharacterID():number
+    {
+        return this.m_PlayerEntity.CurCharacterID;
+    }
+    public get CurItem():number
+    {
+        return 0;
+    }
 }

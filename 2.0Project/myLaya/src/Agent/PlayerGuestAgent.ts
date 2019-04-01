@@ -1,4 +1,3 @@
-import PlayerEntity from "./PlayerEntity"
 import BaseAgent from "./BaseAgent"
 export class PlayerGuestAgent extends BaseAgent {
     static _Agent: PlayerGuestAgent;
@@ -13,16 +12,25 @@ export class PlayerGuestAgent extends BaseAgent {
         return this.m_PlayerEntity.Money;
     }
     public get CharacterID(): number  {
-        return this.m_PlayerEntity.CharacterID;
+        return this.m_PlayerEntity.CurCharacterID;
     }
-    public CharacterList(): Array<number>  {
+    public get CharacterList(): Array<number>  {
         return this.m_PlayerEntity.CharacterList;
     }
 
     private constructor()  {
         super();
-        this.m_PlayerEntity.Money = this.m_PlayerEntity.Money ? this.m_PlayerEntity.Money : 0;
-        this.m_PlayerEntity.CharacterID = this.m_PlayerEntity.CharacterID ? this.m_PlayerEntity.CharacterID : 0;
-        this.m_PlayerEntity.CharacterList = this.m_PlayerEntity.CharacterList ? this.m_PlayerEntity.CharacterList : [0];
+    }
+    
+    public BuyCharacter(id:number)
+    {
+        //ToDo
+        var prive = 0;
+        if(prive > this.m_PlayerEntity.Money)
+        {
+            return ;
+        }
+        this.m_PlayerEntity.Money -= id;
+        this.m_PlayerEntity.CharacterList[id] = 1;
     }
 }

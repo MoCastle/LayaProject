@@ -170,7 +170,7 @@ export default class Player extends Laya.Sprite3D
         }
         if((this.CurStep.StepItem.ItemType == Item.ItemType.None)&&(this.CurStep.IsEmpty||(this.CurStep.LeftParent&&this.CurStep.RightParent&&this.CurStep.LeftParent.StepItem.IsForbiden&&this.CurStep.RightParent.StepItem.IsForbiden)))
         {
-            APP.MessageManager.Trigger(MessageMD.GameEvent.PlayerDeath);
+            APP.MessageManager.Fire(MessageMD.GameEvent.PlayerDeath);
             this.m_Animator.play(Character.PlayerAnimName(Character.AnimEnum.Fall));
             return;
         }

@@ -22,7 +22,7 @@ export default class GuiderManager
     }
     SceneMgr:SceneManager;
     CurScene:GuiderScene;
-    get GameDir():GuiderDirector
+    public get GameDir():GuiderDirector
     {
         return this.CurScene.GuidDir;
     }
