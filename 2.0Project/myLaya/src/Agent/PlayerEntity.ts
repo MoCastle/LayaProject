@@ -9,6 +9,7 @@ export module Player {
         static OnHistoryMaxLevelChange: string = "OnHistoryMaxLevelChange";
         static OnCharacterListChange: string = "OnCharacterListChange";
         static OnCurItemChange:string = "OnCurItemChange";
+        static OnItemListChange:string = "OnItemListChange";
     }
     
     export class PlayerEntity {
@@ -27,6 +28,7 @@ export module Player {
         private m_MessageMgr:MessageMD.MessageCenter;
         //当前拥选中道具
         private m_CurItem:number;
+        private m_ItemList:Array<number>;
 
         public get Money(): number
         {
@@ -43,7 +45,16 @@ export module Player {
         }
         public get CurCharacterID(): number
         {
-            return this.m_Money;
+            return this.m_CurCharacterID;
+        }
+        public set CurCharacterID(value:number)
+        {
+            if(value == this.m_CurCharacterID)
+            {
+                return;
+            }
+            this.m_CurCharacterID = value;
+            this.m_MessageMgr.Fire(Event.OnCurCharacterIDChange);
         }
         
         public get HistoryMaxLevel(): number
@@ -66,6 +77,7 @@ export module Player {
 
             return this.m_CharacterList;
         }
+
         public set CurItem(value:number)
         {
             if(value == this.m_CurItem)
@@ -75,10 +87,17 @@ export module Player {
             this.m_MessageMgr.Fire(Event.OnCurItemChange)
             this.m_CurItem = value;
         }
+
         public get CurItem():number
         {
             return this.m_CurItem;
         }
+        
+        public get ItemList():Array<number>
+        {
+            return this.m_ItemList;
+        }
+
         constructor()  {
             this.m_Money = 0;
             this.m_CurCharacterID = 0;
@@ -87,6 +106,7 @@ export module Player {
             this.m_CurItem = 0;
             this.m_FrameWork = FrameWork.FM;
             this.m_MessageMgr = FrameWork.FM.GetManager<MessageMD.MessageCenter>(MessageMD.MessageCenter);
+            this.m_ItemList = [];
         }
         
         public AddCharacter(id:number)
@@ -95,6 +115,15 @@ export module Player {
             this.m_MessageMgr.Fire(Event.OnCharacterListChange);
         }
 
+        public AddItem(id:number)
+        {
+            if(!this.m_ItemList[id]) 
+            {
+                this.m_ItemList[id] = 0;
+            }
+            ++this.m_ItemList[id];
+            this.m_MessageMgr.Fire(Event.OnItemListChange);
+        }
     }
 
 }

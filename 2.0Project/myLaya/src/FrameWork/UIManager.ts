@@ -62,8 +62,8 @@ export default class UIManager extends BaseManager {
         var rootBox = this.m_RootNode;
         rootBox.scaleX = scale;
         rootBox.scaleY = scale;
-        rootBox.height = UIManager.g_UIHeight / scale;
-        rootBox.size(Laya.stage.width, Laya.stage.height);
+        rootBox.height = UIManager.g_UIHeight * scale;
+        rootBox.width = UIManager.g_UIWidth;
     }    
 
     public Update()  {
@@ -123,7 +123,6 @@ export default class UIManager extends BaseManager {
 
     Close(ui: BaseUI)  {
         ui.removeSelf();
-
         ui.CloseOP();
         var node: Laya.Sprite = null;
         switch (ui.UIType)  {

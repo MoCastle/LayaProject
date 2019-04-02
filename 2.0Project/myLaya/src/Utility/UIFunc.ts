@@ -8,7 +8,7 @@ export module UIFunc
             return ;
         }
         var stageWidth = Laya.stage.width;
-        var scale:number = Laya.stage.width/width;
+        var scale:number = stageWidth/width;
         return  scale;
     }
     export function FixUI( view:Laya.Sprite )

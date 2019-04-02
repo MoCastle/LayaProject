@@ -322,6 +322,7 @@ export default class GameScenePlay extends Scene.BaseScenePlaye {
         if (countTime > 0)
             time += Math.floor(countTime / 1000);
         else  {
+            this.PanelUI.GamePanel = true;
             this._GameUpdate = this._RunGameUpdate;
             this._CountTime = this.GameTime + 3000;
         }

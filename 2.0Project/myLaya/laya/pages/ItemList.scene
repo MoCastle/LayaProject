@@ -1,12 +1,12 @@
 {
     "x":0,
     "type":"View",
-    "selectedBox":13,
-    "selecteID":11,
+    "selectedBox":11,
+    "selecteID":16,
     "searchKey":"View,Render",
     "props":{"width":750,"top":0,"sceneColor":"#000000","right":0,"name":"Render","left":0,"height":1334,"bottom":0},
     "nodeParent":-1,
-    "maxID":16,
+    "maxID":25,
     "label":"Render",
     "isOpen":true,
     "isDirectory":true,
@@ -16,9 +16,23 @@
     "child":[
         {
             "x":15,
+            "type":"Image",
+            "searchKey":"Image,_BG",
+            "props":{"var":"_BG","top":0,"skin":"comp/image_bg.png","right":0,"left":0,"bottom":0},
+            "nodeParent":1,
+            "label":"_BG",
+            "isDirectory":false,
+            "isAniNode":true,
+            "hasChild":false,
+            "compId":18,
+            "child":[
+                ]
+        },
+        {
+            "x":15,
             "type":"Button",
             "searchKey":"Button",
-            "props":{"width":290,"skin":"comp/button.png","labelSize":40,"label":"Advertisement","height":96,"centerY":264,"centerX":-10},
+            "props":{"width":290,"skin":"comp/button.png","labelSize":40,"label":"Advertisement","height":96,"centerY":262,"centerX":-10},
             "nodeParent":1,
             "label":"Button",
             "isDirectory":false,
@@ -32,7 +46,7 @@
             "x":15,
             "type":"List",
             "searchKey":"List,_List",
-            "props":{"width":600,"var":"_List","spaceY":20,"spaceX":30,"height":237,"centerY":11,"centerX":0},
+            "props":{"width":600,"var":"_List","spaceY":20,"spaceX":30,"height":273,"centerY":29,"centerX":0},
             "nodeParent":1,
             "label":"_List",
             "isOpen":true,
@@ -72,17 +86,45 @@
                             "x":45,
                             "type":"Button",
                             "searchKey":"Button",
-                            "props":{"y":181,"x":0,"width":127,"skin":"comp/button.png","labelSize":30,"label":"Coose","height":38},
+                            "props":{"y":176,"x":4,"width":108,"skin":"comp/button.png","labelSize":30,"label":"BuyItem","height":43},
                             "nodeParent":11,
                             "label":"Button",
                             "isDirectory":false,
                             "isAniNode":false,
                             "hasChild":false,
-                            "compId":8,
+                            "compId":16,
+                            "child":[
+                                ]
+                        },
+                        {
+                            "x":45,
+                            "type":"Label",
+                            "searchKey":"Label",
+                            "props":{"y":229,"x":4,"width":110,"valign":"middle","text":"Number:#0","height":26,"fontSize":20,"color":"#ff0400","align":"center"},
+                            "nodeParent":11,
+                            "label":"Label",
+                            "isDirectory":false,
+                            "isAniNode":false,
+                            "hasChild":false,
+                            "compId":17,
                             "child":[
                                 ]
                         }]
                 }]
+        },
+        {
+            "x":15,
+            "type":"Label",
+            "searchKey":"Label,_Gold",
+            "props":{"y":290,"x":449,"width":303,"var":"_Gold","valign":"middle","text":"Gold:#0","height":64,"fontSize":30,"color":"#ffffff","align":"center"},
+            "nodeParent":1,
+            "label":"_Gold",
+            "isDirectory":false,
+            "isAniNode":true,
+            "hasChild":false,
+            "compId":20,
+            "child":[
+                ]
         }],
     "animations":[
         {

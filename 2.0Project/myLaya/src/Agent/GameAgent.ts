@@ -4,7 +4,7 @@ import BaseAgent from "./BaseAgent"
 export class GameAgent extends BaseAgent {
     private static _Agent: GameAgent;
 
-    static get GuestAgent(): GameAgent {
+    static get Agent(): GameAgent {
         if (this._Agent == null) {
             this._Agent = new GameAgent();
         }
@@ -23,8 +23,21 @@ export class GameAgent extends BaseAgent {
     {
         return this.m_PlayerEntity.CurCharacterID;
     }
+    
     public get CurItem():number
     {
-        return 0;
+        return this.m_PlayerEntity.CurItem;
+    }
+
+    public get ItemList():Array<number>
+    {
+        return this.m_PlayerEntity.ItemList
+    }
+
+    public set CurItem(id:number)
+    {
+        if(!this.ItemList[id])
+            return;
+        this.m_PlayerEntity.CurItem = id;
     }
 }
