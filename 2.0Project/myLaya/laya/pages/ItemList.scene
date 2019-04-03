@@ -1,12 +1,12 @@
 {
     "x":0,
     "type":"View",
-    "selectedBox":13,
-    "selecteID":11,
+    "selectedBox":1,
+    "selecteID":18,
     "searchKey":"View,Render",
     "props":{"width":750,"top":0,"sceneColor":"#000000","right":0,"name":"Render","left":0,"height":1334,"bottom":0},
     "nodeParent":-1,
-    "maxID":16,
+    "maxID":19,
     "label":"Render",
     "isOpen":true,
     "isDirectory":true,
@@ -14,6 +14,20 @@
     "hasChild":true,
     "compId":1,
     "child":[
+        {
+            "x":15,
+            "type":"Image",
+            "searchKey":"Image,_BG",
+            "props":{"y":-1,"x":0,"var":"_BG","top":-1,"skin":"comp/image_bg.png","right":0,"left":0,"bottom":0,"alpha":0},
+            "nodeParent":1,
+            "label":"_BG",
+            "isDirectory":false,
+            "isAniNode":true,
+            "hasChild":false,
+            "compId":18,
+            "child":[
+                ]
+        },
         {
             "x":15,
             "type":"Button",
@@ -48,14 +62,13 @@
                     "props":{"y":1,"x":0,"runtime":"script/ItemElement.ts","name":"render"},
                     "nodeParent":13,
                     "label":"render",
-                    "isOpen":true,
+                    "isOpen":false,
                     "isDirectory":true,
                     "isAniNode":false,
                     "hasChild":true,
                     "compId":11,
                     "child":[
                         {
-                            "x":45,
                             "type":"Image",
                             "searchKey":"Image",
                             "props":{"y":1,"x":14,"width":99,"skin":"comp/image.png","height":164},
@@ -69,7 +82,6 @@
                                 ]
                         },
                         {
-                            "x":45,
                             "type":"Button",
                             "searchKey":"Button",
                             "props":{"y":181,"x":0,"width":127,"skin":"comp/button.png","labelSize":30,"label":"Coose","height":38},
@@ -82,6 +94,21 @@
                             "child":[
                                 ]
                         }]
+                },
+                {
+                    "x":30,
+                    "type":"Label",
+                    "searchKey":"Label,_Gold",
+                    "props":{"width":311,"var":"_Gold","valign":"middle","top":-56,"text":"Gold:# ","right":-31,"height":56,"fontSize":30,"color":"#ffffff","align":"center"},
+                    "nodeParent":13,
+                    "label":"_Gold",
+                    "isOpen":true,
+                    "isDirectory":false,
+                    "isAniNode":false,
+                    "hasChild":false,
+                    "compId":17,
+                    "child":[
+                        ]
                 }]
         }],
     "animations":[

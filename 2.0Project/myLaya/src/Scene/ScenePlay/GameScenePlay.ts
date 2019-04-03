@@ -20,6 +20,7 @@ import BGUI from "./../../ui/BG"
 import GameDirector from "./../GameDirector"
 import GameScene from "../GameScene";
 import { GameAgent } from "./../../Agent/GameAgent"
+import GameAPP from "../../controler/GameAPP";
 
 type ItemLayout = Item.ItemLayout;
 type LineItemInfo = Item.LineItemInfo;
@@ -225,9 +226,6 @@ export default class GameScenePlay extends Scene.BaseScenePlaye {
         return getStep;
     }
 
-
-
-
     //创建相关放这 这里重新开始不会走
     public Start(): void {
         this.Camera = new GameCamera();
@@ -244,7 +242,11 @@ export default class GameScenePlay extends Scene.BaseScenePlaye {
         //创建UI
 
         //创建玩家
-        this.Player = new Player();
+        var player = new Player();
+        this.Player = player;
+        var gameAgent = GameAgent.Agent;
+        var playerModel = GameAPP.CharacterMgr.GetCharacterModel(gameAgent.CurCharacterID,gameAgent.CurLevel);
+        player.SetPlayerModel(playerModel);
         APP.SceneManager.CurScene.PutObj(this.Player);
 
         //准备玩家死亡事件

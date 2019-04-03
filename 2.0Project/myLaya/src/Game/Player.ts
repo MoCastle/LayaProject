@@ -7,6 +7,8 @@ import { path } from "../Utility/Path"
 import Controler from "./../controler/GameControler"
 import {Item} from "./GameItem"
 import {Character} from "./Character"
+import GameAPP from "./../controler/GameAPP"
+import CharacterManager from "../GameManager/CharacterMamager";
 var num:number = 0;
 type BasePlayerBuff = PlayerBuff.BasePlayerBuff;
 //该脚本用于游戏玩家对象管理
@@ -68,20 +70,29 @@ export default class Player extends Laya.Sprite3D
     {
         super();
         this.m_BuffModel = {};
+        /*
         var Name:string = path.GetLH("c001_child_01");
         var PlayerModel = Laya.Loader.getRes(Name);
         var secondPlayer:Laya.Sprite3D = PlayerModel.clone();
         this.addChild(secondPlayer);
+        */
         APP.SceneManager.CurScene.PutObj(this);
 
         //添加自定义模型
-        secondPlayer.transform.rotate(new Laya.Vector3(0, 180, 0), false, false);
-        this.m_Animator = secondPlayer.getChildAt(0).getComponent(Laya.Animator);
+        //secondPlayer.transform.rotate(new Laya.Vector3(0, 180, 0), false, false);
+        //this.m_Animator = secondPlayer.getChildAt(0).getComponent(Laya.Animator);
         this.on(Laya.Event.REMOVED,this,()=>{ this.destroy() })
-        this.Reset();
-        this.InitBUffModel(secondPlayer);
+        //this.InitBUffModel(secondPlayer);
+        var mgr:CharacterManager = GameAPP.CharacterMgr;
     }
     
+    public SetPlayerModel( model:Laya.Sprite3D )
+    {
+        this.addChild(model);
+        model.transform.rotate(new Laya.Vector3(0, 180, 0), false, false);
+        this.m_Animator = model.getChildAt(0).getComponent(Laya.Animator);
+        this.InitBUffModel(model);
+    }
 
     Reset()
     {
