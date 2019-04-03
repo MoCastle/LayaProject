@@ -3,9 +3,7 @@
  * 启动场景
  */
 import FrameWork from "./FrameWork/FrameWork"
-import UIManager from "./FrameWork/UIManager"
 import SceneManager from "./FrameWork/SceneManager"
-import {MessageMD} from "./FrameWork/MessageCenter"
 import LoadScene from "./Scene/LoadScene"
 import { ui } from "./ui/layaMaxUI";
 import APP from "./controler/APP"
@@ -33,17 +31,15 @@ class Game
 
     onLoaded()
     {
-        this._Frame = FrameWork.FM;
-        this._Frame.AddManager<MessageMD.MessageCenter>(MessageMD.MessageCenter);
-        var sceneMgr:SceneManager = this._Frame.AddManager<SceneManager>(SceneManager);
-        this._Frame.AddManager<UIManager>(UIManager);
+        APP.Init();
+        var sceneMgr:SceneManager = APP.SceneManager;
 		sceneMgr.ChangeScene(new LoadScene());
         Laya.timer.frameLoop(1,this,this.Update);
     }
 
     Update( )
     {
-        this._Frame.Update();
+        APP.FrameWork.Update();
     }
 }
 var GM = new Game();

@@ -19,6 +19,7 @@ import Controler from "./../../controler/GameControler"
 import BGUI from "./../../ui/BG"
 import GameDirector from "./../GameDirector"
 import GameScene from "../GameScene";
+import { GameAgent } from "./../../Agent/GameAgent"
 
 type ItemLayout = Item.ItemLayout;
 type LineItemInfo = Item.LineItemInfo;
@@ -50,25 +51,40 @@ export default class GameScenePlay extends Scene.BaseScenePlaye {
     name: number;
     FreshBGCount: number;
 
-    get SafeLocation(): GameStruct.MLocation  {
+    get SafeLocation(): GameStruct.MLocation {
         return this._SafeLocation;
     }
-    get PanelUI(): GameUI  {
+    get PanelUI(): GameUI {
         return this._PanelUI;
     }
-    set PanelUI(value: GameUI)  {
+    set PanelUI(value: GameUI) {
         value.SetLeftTouch(this, () => { this.InputCtrl.Input(false); })
         value.SetRightTouch(this, () => { this.InputCtrl.Input(true); });
         this._PanelUI = value;
     }
-    get HeadFloor(): MountLine  {
+    get HeadFloor(): MountLine {
         return this.MountLines[this._HeadFloorIdx];
     }
-    get TailFLoor(): MountLine  {
+    get TailFLoor(): MountLine {
         return this.MountLines[this._TailFLoorIdx];
     }
+    get PlayerFloor(): number {
+        var floor: number = this._StartPosition.z - this.Player.LogicPosition.z;
+        floor = Math.round(floor / (Controler.GameControler.StepDistance / 2));
+        return Math.abs(floor);
+    }
+    public get Distance(): number  {
+        return Math.floor(this.PlayerFloor)
+    }
 
-    constructor()  {
+    get PlayerFloorLine(): MountLine {
+        return this.GetFloorByFloor(this.PlayerFloor);
+    }
+    get GameTime(): number  {
+        return (this.m_owner as GameDirector).GameTime;
+    }
+
+    constructor() {
         super();
         this.Camera = null;
         this.GameScene = null;
@@ -89,41 +105,41 @@ export default class GameScenePlay extends Scene.BaseScenePlaye {
         this.FreshBGCount = 0;
     }
 
-    AddInputCtrler(value: Input.BaseGameInput)  {
+    AddInputCtrler(value: Input.BaseGameInput) {
         this.InputCtrl.Clear();
         value.NextInput = this.InputCtrl;
         this.InputCtrl = value;
     }
-    PopInputCtrler()  {
+    PopInputCtrler() {
         this.InputCtrl = this.InputCtrl.NextInput;
     }
-    AddGold(num: number)  {
+    AddGold(num: number) {
         this._GoldNum += num;
         this.AddLogicGold(num);
     }
-    AddGoldUnLogicGold(num: number)  {
+    AddGoldUnLogicGold(num: number) {
         this._GoldNum += num;
     }
-    AddLogicGold(num: number)  {
+    AddLogicGold(num: number) {
 
         this._LogicGoldNum += num;
         this.PanelUI.Gold = this._LogicGoldNum;
     }
 
     //设置安全位置
-    SetSafePS(location: GameStruct.MLocation)  {
+    SetSafePS(location: GameStruct.MLocation) {
         this._SafeLocation = location;
-        if (location.Y < this.TailFLoor.FloorNum || location.Y > this.HeadFloor.FloorNum)  {
+        if (location.Y < this.TailFLoor.FloorNum || location.Y > this.HeadFloor.FloorNum) {
             return;
         }
         this.ResetItem(location.Y)
     }
 
     //从某一层开始一层层重新摆放道具
-    ResetItem(floor: number)  {
+    ResetItem(floor: number) {
         this.CurLineBarriers = new Array<LineItemInfo>();
         this.CurLineRewards = new Array<LineItemInfo>();
-        for (let loopFloor: number = floor; loopFloor <= this.HeadFloor.FloorNum; ++loopFloor)  {
+        for (let loopFloor: number = floor; loopFloor <= this.HeadFloor.FloorNum; ++loopFloor) {
             var floorLine = this.GetFloorByFloor(loopFloor);
             floorLine.LayOutDirty = false;
             floorLine.SetLine(floorLine.FloorNum);
@@ -132,44 +148,43 @@ export default class GameScenePlay extends Scene.BaseScenePlaye {
     }
 
     //清理层道具
-    ClearFloor(step: Step): void  {
+    ClearFloor(step: Step): void {
         var stepItem = step.StepItem;
         step.PutItem(ItemType.None);
         step.IsDeadRoad = false;
     }
 
-    Death(): void  {
-        var ui: EndGameUI = APP.UIManager.Show<EndGameUI>(EndGameUI);
+    Death(): void {
         this.Player.PlayerDeath = true;
+        this.m_OnGameComplete();
         //ui.SetGameInfo(this.PlayerDistance,this._GoldNum);
     }
-    
-    End():void
-    {
+
+    End(): void  {
 
     }
     //重新开始
-    ReStart(): void  {
+    ReStart(): void {
         this.StartGame();
     }
-    ShowInputInfo(info: string): void  {
+    ShowInputInfo(info: string): void {
         this.PanelUI.ShowInputInfo(info);
     }
     //左右移动
-    MoveStep(isRight: boolean)  {
+    MoveStep(isRight: boolean) {
         //var buff = this.Buffer;
         //获取下一层的Step
         var step: Step = this.Player.CurStep;
-        if (step == null)  {
+        if (step == null) {
             return;
         }
-        if (isRight)  {
+        if (isRight) {
             step = step.RightParent;
-        } else  {
+        } else {
             step = step.LeftParent;
         }
 
-        if (step == null || step.StepItem.IsForbiden)  {
+        if (step == null || step.StepItem.IsForbiden) {
             return;
         }
 
@@ -181,21 +196,21 @@ export default class GameScenePlay extends Scene.BaseScenePlaye {
      * 根据层数获取某层
      * @param {number} floor 
      */
-    GetFloorByFloor(floor: number)  {
+    GetFloorByFloor(floor: number) {
         var tailFloor: MountLine = this.TailFLoor;
-        if (floor < tailFloor.FloorNum)  {
+        if (floor < tailFloor.FloorNum) {
             return null;
         }
         var floorID = (floor - tailFloor.FloorNum + this._TailFLoorIdx) % this.MountLines.length;
         return this.MountLines[floorID];
     }
 
-    LoopDoFloorStep(floor: number, Owner: any, callBack: (step: Step) => void): void  {
-        if (floor < this.TailFLoor.FloorNum || floor > this.HeadFloor.FloorNum)  {
+    LoopDoFloorStep(floor: number, Owner: any, callBack: (step: Step) => void): void {
+        if (floor < this.TailFLoor.FloorNum || floor > this.HeadFloor.FloorNum) {
             return;
         }
         var floorLine: MountLine = this.GetFloorByFloor(floor);
-        for (let idx = 0; idx < floorLine.LogicLength; ++idx)  {
+        for (let idx = 0; idx < floorLine.LogicLength; ++idx) {
             var step = floorLine.GetStep(idx);
             callBack.call(Owner, step);
         }
@@ -205,34 +220,23 @@ export default class GameScenePlay extends Scene.BaseScenePlaye {
      * 通过坐标获取台阶
      * @param location 索引,层数
      */
-    GetStepByLocation(location: GameStruct.MLocation): Step  {
+    GetStepByLocation(location: GameStruct.MLocation): Step {
         var getStep: Step = this.GetFloorByFloor(location.Y).GetStep(location.X);
         return getStep;
     }
 
-    get PlayerFloor(): number  {
-        var floor: number = this._StartPosition.z - this.Player.LogicPosition.z;
-        floor = Math.round(floor / (Controler.GameControler.StepDistance / 2));
-        return Math.abs(floor);
-    }
-    get PlayerFloorLine(): MountLine  {
-        return this.GetFloorByFloor(this.PlayerFloor);
-    }
-    get GameTime():number
-    {
-        return (this.m_owner as GameDirector).GameTime;
-    }
 
-    
+
+
     //创建相关放这 这里重新开始不会走
-    public Start(): void  {
+    public Start(): void {
         this.Camera = new GameCamera();
         this.Camera.transform.localRotationEuler = new Laya.Vector3(-30, 0, 0);
         APP.SceneManager.CurScene.PutObj(this.Camera);
 
         this.MountLines = [];
         var maxLineNum = Controler.GameControler.MaxLineNum;
-        for (var lineIdx: number = maxLineNum - 1; lineIdx >= 0; --lineIdx)  {
+        for (var lineIdx: number = maxLineNum - 1; lineIdx >= 0; --lineIdx) {
             var newMountLine = new MountLine(lineIdx, lineIdx);
             APP.SceneManager.CurScene.PutObj(newMountLine);
             this.MountLines[lineIdx] = newMountLine;
@@ -247,10 +251,10 @@ export default class GameScenePlay extends Scene.BaseScenePlaye {
         APP.MessageManager.Regist(MessageMD.GameEvent.PlayerDeath, this.Death, this);
         this.StartGame();
     }
-    
+
     //进入游戏的设置放这里 重新开始走这里
-    protected StartGame()  {
-        APP.SceneManager.CurScene.SceneObj.ambientColor = new Laya.Vector3(1,1,1)
+    protected StartGame() {
+        APP.SceneManager.CurScene.SceneObj.ambientColor = new Laya.Vector3(1, 1, 1)
         this._SafeLocation = new GameStruct.MLocation(0, 0);
         //重置物品
         this.ItemLayout = new Item.ItemLayout()
@@ -262,12 +266,12 @@ export default class GameScenePlay extends Scene.BaseScenePlaye {
         this._HeadFloorIdx = lines.length - 1;
         this._TailFLoorIdx = 0;
         this.Player.Reset();
-        for (var idx: number = 0; idx < lines.length; ++idx)  {
+        for (var idx: number = 0; idx < lines.length; ++idx) {
             var line: MountLine = this.MountLines[idx];
             line.SetLine(idx);
             if (idx > 0)
                 lines[idx - 1].SetNextFloor(line);
-            else  {
+            else {
                 var PlayerStep = line.GetStep(Math.floor(line.LogicLength / 2));
                 this.Player.SetStep(PlayerStep);
                 this._SafeLocation = PlayerStep.Location;
@@ -286,17 +290,18 @@ export default class GameScenePlay extends Scene.BaseScenePlaye {
         this._GameUpdate = this._StartCount;
     }
 
-    public Update(): void  {
-        if (this._GameUpdate != null)  {
+    public Update(): void {
+        if (this._GameUpdate != null) {
             this._GameUpdate();
         }
     }
 
+
     //正常运行时的每帧逻辑
-    private _RunGameUpdate()  {
+    private _RunGameUpdate() {
         var dist: number = this.PlayerFloor;
-        this.PanelUI.Distance = Math.floor(dist);
-        if (this.FreshBGCount > 10)  {
+        this.PanelUI.Distance = this.Distance; //this.Distance();//Math.floor(dist);
+        if (this.FreshBGCount > 10) {
             this._CurBG.UpdatePage(dist);
             this.FreshBGCount = 0;
         }
@@ -304,10 +309,10 @@ export default class GameScenePlay extends Scene.BaseScenePlaye {
 
         var flooVector: Laya.Vector3 = this.TailFLoor.Position;
 
-        if (flooVector.z - this.Player.Position.z > 3 * Controler.GameControler.StepDistance / 2)  {
+        if (flooVector.z - this.Player.Position.z > 3 * Controler.GameControler.StepDistance / 2) {
             this._PushFLoor();
         }
-        if (this._CountTime < this.GameTime)  {
+        if (this._CountTime < this.GameTime) {
             this._CountTime = this.GameTime + 3000;
             this._DestroyLine(this._BootomFloor);
             this._BootomFloor += 1;
@@ -316,12 +321,12 @@ export default class GameScenePlay extends Scene.BaseScenePlaye {
     }
 
     //开始倒计时期间的每帧逻辑
-    private _StartCount()  {
+    private _StartCount() {
         var time: string = ""
         var countTime: number = this._CountTime - this.GameTime;
         if (countTime > 0)
             time += Math.floor(countTime / 1000);
-        else  {
+        else {
             this.PanelUI.GamePanel = true;
             this._GameUpdate = this._RunGameUpdate;
             this._CountTime = this.GameTime + 3000;
@@ -330,7 +335,7 @@ export default class GameScenePlay extends Scene.BaseScenePlaye {
     }
 
     //将层向上叠
-    protected _PushFLoor()  {
+    protected _PushFLoor() {
         var preHead: MountLine = this.HeadFloor;
         this._HeadFloorIdx = (this._HeadFloorIdx + 1) % this.MountLines.length;
         this._TailFLoorIdx = (this._TailFLoorIdx + 1) % this.MountLines.length;
@@ -348,7 +353,7 @@ export default class GameScenePlay extends Scene.BaseScenePlaye {
      * 摆放物品
      * @param {number} floor 物品列表
      */
-    protected _PutItemInLine(floor: number)  {
+    protected _PutItemInLine(floor: number) {
         var safeCol: { [key: string]: Array<number>; } = {};
         var floorLine = this.GetFloorByFloor(floor);
         //布置过了不用再布置了
@@ -366,7 +371,7 @@ export default class GameScenePlay extends Scene.BaseScenePlaye {
             safeCol["o"] = this._CountRoadInfo(floor);
         }
         //出生点不放道具
-        if (floor < 1 || floor == this.SafeLocation.Y)  {
+        if (floor < 1 || floor == this.SafeLocation.Y) {
             return;
         }
         //获取该行要摆放的物品
@@ -374,10 +379,10 @@ export default class GameScenePlay extends Scene.BaseScenePlaye {
 
         //标记一条绝对安全的路
         var safeIdxColl: { [key: string]: number; } = {};
-        for (var colKey in safeCol)  {
+        for (var colKey in safeCol) {
             var list = safeCol[colKey];
             var safeIdx = list[Math.floor(Math.random() * list.length)];
-            if (safeIdxColl[safeIdx] == undefined)  {
+            if (safeIdxColl[safeIdx] == undefined) {
                 safeIdxColl[safeIdx] = 1;
             }
         }
@@ -386,11 +391,11 @@ export default class GameScenePlay extends Scene.BaseScenePlaye {
         var randomPool: Array<Step> = new Array();
         //把安全的格子暂时移出来
         var safeStepList: Array<Step> = new Array<Step>();
-        for (var stepIdx: number = 0; stepIdx < curFloor.LogicLength; ++stepIdx)  {
+        for (var stepIdx: number = 0; stepIdx < curFloor.LogicLength; ++stepIdx) {
             var getStep: Step = curFloor.GetStep(stepIdx);
-            if (safeIdxColl[stepIdx] == undefined)  {
+            if (safeIdxColl[stepIdx] == undefined) {
                 randomPool.push(getStep);
-            } else  {
+            } else {
                 safeStepList.push(getStep);
             }
         }
@@ -399,7 +404,7 @@ export default class GameScenePlay extends Scene.BaseScenePlaye {
         this._OrginizePutItem(barriersList, randomPool, true);
 
         //摆放道具
-        for (var safeStepIdx: number = 0; safeStepIdx < safeStepList.length; ++safeStepIdx)  {
+        for (var safeStepIdx: number = 0; safeStepIdx < safeStepList.length; ++safeStepIdx) {
             randomPool.push(safeStepList[safeStepIdx]);
         }
         var rewardList = this.CurLineRewards;
@@ -414,11 +419,11 @@ export default class GameScenePlay extends Scene.BaseScenePlaye {
      * @param {Array<Step>} randomPool 台阶集合
      * @param {boolean} isDeadRoad 是否是死路
      */
-    _OrginizePutItem(itemList: Array<LineItemInfo>, randomPool: Array<Step>, isDeadRoad: boolean = null): void  {
-        for (var itemIdx: number = 0; itemIdx < itemList.length; ++itemIdx)  {
+    _OrginizePutItem(itemList: Array<LineItemInfo>, randomPool: Array<Step>, isDeadRoad: boolean = null): void {
+        for (var itemIdx: number = 0; itemIdx < itemList.length; ++itemIdx) {
             var info: LineItemInfo = itemList[itemIdx];
-            for (var difficultyNum: number = 0; difficultyNum < info.Number;)  {
-                if (randomPool.length < 1)  {
+            for (var difficultyNum: number = 0; difficultyNum < info.Number;) {
+                if (randomPool.length < 1) {
                     break;
                 }
                 //随机把障碍放入格子里
@@ -430,11 +435,11 @@ export default class GameScenePlay extends Scene.BaseScenePlaye {
                     step.IsDeadRoad = isDeadRoad;
                 --info.Number;
             }
-            if (randomPool.length < 1)  {
+            if (randomPool.length < 1) {
                 break;
             }
         }
-        if (itemIdx > 0)  {
+        if (itemIdx > 0) {
             itemList.splice(0, itemIdx);
         }
     }
@@ -443,20 +448,20 @@ export default class GameScenePlay extends Scene.BaseScenePlaye {
      *递归计算通路情况
      * @param {number} floorNum 物品列表
      */
-    _CountOpenList(floorNum: number): { [key: string]: Array<number>; }  {
-        for (var floorCount: number = this.PlayerFloor; floorCount <= floorNum; ++floorCount)  {
+    _CountOpenList(floorNum: number): { [key: string]: Array<number>; } {
+        for (var floorCount: number = this.PlayerFloor; floorCount <= floorNum; ++floorCount) {
             var floor: MountLine = this.GetFloorByFloor(floorCount);
             if (floor == null)
                 return;
-            for (var stepIdx = 0; stepIdx < floor.LogicLength; ++stepIdx)  {
+            for (var stepIdx = 0; stepIdx < floor.LogicLength; ++stepIdx) {
                 var step = floor.GetStep(stepIdx);
                 step.Mark = undefined;
             }
         }
         var floor: MountLine = this.GetFloorByFloor(this.PlayerFloor);
-        for (var stepIdx = 0; stepIdx < floor.LogicLength; ++stepIdx)  {
+        for (var stepIdx = 0; stepIdx < floor.LogicLength; ++stepIdx) {
             var step = floor.GetStep(stepIdx);
-            if (!step.IsDeadRoad)  {
+            if (!step.IsDeadRoad) {
                 this._MarkSteps(step, stepIdx, floorNum);
             }
         }
@@ -464,11 +469,11 @@ export default class GameScenePlay extends Scene.BaseScenePlaye {
         //找出被标记的点并整理成集合
         var collection: { [key: string]: Array<number>; } = {}
         var name: string = "o"
-        for (var openIdx: number = 0; openIdx < targetFloor.LogicLength; ++openIdx)  {
+        for (var openIdx: number = 0; openIdx < targetFloor.LogicLength; ++openIdx) {
             var markedStep: Step = targetFloor.GetStep(openIdx);
-            if (markedStep.Mark != undefined)  {
+            if (markedStep.Mark != undefined) {
                 var Name: string = name + markedStep.Mark;
-                if (collection[Name] == undefined)  {
+                if (collection[Name] == undefined) {
                     collection[Name] = new Array();
                 }
 
@@ -483,11 +488,11 @@ export default class GameScenePlay extends Scene.BaseScenePlaye {
      * @param {any} mark 标记
      * @param {number} targetFloorNum 目标层数
      */
-    _MarkSteps(step: Step, mark: any, targetFloorNum: number): boolean  {
+    _MarkSteps(step: Step, mark: any, targetFloorNum: number): boolean {
         if (step.IsDeadRoad)
             return false;
-        if (step.Floor.FloorNum >= targetFloorNum)  {
-            if (step.Mark == undefined)  {
+        if (step.Floor.FloorNum >= targetFloorNum) {
+            if (step.Mark == undefined) {
                 step.Mark = mark
             }
             return true;
@@ -495,26 +500,26 @@ export default class GameScenePlay extends Scene.BaseScenePlaye {
         var leftOpen: boolean;
         var rightOpen: boolean;
         var leftParent: Step = step.LeftParent;
-        if (leftParent != null && !leftParent.IsDeadRoad)  {
+        if (leftParent != null && !leftParent.IsDeadRoad) {
             if (leftParent.Mark == undefined)
                 leftOpen = this._MarkSteps(leftParent, mark, targetFloorNum);
             else
                 leftOpen = true;
         }
         var rightParent: Step = step.RightParent;
-        if (rightParent != null && !rightParent.IsDeadRoad)  {
+        if (rightParent != null && !rightParent.IsDeadRoad) {
             if (rightParent.Mark == undefined)
                 rightOpen = this._MarkSteps(rightParent, mark, targetFloorNum);
             else
                 rightOpen = true;
         }
-        if (step.Mark == undefined)  {
+        if (step.Mark == undefined) {
             step.Mark = mark
         }
-        if (!leftOpen && !rightOpen)  {
+        if (!leftOpen && !rightOpen) {
             step.IsDeadRoad = true;
             return false;
-        } else  {
+        } else {
             return true;
         }
     }
@@ -523,32 +528,32 @@ export default class GameScenePlay extends Scene.BaseScenePlaye {
      * 最后再计算一次该层通路情况
      * @param {number} floorNum 
      */
-    _CountLastFloorRoad(floorNum: number): void  {
-        if (floorNum < this.TailFLoor.FloorNum)  {
+    _CountLastFloorRoad(floorNum: number): void {
+        if (floorNum < this.TailFLoor.FloorNum) {
             return;
         }
         var floor = this.GetFloorByFloor(floorNum);
         var lastFloor = this.GetFloorByFloor(floorNum - 1);
-        for (var stepIdx = 0; stepIdx < floor.LogicLength; ++stepIdx)  {
+        for (var stepIdx = 0; stepIdx < floor.LogicLength; ++stepIdx) {
             var step: Step = floor.GetStep(stepIdx);
-            if (!step.IsDeadRoad)  {
+            if (!step.IsDeadRoad) {
                 var LeftStep = step.LeftChild;
                 var RightStep = step.RightChild;
-                if (LeftStep != null)  {
-                    if (!LeftStep.IsDeadRoad)  {
+                if (LeftStep != null) {
+                    if (!LeftStep.IsDeadRoad) {
                         ++LeftStep.RoadNum;
                     }
                 }
-                if (RightStep != null)  {
-                    if (!RightStep.IsDeadRoad)  {
+                if (RightStep != null) {
+                    if (!RightStep.IsDeadRoad) {
                         ++RightStep.RoadNum;
                     }
                 }
             }
         }
-        for (var lastStepIdx = 0; lastStepIdx < lastFloor.LogicLength; ++lastStepIdx)  {
+        for (var lastStepIdx = 0; lastStepIdx < lastFloor.LogicLength; ++lastStepIdx) {
             var step = lastFloor.GetStep(stepIdx);
-            if (!step.IsDeadRoad && step.RoadNum < 1)  {
+            if (!step.IsDeadRoad && step.RoadNum < 1) {
                 step.IsDeadRoad = true
                 //向上递归把所有与之相连的节点数给修正了
             }
@@ -559,7 +564,7 @@ export default class GameScenePlay extends Scene.BaseScenePlaye {
      * 放道具前算通路情况
      * @param {number} floor 
      */
-    _CountRoadInfo(floor: number): Array<number>  {
+    _CountRoadInfo(floor: number): Array<number> {
         var safeStepList: Array<number> = [];
         var thisFloor: MountLine = this.GetFloorByFloor(floor);
 
@@ -567,24 +572,24 @@ export default class GameScenePlay extends Scene.BaseScenePlaye {
         var lastFloor: MountLine = this.GetFloorByFloor(floor - 1);
         if (floor == this._SafeLocation.Y)
             this._ResetStepInfo(thisFloor);
-        else  {
-            for (var logicIdx: number = 0; logicIdx < thisFloor.LogicLength; ++logicIdx)  {
+        else {
+            for (var logicIdx: number = 0; logicIdx < thisFloor.LogicLength; ++logicIdx) {
                 var step: Step = thisFloor.GetStep(logicIdx);
                 var leftChild: Step = step.LeftChild;
                 var rightChild: Step = step.RightChild;
-                if (leftChild != null && !leftChild.IsDeadRoad)  {
+                if (leftChild != null && !leftChild.IsDeadRoad) {
                     safeStepList.push(logicIdx);
-                } else if (rightChild != null && !rightChild.IsDeadRoad)  {
+                } else if (rightChild != null && !rightChild.IsDeadRoad) {
                     safeStepList.push(logicIdx);
                 }
-                else  {
+                else {
                     step.IsDeadRoad = true;
                 }
 
             }
         }
 
-        if (floor == this._SafeLocation.Y)  {
+        if (floor == this._SafeLocation.Y) {
             var safeStep = thisFloor.GetStep(this._SafeLocation.X);
             safeStep.IsDeadRoad = false;
             safeStepList.push(this._SafeLocation.X);
@@ -593,11 +598,11 @@ export default class GameScenePlay extends Scene.BaseScenePlaye {
         return safeStepList;
     }
 
-    _ResetStepInfo(thisFloor: MountLine)  {
-        if (!thisFloor)  {
+    _ResetStepInfo(thisFloor: MountLine) {
+        if (!thisFloor) {
             return;
         }
-        for (var logicIdx: number = 0; logicIdx < thisFloor.LogicLength; ++logicIdx)  {
+        for (var logicIdx: number = 0; logicIdx < thisFloor.LogicLength; ++logicIdx) {
             var step: Step = thisFloor.GetStep(logicIdx);
             step.IsDeadRoad = true;
         }
@@ -607,35 +612,41 @@ export default class GameScenePlay extends Scene.BaseScenePlaye {
      * 获取某道具信息
      * @param {number}floor 
      */
-    _TakeItemList(floor: number)  {
+    _TakeItemList(floor: number) {
         var line = this.GetFloorByFloor(floor);
         var itemList = new Array(line.LogicLength);
         var lineRewards = this.ItemLayout.TakeLineReward(floor);
         this.CurLineRewards = this.CurLineRewards.concat(lineRewards);
-        if (this.SafeLocation.Y > floor || floor > this.SafeLocation.Y + 1)  {
+        if (this.SafeLocation.Y > floor || floor > this.SafeLocation.Y + 1) {
             var lineBarriers = this.ItemLayout.TakeLineDifficulty(floor);
             this.CurLineBarriers = this.CurLineBarriers.concat(lineBarriers);
 
         }
-        else  {
+        else {
             if (this.CurLineBarriers.length > 0)
                 this.CurLineBarriers = new Array<LineItemInfo>();
         }
-
     }
     /**
      * 塌陷某一层
      * @param {number}floor 
      */
-    _DestroyLine(floor: number)  {
+    _DestroyLine(floor: number) {
         var tailFloor = this.TailFLoor;
-        if (floor < tailFloor.FloorNum)  {
+        if (floor < tailFloor.FloorNum) {
             return;
         }
-        for (var countFloor: number = tailFloor.FloorNum; countFloor <= floor; ++countFloor)  {
+        for (var countFloor: number = tailFloor.FloorNum; countFloor <= floor; ++countFloor) {
             var targetFloor: MountLine = this.GetFloorByFloor(countFloor);
             targetFloor.Break();
         }
         this.Player.TouchGround();
+    }
+
+    private m_OnGameComplete()  {
+        APP.MessageManager.DesRegist(MessageMD.GameEvent.PlayerDeath, this.Death, this);
+        var ui: EndGameUI = APP.UIManager.Show<EndGameUI>(EndGameUI);
+        GameAgent.Agent.AddGold(this._GoldNum);
+        GameAgent.Agent.AddScore(this._GoldNum * 10 + this.Distance * 10);
     }
 }
