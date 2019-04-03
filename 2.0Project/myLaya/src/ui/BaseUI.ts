@@ -2,6 +2,8 @@ import UIManager from "./../FrameWork/UIManager"
 import FW from "./../FrameWork/FrameWork"
 import {BaseEnum} from "./../Base/BaseEnum"
 import {UIFunc} from "./../Utility/UIFunc"
+import {MessageMD} from "./../FrameWork/MessageCenter"
+
 //UI基类
 export default abstract class BaseUI extends Laya.Box
 {
@@ -43,10 +45,12 @@ export default abstract class BaseUI extends Laya.Box
     OpenOP()
     {
         this.visible = true;
+        this.Open();
     }
     CloseOP()
     {
-        this.visible = false;
+        //this.visible = false;
+        this.Close();
     }
 
     Destroy( )
@@ -69,13 +73,17 @@ export default abstract class BaseUI extends Laya.Box
         return this._Name;
     }
 
+    get Showing():boolean
+    {
+        return this._Showing;
+    }
+
     /**
      * 对UI进行适配
      * @param UI 适配UI
      */
     public FixUI(UI:Laya.View)
     {
-       // UIFunc.FixUI(UI);
         this.addChild(UI);
     }
     public SetDirty()

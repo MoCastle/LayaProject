@@ -37,7 +37,7 @@ export default class EnterGameUI extends BaseUI
         this._UI= new ExtendEnterGameUI();
         this.FixUI(this._UI);
         var uiMgr:UIManager = this._UIManager;
-        this._UI._CharacterList.on(Laya.Event.CLICK,null,()=>{ uiMgr.Show<PlayerListUI>(PlayerListUI)});
+        //this._UI._CharacterList.on(Laya.Event.CLICK,null,()=>{ uiMgr.Show<PlayerListUI>(PlayerListUI)});
     }
     Update()
     {

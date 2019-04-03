@@ -257,6 +257,8 @@ export default class Player extends Laya.Sprite3D
     
     _Update():void
     {
+        if(this.PlayerDeath)
+            return;
         this._Ctrler.Update();
         for( var buffIdx:number = 0;buffIdx<2;++buffIdx )
         {

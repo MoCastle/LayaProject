@@ -35,9 +35,13 @@ export default class GameUI extends BaseUI
         this._IsMutex = true;
         this._UI = new ExtendsGameUI();
         this.FixUI(this._UI);
-        
+        //this._UI._LeftTouch.left = 0;
+        //this._UI._LeftTouch.right = this.width/4;
+        //this._UI._RightTouch.right = 0;
+        //this._UI._RightTouch.left = this.width/2;
         var opIsRight = GameControler.GameControler.SetInfo.OPIsRight;
-        this._UI._ItemListBtn.on(Laya.Event.CLICK,null,()=>{ this._UIManager.Show<ItemListUI>(ItemListUI)})
+        this._UI._ItemListBtn.on(Laya.Event.CLICK,null,()=>{ 
+            this._UIManager.Show<ItemListUI>(ItemListUI)})
         this.SetCountTime();
         
         this.DistanceStr= this._UI._TxtDistance.text.split("#");
@@ -72,12 +76,12 @@ export default class GameUI extends BaseUI
     }
     SetLeftTouch(owner:any,Listener:()=>void):void
     {
-        this._UI._Right_LeftTouch.on(Laya.Event.CLICK,owner,Listener);
+        this._UI._LeftTouch.on(Laya.Event.CLICK,owner,Listener);
     }
 
     SetRightTouch(owner:any,Listener:()=>void):void
     {
-        this._UI._Right_RightTouch.on(Laya.Event.CLICK,owner,Listener);
+        this._UI._RightTouch.on(Laya.Event.CLICK,owner,Listener);
     }
 
     SetCountTime(info:string ="")

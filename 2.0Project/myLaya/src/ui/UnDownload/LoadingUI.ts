@@ -50,7 +50,7 @@ export default class LoadingUI extends BaseUI
             this._CallBack();
         });
     }
-
+    
     Update()
     {
         var x:number = 0;
