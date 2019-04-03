@@ -33,6 +33,7 @@ export default class UIManager extends BaseManager {
                 break;
         }
         this.m_RootNode.addChild(nodeBox);
+        //Laya.stage.addChild(nodeBox);
     }
     
     static Name(): string  {
@@ -41,7 +42,10 @@ export default class UIManager extends BaseManager {
 
     constructor()  {
         super();
+        
         var rootBox = new Laya.Box();
+        rootBox.width = UIManager.g_UIWidth;
+        rootBox.height = UIManager.g_UIHeight;
         Laya.stage.addChild(rootBox);
         this.m_RootNode = rootBox;
         this.onSizeChange();
@@ -54,12 +58,13 @@ export default class UIManager extends BaseManager {
         this._UIDict = {};
         this._UpdateCount = 0;
         Laya.stage.on(Laya.Event.RESIZE, this, this.onSizeChange);
+        
     }
 
     onSizeChange()
     {
         var rootBox = this.m_RootNode;
-        UIFunc.FixUI(rootBox);
+        UIFunc.FixUI(rootBox,UIManager.g_UIWidth);
         /*
         var scale = UIFunc.CountScaleFix(UIManager.g_UIWidth);
         var rootBox = this.m_RootNode;
@@ -70,6 +75,7 @@ export default class UIManager extends BaseManager {
     }    
 
     public Update()  {
+        
         //定帧刷新UI
         if (this.m_UpdateTime < Laya.timer.currTimer)  {
             this.UpdateUI(this.m_BottomNode);
@@ -77,6 +83,7 @@ export default class UIManager extends BaseManager {
             this._UpdateCount = 0;
             this.m_UpdateTime = Laya.timer.currTimer + 30;
         }
+        
     }
 
     public UpdateUI(node: Laya.Sprite)  {

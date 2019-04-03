@@ -9,6 +9,7 @@ import { ui } from "./ui/layaMaxUI";
 import APP from "./controler/APP"
 import GameConfig from "./GameConfig"
 import {path} from "./Utility/Path"
+import UIManager from "./FrameWork/UIManager";
 class Game
 {
 	_Frame:FrameWork;
@@ -33,8 +34,9 @@ class Game
     {
         APP.Init();
         var sceneMgr:SceneManager = APP.SceneManager;
-		sceneMgr.ChangeScene(new LoadScene());
-        Laya.timer.frameLoop(1,this,this.Update);
+        sceneMgr.ChangeScene(new LoadScene());
+        APP.FrameWork.AddManager<UIManager>(UIManager)
+        Laya.timer.frameLoop(3,this,this.Update);
     }
 
     Update( )

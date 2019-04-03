@@ -45,6 +45,7 @@ export default class APP {
         APP.g_SceneMgr =  fm.AddManager<SceneMgr>(SceneMgr);
         APP.g_TimeMgr = fm.AddManager<TimeManager>(TimeManager);
         APP.g_UIManager = fm.AddManager<UIManager>(UIManager);
+        
     }
 }
 
