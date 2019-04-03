@@ -88,6 +88,7 @@ class LoadScenePlaye extends Scene.BaseScenePlaye
         Laya.loader.once(Laya.Event.COMPLETE,this,this.onComplete);
         var resource3DArr = [ 
             path.GetLH("c001_child_01") ,
+            path.GetLH("c001_adult_01") ,
             path.GetLH("L01_spr_barrier_01"),
             path.GetLH("L01_spr_barrier_02"),
             path.GetLH("L01_spr_barrier_03"),

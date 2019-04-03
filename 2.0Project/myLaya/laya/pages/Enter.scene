@@ -2,7 +2,7 @@
     "x":0,
     "type":"View",
     "selectedBox":19,
-    "selecteID":39,
+    "selecteID":33,
     "searchKey":"View",
     "props":{"width":750,"top":0,"sceneColor":"#000000","right":0,"left":0,"height":1334,"bottom":0},
     "nodeParent":-1,
@@ -85,10 +85,10 @@
                         {
                             "x":45,
                             "type":"Image",
-                            "searchKey":"Image,Btn",
-                            "props":{"y":169,"x":57,"width":71,"skin":"comp/image.png","name":"Btn","height":102},
+                            "searchKey":"Image,Btn0",
+                            "props":{"y":169,"x":57,"width":71,"skin":"comp/image.png","name":"Btn0","height":102},
                             "nodeParent":19,
-                            "label":"Btn",
+                            "label":"Btn0",
                             "isOpen":true,
                             "isDirectory":false,
                             "isAniNode":true,
@@ -100,45 +100,15 @@
                         {
                             "x":45,
                             "type":"Image",
-                            "searchKey":"Image,Btn",
-                            "props":{"y":327,"x":196,"width":71,"skin":"comp/image.png","name":"Btn","height":102},
+                            "searchKey":"Image,Btn1",
+                            "props":{"y":327,"x":196,"width":71,"skin":"comp/image.png","name":"Btn1","height":102},
                             "nodeParent":19,
-                            "label":"Btn",
+                            "label":"Btn1",
                             "isOpen":true,
                             "isDirectory":false,
                             "isAniNode":true,
                             "hasChild":false,
                             "compId":37,
-                            "child":[
-                                ]
-                        },
-                        {
-                            "x":45,
-                            "type":"Image",
-                            "searchKey":"Image,Btn",
-                            "props":{"y":153,"x":453,"width":71,"skin":"comp/image.png","name":"Btn","height":102},
-                            "nodeParent":19,
-                            "label":"Btn",
-                            "isOpen":true,
-                            "isDirectory":false,
-                            "isAniNode":true,
-                            "hasChild":false,
-                            "compId":38,
-                            "child":[
-                                ]
-                        },
-                        {
-                            "x":45,
-                            "type":"Image",
-                            "searchKey":"Image,Btn",
-                            "props":{"y":327,"x":631,"width":71,"skin":"comp/image.png","name":"Btn","height":102},
-                            "nodeParent":19,
-                            "label":"Btn",
-                            "isOpen":true,
-                            "isDirectory":false,
-                            "isAniNode":true,
-                            "hasChild":false,
-                            "compId":39,
                             "child":[
                                 ]
                         }]
