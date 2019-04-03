@@ -13,7 +13,7 @@ class ExtendsGameRankUI extends ui.GameRankUI {
     constructor() {
         super();
         //this._Return.on(Laya.Event.CLICK,this,()=>{APP.UIManager.CloseCurView()});
-    }
+    } 
 }
 
 export default class GameRanklUI extends BaseUI {
@@ -22,8 +22,6 @@ export default class GameRanklUI extends BaseUI {
         super(name);
         this._UIType = BaseEnum.UITypeEnum.Midle;
         this._UI = new ExtendsGameRankUI();
-        //this.FixUI(this._UI);
-        //this._UI._Return.on(Laya.Event.CLICK, this, () => { this._UIManager.CloseCurView(); GuiderManager.Mgr.EnterScene() });
         this.SetPanel(); 
     }
     static Name(): string {
@@ -31,9 +29,6 @@ export default class GameRanklUI extends BaseUI {
     }
     SetPanel() {
         var info: GameStruct.SetInfo = Controler.GameControler.GetSetInfo();
-        // this._UI._AudioSwitch.selectedIndex = info.AudioOn ? 0 : 1;
-        // this._UI._OPSwitch.selectedIndex = info.OPIsRight ? 1 : 0;
-        // this._UI._Text.text = info.TextInfo;
     }
     SavePanel() {
         var info: GameStruct.SetInfo = new GameStruct.SetInfo();
