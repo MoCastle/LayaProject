@@ -1,36 +1,58 @@
 import BaseAgent from "./BaseAgent"
-export class PlayerGuestAgent extends BaseAgent {
+export default class PlayerGuestAgent extends BaseAgent {
     static _Agent: PlayerGuestAgent;
-    static get GuestAgent(): PlayerGuestAgent  {
-        if (this._Agent == null)  {
+    static get GuestAgent(): PlayerGuestAgent {
+        if (this._Agent == null) {
             this._Agent = new PlayerGuestAgent();
         }
         return this._Agent;
     }
 
-    public get Money(): number  {
+    public get Money(): number {
         return this.m_PlayerEntity.Money;
     }
-    public get CharacterID(): number  {
+    public get CharacterID(): number {
         return this.m_PlayerEntity.CurCharacterID;
     }
-    public get CharacterList(): Array<number>  {
+    public get CharacterList(): Array<number> {
         return this.m_PlayerEntity.CharacterList;
     }
 
-    private constructor()  {
+    private constructor() {
         super();
     }
-    
-    public BuyCharacter(id:number)
-    {
+
+    public BuyCharacter(id: number)  {
         //ToDo
-        var prive = 0;
-        if(prive > this.m_PlayerEntity.Money)
-        {
-            return ;
+        var price = 0;
+        if (id < 0|| price <0 || price > this.m_PlayerEntity.Money)  {
+            return;
         }
         this.m_PlayerEntity.Money -= id;
-        this.m_PlayerEntity.CharacterList[id] = 1;
+        this.m_PlayerEntity.AddCharacter(id);
+    }
+
+    public BuyItem(id: number)  {
+        var price = 0;
+        if(id < 0|| price <0 )
+        {
+            return false;
+        }
+        if(price > this.m_PlayerEntity.Money)
+        {
+            return false;
+        }
+        this.m_PlayerEntity.Money -= price;
+        this.m_PlayerEntity.AddItem(id);
+        return true;
+    }
+
+    public SetCharacter(id)
+    {
+        var characterList:Array<number> = this.CharacterList;
+        if(characterList[id])
+        {
+            this.m_PlayerEntity.CurCharacterID = id;
+        }
     }
 }

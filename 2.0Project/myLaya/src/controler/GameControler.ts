@@ -1,10 +1,12 @@
 import {Item} from "./../Game/GameItem"
 import {GameStruct} from "./../Game/GameStruct"
+import PlayerGuestDelegate from "./../Agent/PlayerGuestAgent"
 import SetPanelUI from "./../ui/SetPanelUI"
 import CharacterUI from "./../ui/CharacterUI"
 import GameScene from "./../Scene/GameScene"
 import GameDirector from "./../Scene/GameDirector"
 import APP from "./APP"
+import PlayerGuestAgent from "./../Agent/PlayerGuestAgent";
 
 type ItemType = Item.ItemType;
 export default class Controler
@@ -76,7 +78,16 @@ class GameControler {
     }
 
     SetPlayerID(id: number) {
-        console.debug("Selected" + id);
+        var guestAgent:PlayerGuestAgent = PlayerGuestDelegate.GuestAgent;
+        var characterList:Array<number> = guestAgent.CharacterList;
+        if(!characterList[id])
+        {
+            if(!guestAgent.BuyCharacter(id))
+            {
+                return;
+            }
+        }
+        guestAgent.SetCharacter(id);
     }
 
     //显示设置面板
@@ -129,5 +140,10 @@ class GameControler {
     //生成BUFF表现效果
     GenBuffEffect(type: ItemType): Laya.Sprite3D {
         return new Laya.Sprite3D();
+    }
+
+    BuyItem(id:number):void
+    {
+        PlayerGuestAgent.GuestAgent.BuyItem(id);
     }
 }

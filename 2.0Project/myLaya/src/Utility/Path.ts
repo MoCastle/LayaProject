@@ -2,7 +2,6 @@ export module path
 {
     export var IsEditor:boolean = true;
 
-    export var resVersion = "1";
     export var SceneAssetPath:string = "LayaScene_";
     export var ResourcePath:string = IsEditor?"../NetResource_3_29/":"https://www.gsjgame.com/Resource/NetResource_3_29/";
     export var UIPath:string = ResourcePath + "UI/";
@@ -14,7 +13,7 @@ export module path
      */
     export function GetAtlPath(fileName:string):string
     {
-        return UIPath + fileName+".atlas?v=" + this.resVersion;
+        return UIPath + fileName+".atlas";
     }
     /**
      * 获取UIJson路径
@@ -22,7 +21,7 @@ export module path
      */
     export function GetDepathUIJS(fileName:string):string
     {
-        return  UIPath+fileName+".json?v=" + this.resVersion;
+        return  UIPath+fileName+".json";
     }
     /**
      * 获取lh文件路径
@@ -30,6 +29,6 @@ export module path
      */
     export function GetLH(fileName:string):string
     {
-        return ModelPath +SceneAssetPath+fileName+"/Conventional/" +fileName + ".lh?v=" + this.resVersion;
+        return ModelPath +SceneAssetPath+fileName+"/Conventional/" +fileName + ".lh"
     }
-} 
+}

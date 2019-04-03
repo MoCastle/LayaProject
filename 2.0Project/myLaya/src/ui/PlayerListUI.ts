@@ -34,6 +34,12 @@ export default class PlayerListUI extends BaseUI
             GuiderManager.Mgr.EnterScene();
         });
     }
+
+    public ShowList()
+    {
+
+    }
+    
     Update()
     {}
 }
