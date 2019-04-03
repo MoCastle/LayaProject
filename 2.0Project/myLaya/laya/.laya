@@ -1,21 +1,21 @@
 <project version="2.0">
-   <asynRes>img,temp,sound                                                </asynRes>
-   <unDealRes>embed                                                </unDealRes>
+   <asynRes>img,temp,sound                                                   </asynRes>
+   <unDealRes>embed                                                   </unDealRes>
    <resTypes>png,jpg   </resTypes>
-   <resExportPath>NetResource/UI   </resExportPath>
-   <asynResExportPath>NetResource/UI   </asynResExportPath>
+   <resExportPath>NetResource_3_29/UI   </resExportPath>
+   <asynResExportPath>NetResource_3_29/UI   </asynResExportPath>
    <codeExportPath>src/ui   </codeExportPath>
    <codeImports><![CDATA[import laya.ui.*;]]>   </codeImports>
    <codeImportsJS><![CDATA[var View=laya.ui.View;
 var Dialog=laya.ui.Dialog;]]>   </codeImportsJS>
    <uiType>2   </uiType>
-   <uiExportPath>bin/ui.json   </uiExportPath>
+   <uiExportPath>NetResource_3_29/ui.json   </uiExportPath>
    <boxTypes>Sprite,Box,List,Tab,RadioGroup,ViewStack,Panel,HBox,VBox,Tree   </boxTypes>
    <pageTypes>Scene,View,Dialog   </pageTypes>
    <shareResPath/>
    <codeType>1   </codeType>
    <resCanCompress/>
-   <resPublishQuality>80                                                </resPublishQuality>
+   <resPublishQuality>80                                                   </resPublishQuality>
    <langPath/>
    <defaultFont/>
    <codeImportsTS><![CDATA[import View=Laya.View;

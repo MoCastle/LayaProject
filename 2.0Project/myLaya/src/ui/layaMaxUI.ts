@@ -38,6 +38,7 @@ export module ui {
 		public _Panel:Laya.Panel;
 		public _SetPanel:Laya.Button;
 		public _CharacterList:Laya.Button;
+		public _Rank:Laya.Button;
         constructor(){ super()}
         createChildren():void {
             super.createChildren();
@@ -59,6 +60,13 @@ export module ui {
         createChildren():void {
             super.createChildren();
             this.loadScene("Game");
+        }
+    }
+    export class GameRankUI extends Laya.Scene {
+        constructor(){ super()}
+        createChildren():void {
+            super.createChildren();
+            this.loadScene("GameRank");
         }
     }
     export class ItemListUI extends Laya.View {

@@ -26,7 +26,6 @@ class Game
         Laya.stage.alignV = Laya.Stage.ALIGN_BOTTOM;
         //开启统计信息
 		Laya.Stat.show()
-        
         var resCol = [{url:"ui/Resource/LoadUI.json",type:Laya.Loader.JSON},{url:"ui/Resource/localcomp.atlas",type:Laya.Loader.ATLAS}];
         Laya.loader.load(resCol,Laya.Handler.create(this,this.onLoaded));
     }

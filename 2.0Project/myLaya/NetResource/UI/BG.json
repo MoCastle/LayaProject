@@ -1,0 +1,1 @@
+{"type":"View","props":{"width":750,"height":1334},"compId":2,"child":[{"type":"Image","props":{"width":750,"var":"_Earth","skin":"comp/img_background_spr.png","height":750,"centerX":0,"bottom":0},"compId":8}],"loadList":["comp/img_background_spr.png"],"loadList3D":[]}
