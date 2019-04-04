@@ -54,9 +54,10 @@ export module ui {
 		public _GamePanel:Laya.Box;
 		public _TxtDistance:Laya.Label;
 		public _TxtGold:Laya.Label;
-		public _UseItem:Laya.Button;
 		public _LeftTouch:Laya.Button;
 		public _RightTouch:Laya.Button;
+		public _CharacterItem:Laya.Button;
+		public _PlayerItem:Laya.Button;
         constructor(){ super()}
         createChildren():void {
             super.createChildren();

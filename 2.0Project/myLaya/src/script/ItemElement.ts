@@ -25,6 +25,12 @@ export default class ItemElement extends Laya.Box {
     public get BuyBtn(): Laya.Button {
         return this._Btn;
     }
+    public set BtnLable(str:string)
+    {
+        if(!str)
+            return;
+        this._Btn.text.text = str;
+    }
     public set IsGray(value: boolean) {
         this.Img.gray = value;
     }

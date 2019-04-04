@@ -2,11 +2,11 @@
     "x":0,
     "type":"View",
     "selectedBox":1,
-    "selecteID":18,
+    "selecteID":13,
     "searchKey":"View,Render",
     "props":{"width":750,"top":0,"sceneColor":"#000000","right":0,"name":"Render","left":0,"height":1334,"bottom":0},
     "nodeParent":-1,
-    "maxID":19,
+    "maxID":20,
     "label":"Render",
     "isOpen":true,
     "isDirectory":true,
@@ -46,7 +46,7 @@
             "x":15,
             "type":"List",
             "searchKey":"List,_List",
-            "props":{"width":600,"var":"_List","spaceY":20,"spaceX":30,"height":237,"centerY":11,"centerX":0},
+            "props":{"width":600,"var":"_List","spaceY":20,"spaceX":30,"height":258,"centerY":22,"centerX":0},
             "nodeParent":1,
             "label":"_List",
             "isOpen":true,
@@ -62,13 +62,14 @@
                     "props":{"y":1,"x":0,"runtime":"script/ItemElement.ts","name":"render"},
                     "nodeParent":13,
                     "label":"render",
-                    "isOpen":false,
+                    "isOpen":true,
                     "isDirectory":true,
                     "isAniNode":false,
                     "hasChild":true,
                     "compId":11,
                     "child":[
                         {
+                            "x":45,
                             "type":"Image",
                             "searchKey":"Image",
                             "props":{"y":1,"x":14,"width":99,"skin":"comp/image.png","height":164},
@@ -82,6 +83,7 @@
                                 ]
                         },
                         {
+                            "x":45,
                             "type":"Button",
                             "searchKey":"Button",
                             "props":{"y":181,"x":0,"width":127,"skin":"comp/button.png","labelSize":30,"label":"Coose","height":38},
@@ -91,6 +93,20 @@
                             "isAniNode":false,
                             "hasChild":false,
                             "compId":8,
+                            "child":[
+                                ]
+                        },
+                        {
+                            "x":45,
+                            "type":"Label",
+                            "searchKey":"Label",
+                            "props":{"y":225,"x":0,"width":133,"valign":"middle","text":"Number:#","styleSkin":"comp/label.png","height":31,"fontSize":20,"color":"#ff0400","align":"left"},
+                            "nodeParent":11,
+                            "label":"Label",
+                            "isDirectory":false,
+                            "isAniNode":false,
+                            "hasChild":false,
+                            "compId":19,
                             "child":[
                                 ]
                         }]

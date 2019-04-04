@@ -10,6 +10,7 @@ import RoleElement from "./../script/RoleElement"
 import PlayerGuestAgent from "./../Agent/PlayerGuestAgent"
 import { MessageMD } from "./../FrameWork/MessageCenter"
 import { Player } from "./../Agent/PlayerEntity"
+import GameAPP from "../controler/GameAPP";
 
 class ExtendCharactersUI extends ui.CharacterUI {
     createChildren(): void {
@@ -49,7 +50,7 @@ export default class CharacterUI extends BaseUI {
     }
 
     GetCharacterList()  {
-        this.m_CharacterList = [0, 1];
+        this.m_CharacterList = GameAPP.CharacterMgr.GetIDList();
     }
 
     SetList() {

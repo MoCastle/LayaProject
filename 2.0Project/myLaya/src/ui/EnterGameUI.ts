@@ -36,6 +36,7 @@ export default class EnterGameUI extends BaseUI {
         var uiMgr: UIManager = this._UIManager;
         this.m_BtnGroup = [];
         //this._UI._CharacterList.on(Laya.Event.CLICK,null,()=>{ uiMgr.Show<PlayerListUI>(PlayerListUI)});
+        this._UI._Rank.visible = false;
     }
 
     private InitBtnGroup() {

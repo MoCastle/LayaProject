@@ -1,8 +1,8 @@
 {
     "x":0,
     "type":"View",
-    "selectedBox":1,
-    "selecteID":10,
+    "selectedBox":6,
+    "selecteID":7,
     "searchKey":"View",
     "props":{"width":750,"top":0,"sceneColor":"#000000","right":0,"left":0,"height":1334,"bottom":0},
     "nodeParent":-1,
@@ -94,20 +94,6 @@
                             "isAniNode":false,
                             "hasChild":false,
                             "compId":5,
-                            "child":[
-                                ]
-                        },
-                        {
-                            "x":45,
-                            "type":"Button",
-                            "searchKey":"Button",
-                            "props":{"y":190,"x":0,"width":155,"skin":"comp/button.png","labelSize":30,"label":"Choose","height":41},
-                            "nodeParent":6,
-                            "label":"Button",
-                            "isDirectory":false,
-                            "isAniNode":false,
-                            "hasChild":false,
-                            "compId":7,
                             "child":[
                                 ]
                         }]

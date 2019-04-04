@@ -469,7 +469,7 @@ export module Item {
             return 1;
         }
         constructor(time: number = 0)  {
-            super(ItemType.Protect, CollectBuff.Idx);
+            super(ItemType.Collector, CollectBuff.Idx);
             this.GameDir = Controler.GameControler.GameDir;
             this.Time = this.GameDir.GameTime + time;
             this.CountFloor = 0;

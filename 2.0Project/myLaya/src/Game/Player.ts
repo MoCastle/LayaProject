@@ -70,27 +70,24 @@ export default class Player extends Laya.Sprite3D
     {
         super();
         this.m_BuffModel = {};
-        /*
-        var Name:string = path.GetLH("c001_child_01");
-        var PlayerModel = Laya.Loader.getRes(Name);
-        var secondPlayer:Laya.Sprite3D = PlayerModel.clone();
-        this.addChild(secondPlayer);
-        */
         APP.SceneManager.CurScene.PutObj(this);
 
         //添加自定义模型
-        //secondPlayer.transform.rotate(new Laya.Vector3(0, 180, 0), false, false);
-        //this.m_Animator = secondPlayer.getChildAt(0).getComponent(Laya.Animator);
         this.on(Laya.Event.REMOVED,this,()=>{ this.destroy() })
-        //this.InitBUffModel(secondPlayer);
         var mgr:CharacterManager = GameAPP.CharacterMgr;
     }
-    
+    private m_StateMap:{}
     public SetPlayerModel( model:Laya.Sprite3D )
     {
         this.addChild(model);
         model.transform.rotate(new Laya.Vector3(0, 180, 0), false, false);
         this.m_Animator = model.getChildAt(0).getComponent(Laya.Animator);
+        var layer:Laya.MapLayer = this.m_Animator.getControllerLayer()._statesMap;
+        this.m_StateMap = {};
+        for(var key in layer )
+        {
+            this.m_StateMap[key] = 1;
+        }
         this.InitBUffModel(model);
     }
 
@@ -182,7 +179,9 @@ export default class Player extends Laya.Sprite3D
         if((this.CurStep.StepItem.ItemType == Item.ItemType.None)&&(this.CurStep.IsEmpty||(this.CurStep.LeftParent&&this.CurStep.RightParent&&this.CurStep.LeftParent.StepItem.IsForbiden&&this.CurStep.RightParent.StepItem.IsForbiden)))
         {
             APP.MessageManager.Fire(MessageMD.GameEvent.PlayerDeath);
-            this.m_Animator.play(Character.PlayerAnimName(Character.AnimEnum.Fall));
+            var clipName:string = Character.PlayerAnimName(Character.AnimEnum.Fall);
+            if(this.m_StateMap[clipName])
+                this.m_Animator.play(clipName);
             return;
         }
         this.CurStep.StepItem.TouchItem(this);
