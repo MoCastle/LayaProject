@@ -1,0 +1,41 @@
+{
+    "1": {
+        "ID": "1",
+        "Passscore": "保护",
+        "ModelName": "shield",
+        "ExtendID": "01",
+        "Price": "1"
+    },
+    "2": {
+        "ID": "2",
+        "Passscore": "无敌",
+        "ModelName": "untouchable",
+        "ExtendID": "01",
+        "Price": "1"
+    },
+    "3": {
+        "ID": "3",
+        "Passscore": "飞",
+        "ModelName": "flyer",
+        "ExtendID": "01",
+        "Price": "1"
+    },
+    "4": {
+        "ID": "4",
+        "Passscore": "绳子"
+    },
+    "5": {
+        "ID": "5",
+        "Passscore": "收集",
+        "ModelName": "absord_01",
+        "ExtendID": "01",
+        "Price": "1"
+    },
+    "6": {
+        "ID": "6",
+        "Passscore": "金币",
+        "ModelName": "coin_01",
+        "ExtendID": "01",
+        "Price": "-1"
+    }
+}

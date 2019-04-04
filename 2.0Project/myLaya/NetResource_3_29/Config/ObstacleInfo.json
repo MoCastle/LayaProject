@@ -1,0 +1,21 @@
+{
+    "1": {
+        "ID": "1",
+        "Passscore": "空"
+    },
+    "2": {
+        "ID": "2",
+        "Passscore": "岩石",
+        "ModelName": "barrier_01#barrier_02#barrier_03#barrier_04"
+    },
+    "3": {
+        "ID": "3",
+        "Passscore": "刺",
+        "ModelName": "sting_01"
+    },
+    "4": {
+        "ID": "4",
+        "Passscore": "藤蔓",
+        "ModelName": "chomper_01#entangle_01"
+    }
+}
