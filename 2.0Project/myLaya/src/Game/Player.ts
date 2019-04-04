@@ -1,5 +1,4 @@
 import {PlayerControler} from "./PlayerCtrler"
-import {PlayerBuff} from "./Buff"
 import {MessageMD} from "./../FrameWork/MessageCenter"
 import APP from "./../controler/APP"
 import Step from "./Step"
@@ -10,7 +9,6 @@ import {Character} from "./Character"
 import GameAPP from "./../controler/GameAPP"
 import CharacterManager from "../GameManager/CharacterMamager";
 var num:number = 0;
-type BasePlayerBuff = PlayerBuff.BasePlayerBuff;
 //该脚本用于游戏玩家对象管理
 //玩家对象
 export default class Player extends Laya.Sprite3D
@@ -25,7 +23,7 @@ export default class Player extends Laya.Sprite3D
     private m_BuffModel:{[name:number]:Laya.Sprite3D}
     
     BaseCtrler:PlayerControler.PlayerNormCtrler;
-    BuffArr:Array<PlayerBuff.BasePlayerBuff>;
+    BuffArr:Array<Item.BasePlayerBuff>;
     //zerg
     IdNumber:number;
 
@@ -113,7 +111,7 @@ export default class Player extends Laya.Sprite3D
      * @param idx 槽位检查
      * @returns 空表示没有
      */
-    GetBuff(idx:number):PlayerBuff.BasePlayerBuff
+    GetBuff(idx:number):Item.BasePlayerBuff
     {
         return (this.BuffArr[idx] !=null&&this.BuffArr[idx]!=undefined)?this.BuffArr[idx]:null;
     }
@@ -221,7 +219,7 @@ export default class Player extends Laya.Sprite3D
      * @param buff 
      * @param index 
      */
-    AddBuff(buff:PlayerBuff.BasePlayerBuff):boolean
+    AddBuff(buff:Item.BasePlayerBuff):boolean
     {
         var index:number = buff.Idx;
         if(this.BuffArr[index]!=null||this.BuffArr[index]!=undefined)
@@ -255,7 +253,7 @@ export default class Player extends Laya.Sprite3D
      */
     CompleteBuff(index:number)
     {
-        var buff:BasePlayerBuff = this.BuffArr[index];
+        var buff:Item.BasePlayerBuff = this.BuffArr[index];
         var buffModel:Laya.Sprite3D = this.m_BuffModel[buff.Type];
         if(buffModel) buffModel.active = false;
         this.BuffArr[index]=null;

@@ -5,7 +5,7 @@
         "ModelID": "c001",
         "StateList": ["_child","_adult"],
         "ExtendID": "_01",
-        "ItemList": "[]",
+        "ItemList": "",
         "Price": 0
     }
 }

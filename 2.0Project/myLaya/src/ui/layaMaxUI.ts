@@ -56,7 +56,7 @@ export module ui {
 		public _TxtGold:Laya.Label;
 		public _LeftTouch:Laya.Button;
 		public _RightTouch:Laya.Button;
-		public _CharacterItem:Laya.Button;
+		public _SkillItem:Laya.Button;
 		public _PlayerItem:Laya.Button;
         constructor(){ super()}
         createChildren():void {

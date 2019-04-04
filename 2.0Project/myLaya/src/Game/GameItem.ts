@@ -1,5 +1,4 @@
 import { GameStruct } from "./GameStruct"
-import { PlayerBuff } from "./Buff"
 import { MessageMD } from "./../FrameWork/MessageCenter"
 import { path } from "./../Utility/Path"
 import { AnimObj } from "./../Game/AnimObj"
@@ -10,9 +9,7 @@ import GameDirector from "./../Scene/GameDirector"
 import { PlayerControler } from "./PlayerCtrler"
 import { Input } from "./Input";
 import Controler from "./../controler/GameControler"
-type BasePlayerBuff = PlayerBuff.BasePlayerBuff;
 type AnimCoin = AnimObj.AnimCoin
-
 export module Item {
     //物品标识
     const ItemID: string = "Item";
@@ -191,7 +188,32 @@ export module Item {
         item.ResetItem();
         return item;
     }
-
+    export function ItemBuffFactory(itemType:ItemType):BasePlayerBuff
+    {
+        var buff:BasePlayerBuff = null;
+        switch(itemType)
+        {
+            case ItemType.Fly:
+                buff = new FlyBuff();
+            break;
+            case ItemType.Collector:
+                buff = new CollectBuff(10000);
+            break;
+            case ItemType.Protect:
+                buff = new ProtectBuff(3000);
+            break;
+            case ItemType.HolyProtect:
+                buff = new ProtectBuff(3000, true);
+            break;
+            case ItemType.Vine:
+                buff = new VineBuff();
+            break;
+            case ItemType.Rope:
+                buff = new RopeBuff();
+            break;
+        }
+        return buff;
+    }
     export class StepItem  {
         Step: Step;
         ItemType: ItemType;
@@ -241,6 +263,11 @@ export module Item {
             switch (this.ItemType)  {
 
             }
+        }
+
+        public GenBuff():BasePlayerBuff
+        {
+            return ItemBuffFactory(this.ItemType);
         }
         /**
          * 突破保护
@@ -316,6 +343,39 @@ export module Item {
         }
     }
 
+    export class BasePlayerBuff  {
+        Type: Item.ItemType;
+        Idx: number;
+        Player: Player;
+        Update()  {
+        }
+        GenBuffMod()  {
+            this._BuffMod = new Laya.MeshSprite3D(Laya.PrimitiveMesh.createSphere(0.3, 8, 8));
+        }
+        Start(player: Player)  {
+            this.Player = player;
+            //创建模型显示对象
+            this.Player.AddBuffMode(this._BuffMod);
+            this.Player.Fly()
+            if (this._StartFunc != null)  {
+                this._StartFunc();
+            }
+        }
+
+        Complete()  {
+            this.Player.CompleteBuff(this.Idx);
+            this._BuffMod.destroy();
+        }
+        //
+        protected _BuffMod: Laya.Sprite3D;
+        constructor(type: Item.ItemType, idx: number = 0)  {
+            this.Type = type;
+            this.Idx = idx;
+            this.GenBuffMod();
+        }
+        private _StartFunc: () => void;
+    }
+
     class Rock extends StepItem  {
         public static ModelNum = 3;
         constructor(Step: Step)  {
@@ -368,12 +428,13 @@ export module Item {
         TouchItem(player: Player)  {
             if (player.GetBuff(ProtectBuff.Idx) != null)
                 return;
-            this._AddBuffToPlayer(player, new ProtectBuff(3000));
+            var Buff:BasePlayerBuff = this.GenBuff();
+            this._AddBuffToPlayer(player, Buff);
         }
     }
     GameStruct.ItemDictType[ItemType.Protect] = Protect;
 
-    class ProtectBuff extends PlayerBuff.BasePlayerBuff  {
+    class ProtectBuff extends BasePlayerBuff  {
         Time: number;
         static get Idx(): number  {
             return 0;
@@ -407,7 +468,8 @@ export module Item {
         TouchItem(player: Player)  {
             if (player.GetBuff(ProtectBuff.Idx) != null)
                 return;
-            this._AddBuffToPlayer(player, new ProtectBuff(3000, true));
+            var Buff:BasePlayerBuff = this.GenBuff();
+            this._AddBuffToPlayer(player, Buff);
         }
     }
     GameStruct.ItemDictType[ItemType.HolyProtect] = HolyProtect;
@@ -443,7 +505,7 @@ export module Item {
         TouchItem(player: Player)  {
             if (player.GetBuff(CollectBuff.Idx) != null)
                 return;
-            player.AddBuff(new CollectBuff(10000));
+            player.AddBuff( this.GenBuff());
             this.PutItem();
         }
         constructor(step: Step)  {
@@ -461,7 +523,7 @@ export module Item {
     }
     GameStruct.ItemDictType[ItemType.Collector] = Collecter;
 
-    class CollectBuff extends PlayerBuff.BasePlayerBuff  {
+    class CollectBuff extends BasePlayerBuff  {
         Time: number;
         GameDir: GameDirector;
         CountFloor: number;
@@ -501,7 +563,7 @@ export module Item {
         TouchItem(player: Player)  {
             if (player.GetBuff(0))
                 return;
-            player.AddBuff(new FlyBuff());
+            player.AddBuff(this.GenBuff());
         }
 
         constructor(step: Step)  {
@@ -517,7 +579,7 @@ export module Item {
     }
     GameStruct.ItemDictType[ItemType.Fly] = FLy;
 
-    class FlyBuff extends PlayerBuff.BasePlayerBuff  {
+    class FlyBuff extends BasePlayerBuff  {
         Speed: number;
         Floor: number;
 
@@ -573,7 +635,7 @@ export module Item {
         TouchItem(player: Player)  {
             if (player.GetBuff(0))
                 return;
-            player.AddBuff(new RopeBuff());
+            player.AddBuff(this.GenBuff());
         }
         constructor(step: Step)  {
             super(ItemType.Rope, step);
@@ -587,7 +649,7 @@ export module Item {
     }
     GameStruct.ItemDictType[ItemType.Rope] = Rope;
 
-    class RopeBuff extends PlayerBuff.BasePlayerBuff  {
+    class RopeBuff extends BasePlayerBuff  {
         Speed: number;
         Floor: number;
 
@@ -654,7 +716,7 @@ export module Item {
         TouchItem(player: Player)  {
             var curBuff: BasePlayerBuff = player.GetBuff(0);
             if (!this.BreakProtect(player))  {
-                player.AddBuff(new VineBuff());
+                player.AddBuff(this.GenBuff());
             }
             this.PutItem();
         }
@@ -674,7 +736,7 @@ export module Item {
     }
     GameStruct.ItemDictType[ItemType.Vine] = Vine;
 
-    class VineBuff extends PlayerBuff.BasePlayerBuff  {
+    class VineBuff extends BasePlayerBuff  {
         CountTime: number;
         InputDir: boolean;
         Start(player: Player)  {

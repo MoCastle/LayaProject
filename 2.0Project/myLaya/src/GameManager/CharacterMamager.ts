@@ -16,10 +16,10 @@ export default class CharacterManager extends GameManager.BaseManager {
         return new CharacterInfo(data);
     }
 
-    public GetSkillItem(id): Array<number> {
+    public GetSkillItem(id): number {
         var info:CharacterInfo = this.GetInfo<CharacterInfo>(id);
         if(info)
-            return info.ItemList;
+            return info.Item;
         return null;
     }
 
@@ -49,10 +49,10 @@ class CharacterInfo extends GameManager.BaseInfo {
     private m_ModelID: string;
     private m_StateLsit: Array<string>;
     private m_ExtendID: string;
-    private m_ItemList: Array<number>;
+    private m_Item: number;
 
-    public get ItemList(): Array<number> {
-        return this.m_ItemList;
+    public get Item(): number {
+        return this.m_Item;
     }
     public get Price(): number {
         return this.m_Price;
@@ -64,7 +64,7 @@ class CharacterInfo extends GameManager.BaseInfo {
         super(characterData);
         this.m_ModelID = characterData.ModelID ? characterData.ModelID : "";
         this.m_StateLsit = characterData.StateList ? characterData.StateList : "";
-        this.m_ItemList = characterData.ItemList ? characterData.ItemList : [];
+        this.m_Item = characterData.Item ? characterData.Item : -1;
         this.m_ExtendID = characterData.ExtendID ? characterData.ExtendID : "";
     }
 
