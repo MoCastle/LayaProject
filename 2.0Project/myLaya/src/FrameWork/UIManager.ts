@@ -127,6 +127,9 @@ export default class UIManager extends BaseManager {
 
         node.addChild(newUI);
         newUI.OpenOP();
+        if (newUI.UIType == BaseEnum.UITypeEnum.Midle && node.numChildren > 0) {
+            node.visible = true;
+        }
 
         return newUI as T;
     }
@@ -139,15 +142,20 @@ export default class UIManager extends BaseManager {
             //中层次UI
             case BaseEnum.UITypeEnum.Midle:
                 node = this.m_MidleNode;
-                if (node.numChildren <= 0)
+
+                if (node.numChildren <= 0) {
+                    node.visible = false;
+                }
+               // this.Clear();
                     //关闭窗口 通知游戏继续
                     //APP.SceneManager.CurScene.CurDir.ContinueTime();
-                    break;
+            break;
             //默认Ui全是低层次UI
             default:
                 node = this.m_BottomNode;
                 break;
         }
+
         var childNum: number = node.numChildren;
         if (childNum > 0)  {
             var lastUI: BaseUI = node.getChildAt(childNum - 1) as BaseUI;

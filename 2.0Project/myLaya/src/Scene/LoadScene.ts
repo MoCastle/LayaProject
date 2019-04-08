@@ -72,6 +72,7 @@ class LoadScenePlaye extends Scene.BaseScenePlaye
         this.m_LoadFaile = false;
         var resource2DArr = [
             path.GetDepathUIJS("Enter"),
+            path.GetDepathUIJS("GameRank"),
             path.GetDepathUIJS("SetPanel"),
             path.GetDepathUIJS("ItemList"),
             path.GetDepathUIJS("Character"),
