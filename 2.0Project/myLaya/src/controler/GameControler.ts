@@ -2,6 +2,7 @@ import {Item} from "./../Game/GameItem"
 import {GameStruct} from "./../Game/GameStruct"
 import PlayerGuestDelegate from "./../Agent/PlayerGuestAgent"
 import SetPanelUI from "./../ui/SetPanelUI"
+import RankPanelUI from "./../ui/RankPanelUI"
 import CharacterUI from "./../ui/CharacterUI"
 import GameScene from "./../Scene/GameScene"
 import GameDirector from "./../Scene/GameDirector"
@@ -95,6 +96,14 @@ class GameControler {
         var Panel = APP.UIManager.Show<SetPanelUI>(SetPanelUI);// new SetPanel();
     }
 
+    //显示排行榜面板
+    ShowRankPanel() {
+        // if(!Laya.Browser.onWeiXin || typeof wx == "undefined") {
+        //     return;
+        // }
+        var Panel = APP.UIManager.Show<RankPanelUI>(RankPanelUI);// new SetPanel();
+    }
+    
     //显示角色面板
     public ShowCharacterPanel() {
         var character = APP.UIManager.Show<CharacterUI>(CharacterUI);

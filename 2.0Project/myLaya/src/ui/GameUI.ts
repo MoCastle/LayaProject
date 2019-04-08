@@ -76,12 +76,12 @@ export default class GameUI extends BaseUI
     }
     SetLeftTouch(owner:any,Listener:()=>void):void
     {
-        this._UI._LeftTouch.on(Laya.Event.CLICK,owner,Listener);
+        //this._UI._LeftTouch.on(Laya.Event.CLICK,owner,Listener);
     }
 
     SetRightTouch(owner:any,Listener:()=>void):void
     {
-        this._UI._RightTouch.on(Laya.Event.CLICK,owner,Listener);
+        //this._UI._RightTouch.on(Laya.Event.CLICK,owner,Listener);
     }
 
     SetCountTime(info:string ="")

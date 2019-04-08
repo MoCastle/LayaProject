@@ -18,14 +18,12 @@ class Game
         var ss = APP;
         Laya3D.init(0,0,true);
         GameConfig.init();
-        //Laya.stage.scaleMode = Laya.Stage.SCALE_FIXED_WIDTH;
         Laya.stage.scaleMode = Laya.Stage.SCALE_FULL;
         
         Laya.stage.screenMode = Laya.Stage.SCREEN_VERTICAL;
         Laya.stage.alignV = Laya.Stage.ALIGN_BOTTOM;
         //开启统计信息
 		Laya.Stat.show()
-        
         var resCol = [{url:"ui/Resource/LoadUI.json",type:Laya.Loader.JSON},{url:"ui/Resource/localcomp.atlas",type:Laya.Loader.ATLAS}];
         Laya.loader.load(resCol,Laya.Handler.create(this,this.onLoaded));
     }

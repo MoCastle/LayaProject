@@ -41,7 +41,7 @@ export default class CharacterUI extends BaseUI {
         this.GetCharacterList();
         this.SetList();
         this.m_CharacterList = [];
-        this.m_GoldDiscribe = this._UI._Gold.text.split("#");
+        //this.m_GoldDiscribe = this._UI._Gold.text.split("#");
         this.OnMoneyChange();
     }
     static Name(): string {
@@ -103,8 +103,8 @@ export default class CharacterUI extends BaseUI {
         if (!this.Showing)  {
             return;
         }
-        this.m_GoldDiscribe[1] = "" + PlayerGuestAgent.GuestAgent.Money;
-        this._UI._Gold.text = this.m_GoldDiscribe[0] + this.m_GoldDiscribe[1];
+        //this.m_GoldDiscribe[1] = "" + PlayerGuestAgent.GuestAgent.Money;
+        //this._UI._Gold.text = this.m_GoldDiscribe[0] + this.m_GoldDiscribe[1];
     }
 }
 

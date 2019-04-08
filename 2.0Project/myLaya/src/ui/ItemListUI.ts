@@ -43,9 +43,9 @@ export default class ItemListUI extends BaseUI
         this.UI.BtnListener = new MessageMD.Delegate(this,()=>{ this._UIManager.Close(this)})
         //this._UIType = BaseEnum.UITypeEnum.Midle;
         this.UpdateList();
-        this.m_Gold = this.UI._Gold.text.split("#");
-        this.UI._BG.alpha = 0;
-        this.UI._BG.on(Laya.Event.CLICK,this,this.CloseUI)
+        //this.m_Gold = this.UI._Gold.text.split("#");
+        //this.UI._BG.alpha = 0;
+        //this.UI._BG.on(Laya.Event.CLICK,this,this.CloseUI)
     }
 
     public Open()
@@ -82,7 +82,7 @@ export default class ItemListUI extends BaseUI
             return
         }
         this.m_Gold[1] ="" + PlayerGuestAgent.GuestAgent.Money;
-        this.UI._Gold.text = this.m_Gold[0] + this.m_Gold[1];
+        //this.UI._Gold.text = this.m_Gold[0] + this.m_Gold[1];
     }
 
     private _RenderHandler(cell:Laya.Box,index:number):void
