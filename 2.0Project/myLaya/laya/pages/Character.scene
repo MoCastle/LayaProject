@@ -1,8 +1,8 @@
 {
     "x":0,
     "type":"View",
-    "selectedBox":1,
-    "selecteID":8,
+    "selectedBox":6,
+    "selecteID":7,
     "searchKey":"View",
     "props":{"width":750,"top":0,"sceneColor":"#000000","right":0,"left":0,"height":1334,"bottom":0},
     "nodeParent":-1,
@@ -31,10 +31,10 @@
         {
             "x":15,
             "type":"Label",
-            "searchKey":"Label,_GoldDis,_GoldDis",
-            "props":{"width":311,"var":"_GoldDis","valign":"middle","top":1,"text":"Gold:# Num#","right":0,"name":"_GoldDis","height":56,"fontSize":30,"color":"#ffffff","align":"center"},
+            "searchKey":"Label,_Gold",
+            "props":{"width":311,"var":"_Gold","valign":"middle","top":47,"text":"Gold:# ","right":21,"height":56,"fontSize":30,"color":"#ffffff","align":"center"},
             "nodeParent":1,
-            "label":"_GoldDis",
+            "label":"_Gold",
             "isOpen":true,
             "isDirectory":false,
             "isAniNode":true,
@@ -94,20 +94,6 @@
                             "isAniNode":false,
                             "hasChild":false,
                             "compId":5,
-                            "child":[
-                                ]
-                        },
-                        {
-                            "x":45,
-                            "type":"Button",
-                            "searchKey":"Button",
-                            "props":{"y":190,"x":0,"width":155,"skin":"comp/button.png","labelSize":30,"label":"Choose","height":41},
-                            "nodeParent":6,
-                            "label":"Button",
-                            "isDirectory":false,
-                            "isAniNode":false,
-                            "hasChild":false,
-                            "compId":7,
                             "child":[
                                 ]
                         }]

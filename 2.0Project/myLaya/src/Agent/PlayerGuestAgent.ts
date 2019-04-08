@@ -1,4 +1,5 @@
 import BaseAgent from "./BaseAgent"
+import GameAPP from "./../controler/GameAPP"
 export default class PlayerGuestAgent extends BaseAgent {
     static _Agent: PlayerGuestAgent;
     static get GuestAgent(): PlayerGuestAgent {
@@ -24,7 +25,7 @@ export default class PlayerGuestAgent extends BaseAgent {
 
     public BuyCharacter(id: number)  {
         //ToDo
-        var price = 0;
+        var price = GameAPP.ItemMgr.GetPrice(id);
         if (id < 0|| price <0 || price > this.m_PlayerEntity.Money)  {
             return;
         }
@@ -33,7 +34,7 @@ export default class PlayerGuestAgent extends BaseAgent {
     }
 
     public BuyItem(id: number)  {
-        var price = 0;
+        var price = GameAPP.ItemMgr.GetPrice(id);
         if(id < 0|| price <0 )
         {
             return false;

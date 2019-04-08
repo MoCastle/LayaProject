@@ -1,12 +1,12 @@
 {
     "x":0,
     "type":"View",
-    "selectedBox":13,
-    "selecteID":11,
+    "selectedBox":1,
+    "selecteID":13,
     "searchKey":"View,Render",
     "props":{"width":750,"top":0,"sceneColor":"#000000","right":0,"name":"Render","left":0,"height":1334,"bottom":0},
     "nodeParent":-1,
-    "maxID":16,
+    "maxID":20,
     "label":"Render",
     "isOpen":true,
     "isDirectory":true,
@@ -14,6 +14,20 @@
     "hasChild":true,
     "compId":1,
     "child":[
+        {
+            "x":15,
+            "type":"Image",
+            "searchKey":"Image,_BG",
+            "props":{"y":-1,"x":0,"var":"_BG","top":-1,"skin":"comp/image_bg.png","right":0,"left":0,"bottom":0,"alpha":0},
+            "nodeParent":1,
+            "label":"_BG",
+            "isDirectory":false,
+            "isAniNode":true,
+            "hasChild":false,
+            "compId":18,
+            "child":[
+                ]
+        },
         {
             "x":15,
             "type":"Button",
@@ -32,7 +46,7 @@
             "x":15,
             "type":"List",
             "searchKey":"List,_List",
-            "props":{"width":600,"var":"_List","spaceY":20,"spaceX":30,"height":237,"centerY":11,"centerX":0},
+            "props":{"width":600,"var":"_List","spaceY":20,"spaceX":30,"height":258,"centerY":22,"centerX":0},
             "nodeParent":1,
             "label":"_List",
             "isOpen":true,
@@ -81,7 +95,36 @@
                             "compId":8,
                             "child":[
                                 ]
+                        },
+                        {
+                            "x":45,
+                            "type":"Label",
+                            "searchKey":"Label",
+                            "props":{"y":225,"x":0,"width":133,"valign":"middle","text":"Number:#","styleSkin":"comp/label.png","height":31,"fontSize":20,"color":"#ff0400","align":"left"},
+                            "nodeParent":11,
+                            "label":"Label",
+                            "isDirectory":false,
+                            "isAniNode":false,
+                            "hasChild":false,
+                            "compId":19,
+                            "child":[
+                                ]
                         }]
+                },
+                {
+                    "x":30,
+                    "type":"Label",
+                    "searchKey":"Label,_Gold",
+                    "props":{"width":311,"var":"_Gold","valign":"middle","top":-56,"text":"Gold:# ","right":-31,"height":56,"fontSize":30,"color":"#ffffff","align":"center"},
+                    "nodeParent":13,
+                    "label":"_Gold",
+                    "isOpen":true,
+                    "isDirectory":false,
+                    "isAniNode":false,
+                    "hasChild":false,
+                    "compId":17,
+                    "child":[
+                        ]
                 }]
         }],
     "animations":[

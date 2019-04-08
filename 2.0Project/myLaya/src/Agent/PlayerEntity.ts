@@ -52,8 +52,8 @@ export module Player {
             {
                 return;
             }
-            this.m_MessageMgr.Fire(Event.OnMoneyChange)
             this.m_Money = value;
+            this.m_MessageMgr.Fire(Event.OnMoneyChange)
         }
         public get CurCharacterID(): number
         {
@@ -91,8 +91,8 @@ export module Player {
             {
                 return;
             }
-            this.m_MessageMgr.Fire(Event.OnHistoryMaxLevelChange)
             this.m_HistoryMaxLevel = value;
+            this.m_MessageMgr.Fire(Event.OnHistoryMaxLevelChange)
         }
         public get CharacterList(): Array<number>
         {
@@ -105,8 +105,8 @@ export module Player {
             {
                 return;
             }
-            this.m_MessageMgr.Fire(Event.OnCurItemChange)
             this.m_CurItem = value;
+            this.m_MessageMgr.Fire(Event.OnCurItemChange)
         }
         public get CurItem():number
         {
@@ -126,8 +126,8 @@ export module Player {
             {
                 return
             }
-            this.m_MessageMgr.Fire(Event.OnCurScoreChange);
             this.m_CurScore = value;
+            this.m_MessageMgr.Fire(Event.OnCurScoreChange);
         }
         
         constructor()  {

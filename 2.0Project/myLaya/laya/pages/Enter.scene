@@ -1,11 +1,12 @@
 {
     "x":0,
     "type":"View",
-    "selectedBox":1,
+    "selectedBox":19,
+    "selecteID":33,
     "searchKey":"View",
     "props":{"width":750,"top":0,"sceneColor":"#000000","right":0,"left":0,"height":1334,"bottom":0},
     "nodeParent":-1,
-    "maxID":33,
+    "maxID":40,
     "label":"View",
     "isOpen":true,
     "isDirectory":true,
@@ -59,7 +60,7 @@
             "x":15,
             "type":"Panel",
             "searchKey":"Panel,_Panel",
-            "props":{"width":341,"var":"_Panel","height":328,"centerY":-231,"centerX":-50},
+            "props":{"width":594,"var":"_Panel","height":487,"centerY":-277,"centerX":0},
             "nodeParent":1,
             "label":"_Panel",
             "isOpen":true,
@@ -71,17 +72,46 @@
                 {
                     "x":30,
                     "type":"Image",
-                    "searchKey":"Image",
-                    "props":{"y":1,"x":0,"width":467,"skin":"comp/layabox.png","height":462},
+                    "searchKey":"Image,_Group",
+                    "props":{"y":-21,"x":0,"width":729,"var":"_Group","skin":"comp/layabox.png","height":695},
                     "nodeParent":17,
-                    "label":"Image",
+                    "label":"_Group",
                     "isOpen":true,
-                    "isDirectory":false,
+                    "isDirectory":true,
                     "isAniNode":true,
-                    "hasChild":false,
+                    "hasChild":true,
                     "compId":19,
                     "child":[
-                        ]
+                        {
+                            "x":45,
+                            "type":"Image",
+                            "searchKey":"Image,Btn0",
+                            "props":{"y":169,"x":57,"width":71,"skin":"comp/image.png","name":"Btn0","height":102},
+                            "nodeParent":19,
+                            "label":"Btn0",
+                            "isOpen":true,
+                            "isDirectory":false,
+                            "isAniNode":true,
+                            "hasChild":false,
+                            "compId":33,
+                            "child":[
+                                ]
+                        },
+                        {
+                            "x":45,
+                            "type":"Image",
+                            "searchKey":"Image,Btn1",
+                            "props":{"y":327,"x":196,"width":71,"skin":"comp/image.png","name":"Btn1","height":102},
+                            "nodeParent":19,
+                            "label":"Btn1",
+                            "isOpen":true,
+                            "isDirectory":false,
+                            "isAniNode":true,
+                            "hasChild":false,
+                            "compId":37,
+                            "child":[
+                                ]
+                        }]
                 }]
         },
         {

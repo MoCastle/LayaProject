@@ -12,6 +12,13 @@ export class GameAgent extends BaseAgent {
     }
 
     public get CurLevel(): number  {
+        return this.m_PlayerEntity.CurLevel;
+    }
+    public set CurLevel(value: number)  {
+        this.m_PlayerEntity.CurLevel = value;
+    }
+    public get CurMaxLevel():number
+    {
         return this.m_PlayerEntity.HistoryMaxLevel;
     }
     public get CurCharacterID(): number  {

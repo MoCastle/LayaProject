@@ -4,13 +4,14 @@ import {BaseEnum} from "./../Base/BaseEnum"
 import {path} from "./../Utility/Path"
 import {MessageMD} from "./../FrameWork/MessageCenter"
 import {Player} from "./../Agent/PlayerEntity"
-import GameControler from "./../controler/GameControler"
-import PlayerGuestAgent from "./../Agent/PlayerGuestAgent"
 import {GameAgent} from "./../Agent/GameAgent"
 import APP from "./../controler/APP"
 import BaseUI from "./BaseUI"
 import GuiderManager from "../Scene/GuiderManager";
 import ItemElement from "./../script/ItemElement"
+import GameControler from "./../controler/GameControler"
+import PlayerGuestAgent from "./../Agent/PlayerGuestAgent"
+import GameAPP from "./../controler/GameAPP"
 
 class ExtendsItemListUI extends ui.ItemListUI
 {
@@ -32,9 +33,10 @@ export default class ItemListUI extends BaseUI
     {
         return "ItemListUI";
     }
-    UI:ExtendsItemListUI;
-    m_Gold:string[];
-    m_ItemList:Array<number>;
+    private UI:ExtendsItemListUI;
+    private m_Gold:string[];
+    private m_ItemList:Array<number>;
+
     constructor(name:string)
     {
         super(name);
@@ -65,14 +67,19 @@ export default class ItemListUI extends BaseUI
 
     public UpdateList()
     {
-        this.m_ItemList = [0,1];
+        this.GetItemList();
         this.SetList(this.m_ItemList);
     }
 
     public RefreshList()
     {
-        this.m_ItemList = [0,1];
+        this.GetItemList();
         this.FreshList(this.m_ItemList);
+    }
+
+    public GetItemList()
+    {
+        this.m_ItemList = GameAPP.ItemMgr.GetSellItemIDList();
     }
 
     public ShowGold()
@@ -90,11 +97,12 @@ export default class ItemListUI extends BaseUI
         var roleElement:ItemElement = cell as ItemElement;
         var itemList:Array<number> = GameAgent.Agent.ItemList;
         roleElement.Init();
-        roleElement.ItemIdx = index;
+        roleElement.ItemIdx = this.m_ItemList[index];
         roleElement.RegistBuy(this,this.BuyItem);
         roleElement.RegistChoose(this,this.ChooseItem);
-        roleElement.IsGray = itemList[index]?false:true;
-        roleElement.Num = itemList[index]?itemList[index]:0;
+        roleElement.IsGray = itemList[this.m_ItemList[index]]?false:true;
+        roleElement.Num = itemList[this.m_ItemList[index]]?itemList[this.m_ItemList[index]]:0;
+        roleElement.BtnLable = "" + GameAPP.ItemMgr.GetPrice(this.m_ItemList[index]) + "$";
         //roleElement.SetBtn(this.BtnListener.Listener,this.BtnListener.Action);
     }
 

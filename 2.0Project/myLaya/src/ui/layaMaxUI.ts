@@ -12,7 +12,7 @@ export module ui {
         }
     }
     export class CharacterUI extends Laya.View {
-		public _GoldDis:Laya.Label;
+		public _Gold:Laya.Label;
 		public _List:Laya.List;
         constructor(){ super()}
         createChildren():void {
@@ -36,6 +36,7 @@ export module ui {
 		public _Start:Laya.Button;
 		public _Character:Laya.Button;
 		public _Panel:Laya.Panel;
+		public _Group:Laya.Image;
 		public _SetPanel:Laya.Button;
 		public _CharacterList:Laya.Button;
 		public _Rank:Laya.Button;
@@ -53,9 +54,10 @@ export module ui {
 		public _GamePanel:Laya.Box;
 		public _TxtDistance:Laya.Label;
 		public _TxtGold:Laya.Label;
-		public _UseItem:Laya.Button;
-		public _Right_LeftTouch:Laya.Button;
-		public _Right_RightTouch:Laya.Button;
+		public _LeftTouch:Laya.Button;
+		public _RightTouch:Laya.Button;
+		public _CharacterItem:Laya.Button;
+		public _PlayerItem:Laya.Button;
         constructor(){ super()}
         createChildren():void {
             super.createChildren();
@@ -63,8 +65,6 @@ export module ui {
         }
     }
     export class GameRankUI extends Laya.View {
-		public closeBtn:Laya.Button;
-		public gameRankUi:laya.ui.WXOpenDataViewer;
         constructor(){ super()}
         createChildren():void {
             super.createChildren();
@@ -72,7 +72,9 @@ export module ui {
         }
     }
     export class ItemListUI extends Laya.View {
+		public _BG:Laya.Image;
 		public _List:Laya.List;
+		public _Gold:Laya.Label;
         constructor(){ super()}
         createChildren():void {
             super.createChildren();
