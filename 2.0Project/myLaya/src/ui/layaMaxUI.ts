@@ -32,7 +32,7 @@ export module ui {
             this.loadScene("EndGame");
         }
     }
-    export class EnterUI extends Laya.View {
+    export class EnterUI extends View {
 		public _Start:Laya.Button;
 		public _Character:Laya.Button;
 		public _Panel:Laya.Panel;

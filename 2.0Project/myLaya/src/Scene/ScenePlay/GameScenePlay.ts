@@ -22,6 +22,7 @@ import GameScene from "../GameScene";
 import { GameAgent } from "./../../Agent/GameAgent"
 import GameAPP from "../../controler/GameAPP";
 import { WechatOpen } from "../../platform/WechatOpen";
+import PlayerGuestAgent from "../../Agent/PlayerGuestAgent";
 
 type ItemLayout = Item.ItemLayout;
 type LineItemInfo = Item.LineItemInfo;
@@ -125,7 +126,7 @@ export default class GameScenePlay extends Scene.BaseScenePlaye {
     AddLogicGold(num: number) {
         this._LogicGoldNum += num;
         this.PanelUI.Gold = this._LogicGoldNum;
-        WechatOpen.getInstances().updateScore(this._LogicGoldNum);
+        WechatOpen.getInstances().drawpass(this._LogicGoldNum + GameAgent.Agent.CurScore);
     }
 
     //设置安全位置
@@ -253,7 +254,6 @@ export default class GameScenePlay extends Scene.BaseScenePlaye {
         //准备玩家死亡事件
         APP.MessageManager.Regist(MessageMD.GameEvent.PlayerDeath, this.Death, this);
         this.StartGame();
-        WechatOpen.getInstances().drawpass(this._GoldNum);
     }
 
     //进入游戏的设置放这里 重新开始走这里
@@ -295,6 +295,7 @@ export default class GameScenePlay extends Scene.BaseScenePlaye {
         this._CountTime = this.GameTime + 6000;
         this._BootomFloor = 0;
         this._GameUpdate = this._StartCount;
+        WechatOpen.getInstances().drawpass(0);
     }
 
     public Update(): void {

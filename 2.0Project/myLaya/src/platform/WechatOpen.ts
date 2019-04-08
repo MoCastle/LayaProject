@@ -49,8 +49,7 @@ export class WechatOpen {
 
     public showRange(): void {
         this.postMessageToOpen({
-            command: "range",
-            gameStageHeight: Laya.stage.height
+            command: "range"
         });
     }
     
@@ -62,8 +61,7 @@ export class WechatOpen {
 
     public openRank(): void {
         this.postMessageToOpen({
-            command: "open",
-            gameStageHeight: Laya.stage.height
+            command: "open"
         });
     }
 

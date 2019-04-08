@@ -1,6 +1,6 @@
 export module path {
-    export var IsEditor: boolean = false;
-    export var version: string = "?v=3";
+    export var IsEditor: boolean = true;
+    export var version: string = "?v=4";
     export var SceneAssetPath: string = "LayaScene_";
     export var ResourcePath: string = IsEditor ? "../NetResource_3_29/" : "https://www.gsjgame.com/Resource/NetResource_3_29/";
     export var UIPath: string = ResourcePath + "UI/";
@@ -22,6 +22,7 @@ export module path {
     export function GetDepathUIJS(fileName: string): string {
         return UIPath + fileName + ".json" + version;
     }
+
 
     /**
      * 获取lh文件路径

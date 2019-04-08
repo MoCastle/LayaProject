@@ -69,6 +69,11 @@ export class GameAgent extends BaseAgent {
         this.m_PlayerEntity.CurScore = score;
     }
 
+    public get CurScore():number {
+        return this.m_PlayerEntity.CurScore;
+    }
+
+
     public ResetGameItem() {
         this.m_UseItemNum = this.m_PlayerEntity.CurItem > 0 ? 1 : 0;
         APP.MessageManager.Fire(Player.Event.OnCurItemNumChange);

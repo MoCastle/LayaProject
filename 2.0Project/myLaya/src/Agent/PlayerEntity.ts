@@ -1,6 +1,7 @@
 
 import { MessageMD } from "./../FrameWork/MessageCenter"
 import FrameWork from "./../FrameWork/FrameWork"
+import { WechatOpen } from "../platform/WechatOpen";
 
 export module Player {
     export class Event {
@@ -111,6 +112,7 @@ export module Player {
                 return
             }
             this.m_CurScore = value;
+            WechatOpen.getInstances().updateScore(value);
             this.m_MessageMgr.Fire(Event.OnCurScoreChange);
         }
 

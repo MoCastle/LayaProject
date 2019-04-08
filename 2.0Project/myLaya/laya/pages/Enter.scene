@@ -190,7 +190,7 @@
             "x":15,
             "type":"Button",
             "searchKey":"Button,_Rank",
-            "props":{"width":150,"var":"_Rank","skin":"comp/button.png","left":300,"labelStrokeColor":"#ff0400","labelSize":30,"label":"Rank","height":90,"bottom":203},
+            "props":{"width":150,"var":"_Rank","skin":"comp/button.png","left":300,"labelStrokeColor":"#ff0400","labelSize":30,"label":"Rank","height":90,"bottom":182},
             "nodeParent":1,
             "label":"_Rank",
             "isOpen":null,

@@ -168,20 +168,6 @@
                         ]
                 }],
             "$HIDDEN":false
-        },
-        {
-            "x":15,
-            "type":"WXOpenDataViewer",
-            "searchKey":"WXOpenDataViewer",
-            "props":{"y":73,"x":540,"width":200,"iconSign":"wx","height":100},
-            "nodeParent":1,
-            "label":"WXOpenDataViewer",
-            "isDirectory":false,
-            "isAniNode":true,
-            "hasChild":false,
-            "compId":21,
-            "child":[
-                ]
         }],
     "animations":[
         {
