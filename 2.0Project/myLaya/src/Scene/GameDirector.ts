@@ -1,6 +1,5 @@
 import {Scene} from "./Scene"
 import { path } from "./../Utility/Path"
-import { PlayerBuff } from "./../Game/Buff"
 import {GameStruct} from "./../Game/GameStruct"
 import GameScenePlay from "./ScenePlay/GameScenePlay"
 import Controler from "./../controler/GameControler"

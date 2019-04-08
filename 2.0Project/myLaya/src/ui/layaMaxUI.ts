@@ -32,7 +32,7 @@ export module ui {
             this.loadScene("EndGame");
         }
     }
-    export class EnterUI extends Laya.View {
+    export class EnterUI extends View {
 		public _Start:Laya.Button;
 		public _Character:Laya.Button;
 		public _Panel:Laya.Panel;
@@ -56,7 +56,7 @@ export module ui {
 		public _TxtGold:Laya.Label;
 		public _LeftTouch:Laya.Button;
 		public _RightTouch:Laya.Button;
-		public _CharacterItem:Laya.Button;
+		public _SkillItem:Laya.Button;
 		public _PlayerItem:Laya.Button;
         constructor(){ super()}
         createChildren():void {
@@ -65,6 +65,8 @@ export module ui {
         }
     }
     export class GameRankUI extends Laya.View {
+		public closeBtn:Laya.Button;
+		public gameRankUi:laya.ui.WXOpenDataViewer;
         constructor(){ super()}
         createChildren():void {
             super.createChildren();

@@ -1,4 +1,8 @@
 import { Player } from "./PlayerEntity"
+import { GameModule } from "./../Game/GameModule"
+import { GameManager } from "./../GameManager/GameManager"
+import APP from "./../controler/APP"
+import GameAPP from "../controler/GameAPP";
 import BaseAgent from "./BaseAgent"
 
 export class GameAgent extends BaseAgent {
@@ -10,53 +14,91 @@ export class GameAgent extends BaseAgent {
         }
         return this._Agent;
     }
+    private m_UseItemNum: number;
+    private m_SkillItemID: number;
+    private m_SkillItemNum: number;
 
-    public get CurLevel(): number  {
+    public get CurLevel(): number {
         return this.m_PlayerEntity.CurLevel;
     }
-    public set CurLevel(value: number)  {
+    public set CurLevel(value: number) {
         this.m_PlayerEntity.CurLevel = value;
     }
-    public get CurMaxLevel():number
-    {
+    public get CurMaxLevel(): number {
         return this.m_PlayerEntity.HistoryMaxLevel;
     }
-    public get CurCharacterID(): number  {
+    public get CurCharacterID(): number {
         return this.m_PlayerEntity.CurCharacterID;
     }
-    public get CurItem(): number  {
+    public get CurItem(): number {
         return this.m_PlayerEntity.CurItem;
     }
-    public get ItemList(): Array<number>  {
+    public get ItemList(): Array<number> {
         return this.m_PlayerEntity.ItemList
     }
-    public set CurItem(id: number)  {
+    public set CurItem(id: number) {
         if (!this.ItemList[id])
             return;
         this.m_PlayerEntity.CurItem = id;
     }
+    public get CurItemNum(): number  {
+        return this.m_PlayerEntity.CurItemNum < this.m_UseItemNum ? this.m_PlayerEntity.CurItem : this.m_UseItemNum;
+    }
+    public get SkillItemNum():number
+    {
+        return this.m_SkillItemNum;
+    }
+
     constructor() {
         super();
     }
 
-    public AddGold(gold:number)
-    {
-        if(!gold || gold<0)
-        {
+    public AddGold(gold: number) {
+        if (!gold || gold < 0) {
             return
         }
         var money = this.m_PlayerEntity.Money + gold;
         this.m_PlayerEntity.Money = money;
     }
 
-    public AddScore(score:number)
-    {
-        if(!score || score<0)
-        {
+    public AddScore(score: number) {
+        if (!score || score < 0) {
             return
         }
         var score = this.m_PlayerEntity.CurScore + score;
         this.m_PlayerEntity.CurScore = score;
     }
-    
+
+    public get CurScore():number {
+        return this.m_PlayerEntity.CurScore;
+    }
+
+
+    public ResetGameItem() {
+        this.m_UseItemNum = this.m_PlayerEntity.CurItem > 0 ? 1 : 0;
+        APP.MessageManager.Fire(Player.Event.OnCurItemNumChange);
+    }
+
+    public ResetSkillItem() {
+        var CharacterID:number = this.m_PlayerEntity.CurCharacterID;
+        this.m_SkillItemNum = GameAPP.CharacterMgr.GetSkillItem(CharacterID) < 0 ? 0 : 1;
+        APP.MessageManager.Fire(GameModule.Event.OnCharacterItemChange);
+    }
+
+    public UseGameItem()  {
+        if (this.m_UseItemNum < 1)  {
+            return
+        }
+        -- this.m_UseItemNum;
+        this.m_PlayerEntity.ReduceItem(this.CurItem);
+    }
+
+    public UseCharacterSkillItem()  {
+        if (this.m_SkillItemNum<1)
+        {
+            return;
+        }
+        --this.m_SkillItemNum;
+        APP.MessageManager.Fire(GameModule.Event.OnCharacterItemChange);
+    }
 }

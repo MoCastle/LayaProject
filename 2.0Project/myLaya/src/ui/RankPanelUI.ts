@@ -29,15 +29,14 @@ export default class RankPanelUI extends BaseUI {
             WechatOpen.getInstances().closeRank();
             this._UIManager.Close(this);
         });
-        this.rankPanel();
     }
 
     static Name(): string {
         return "RankPanelUI";
     }
     
-    rankPanel() {
-        //WechatOpen.getInstances().updateScore(500);
+    Open()
+    {
         WechatOpen.getInstances().openRank();
     }
 

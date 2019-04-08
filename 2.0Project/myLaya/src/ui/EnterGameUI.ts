@@ -19,6 +19,7 @@ class ExtendEnterGameUI extends ui.EnterUI {
         this.Panel.hScrollBarSkin = "";
         this._Character.on(Laya.Event.CLICK, GameControler.GameControler, GameControler.GameControler.ShowCharacterPanel);
         this._SetPanel.on(Laya.Event.CLICK, GameControler.GameControler, GameControler.GameControler.ShowSetPanel);
+        this._Rank.on(Laya.Event.CLICK, GameControler.GameControler, GameControler.GameControler.ShowRankPanel);
         this._Start.on(Laya.Event.CLICK, GameControler.GameControler, GameControler.GameControler.EnterGame);
     }
 }
@@ -36,7 +37,6 @@ export default class EnterGameUI extends BaseUI {
         var uiMgr: UIManager = this._UIManager;
         this.m_BtnGroup = [];
         //this._UI._CharacterList.on(Laya.Event.CLICK,null,()=>{ uiMgr.Show<PlayerListUI>(PlayerListUI)});
-        this._UI._Rank.visible = false;
     }
 
     private InitBtnGroup() {

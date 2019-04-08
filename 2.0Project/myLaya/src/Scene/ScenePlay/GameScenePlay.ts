@@ -21,6 +21,8 @@ import GameDirector from "./../GameDirector"
 import GameScene from "../GameScene";
 import { GameAgent } from "./../../Agent/GameAgent"
 import GameAPP from "../../controler/GameAPP";
+import { WechatOpen } from "../../platform/WechatOpen";
+import PlayerGuestAgent from "../../Agent/PlayerGuestAgent";
 
 type ItemLayout = Item.ItemLayout;
 type LineItemInfo = Item.LineItemInfo;
@@ -122,9 +124,9 @@ export default class GameScenePlay extends Scene.BaseScenePlaye {
         this._GoldNum += num;
     }
     AddLogicGold(num: number) {
-
         this._LogicGoldNum += num;
         this.PanelUI.Gold = this._LogicGoldNum;
+        WechatOpen.getInstances().drawpass(this._LogicGoldNum + GameAgent.Agent.CurScore);
     }
 
     //设置安全位置
@@ -157,7 +159,7 @@ export default class GameScenePlay extends Scene.BaseScenePlaye {
 
     Death(): void {
         this.Player.PlayerDeath = true;
-        this.m_OnGameComplete();
+        this.OnGameComplete();
         //ui.SetGameInfo(this.PlayerDistance,this._GoldNum);
     }
 
@@ -256,6 +258,7 @@ export default class GameScenePlay extends Scene.BaseScenePlaye {
 
     //进入游戏的设置放这里 重新开始走这里
     protected StartGame() {
+        
         APP.SceneManager.CurScene.SceneObj.ambientColor = new Laya.Vector3(1, 1, 1)
         this._SafeLocation = new GameStruct.MLocation(0, 0);
         //重置物品
@@ -286,10 +289,13 @@ export default class GameScenePlay extends Scene.BaseScenePlaye {
         this._LogicGoldNum = 0;
 
         this.PanelUI = APP.UIManager.Show(GameUI);
+        this.PanelUI.RegistClickPlayerItem(this,this.UsePlayerItem);
+        this.PanelUI.RegistClickSkillItem(this,this.UseSkillItem);
         this.PanelUI.Gold = 0;
         this._CountTime = this.GameTime + 6000;
         this._BootomFloor = 0;
         this._GameUpdate = this._StartCount;
+        WechatOpen.getInstances().drawpass(0);
     }
 
     public Update(): void {
@@ -332,6 +338,8 @@ export default class GameScenePlay extends Scene.BaseScenePlaye {
             this.PanelUI.GamePanel = true;
             this._GameUpdate = this._RunGameUpdate;
             this._CountTime = this.GameTime + 3000;
+            GameAgent.Agent.ResetGameItem();
+            GameAgent.Agent.ResetSkillItem();
         }
         this.PanelUI.SetCountTime(time);
     }
@@ -645,7 +653,17 @@ export default class GameScenePlay extends Scene.BaseScenePlaye {
         this.Player.TouchGround();
     }
 
-    private m_OnGameComplete()  {
+    public UseSkillItem()
+    {
+        GameAgent.Agent.UseCharacterSkillItem();
+    }
+
+    public UsePlayerItem()
+    {
+        GameAgent.Agent.UseGameItem();
+    }
+
+    private OnGameComplete()  {
         APP.MessageManager.DesRegist(MessageMD.GameEvent.PlayerDeath, this.Death, this);
         var ui: EndGameUI = APP.UIManager.Show<EndGameUI>(EndGameUI);
         GameAgent.Agent.AddGold(this._GoldNum);
