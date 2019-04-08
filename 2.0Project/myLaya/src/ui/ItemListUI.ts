@@ -43,7 +43,7 @@ export default class ItemListUI extends BaseUI
         this.UI = new ExtendsItemListUI();
         this.addChild(this.UI);
         this.UI.BtnListener = new MessageMD.Delegate(this,()=>{ this._UIManager.Close(this)})
-        //this._UIType = BaseEnum.UITypeEnum.Midle;
+        this._UIType = BaseEnum.UITypeEnum.Midle;
         this.UpdateList();
         this.m_Gold = this.UI._Gold.text.split("#");
         this.UI._BG.alpha = 0;

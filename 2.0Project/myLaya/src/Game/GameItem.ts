@@ -214,6 +214,32 @@ export module Item {
         }
         return buff;
     }
+    export function AddBuffToPlayer(itemType:ItemType):boolean
+    {
+        var buff:BasePlayerBuff;// = ItemBuffFactory();
+        switch(itemType)
+        {
+            case ItemType.Fly:
+                buff = new FlyBuff();
+            break;
+            case ItemType.Collector:
+                buff = new CollectBuff(10000);
+            break;
+            case ItemType.Protect:
+                buff = new ProtectBuff(3000);
+            break;
+            case ItemType.HolyProtect:
+                buff = new ProtectBuff(3000, true);
+            break;
+            case ItemType.Vine:
+                buff = new VineBuff();
+            break;
+            case ItemType.Rope:
+                buff = new RopeBuff();
+            break;
+        }
+        return true;
+    }
     export class StepItem  {
         Step: Step;
         ItemType: ItemType;
@@ -355,7 +381,6 @@ export module Item {
         Start(player: Player)  {
             this.Player = player;
             //创建模型显示对象
-            this.Player.AddBuffMode(this._BuffMod);
             this.Player.Fly()
             if (this._StartFunc != null)  {
                 this._StartFunc();

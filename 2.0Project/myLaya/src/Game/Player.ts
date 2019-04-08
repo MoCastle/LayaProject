@@ -24,7 +24,6 @@ export default class Player extends Laya.Sprite3D
     
     BaseCtrler:PlayerControler.PlayerNormCtrler;
     BuffArr:Array<Item.BasePlayerBuff>;
-    //zerg
     IdNumber:number;
 
     set CurStep(step:Step)
@@ -236,18 +235,7 @@ export default class Player extends Laya.Sprite3D
         buff.Start(this);
         return true;
     }
-    /**
-     * 添加BUFF模型
-     * @param mod 
-     */
-    AddBuffMode( mod:Laya.Sprite3D )
-    {
-        return;
-        if(mod!=null)
-        {
-            this._BuffNode.addChild(mod);
-        }
-    }
+    
     /**
      * 结束BUFF
      */
