@@ -1,6 +1,6 @@
 export module path {
     export var IsEditor: boolean = false;
-    export var version: string = "?v=2";
+    export var version: string = "?v=3";
     export var SceneAssetPath: string = "LayaScene_";
     export var ResourcePath: string = IsEditor ? "../NetResource_3_29/" : "https://www.gsjgame.com/Resource/NetResource_3_29/";
     export var UIPath: string = ResourcePath + "UI/";

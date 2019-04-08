@@ -95,7 +95,7 @@ class GameControler {
     ShowSetPanel() {
         var Panel = APP.UIManager.Show<SetPanelUI>(SetPanelUI);// new SetPanel();
     }
-
+    
     //显示排行榜面板
     ShowRankPanel() {
         // if(!Laya.Browser.onWeiXin || typeof wx == "undefined") {

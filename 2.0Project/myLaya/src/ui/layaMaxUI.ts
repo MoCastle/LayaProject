@@ -65,6 +65,8 @@ export module ui {
         }
     }
     export class GameRankUI extends Laya.View {
+		public closeBtn:Laya.Button;
+		public gameRankUi:laya.ui.WXOpenDataViewer;
         constructor(){ super()}
         createChildren():void {
             super.createChildren();
