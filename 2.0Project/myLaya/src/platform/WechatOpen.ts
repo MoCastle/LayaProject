@@ -49,7 +49,7 @@ export class WechatOpen {
 
     public showRange(): void {
         this.postMessageToOpen({
-            command: "range"
+            command: "range",
         });
     }
     
