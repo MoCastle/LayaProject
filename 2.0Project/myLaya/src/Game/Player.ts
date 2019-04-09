@@ -34,6 +34,30 @@ export default class Player extends Laya.Sprite3D
     {
         return this._CurStep;
     }
+    set Position( newPS:Laya.Vector3 )
+    {
+        var newPS:Laya.Vector3 = newPS.clone();
+        this.transform.position = newPS;
+    }
+    get Position():Laya.Vector3
+    {
+        return this.transform.position.clone();
+    }
+    get LogicPosition():Laya.Vector3
+    {
+        return this._LogicPosition;
+    }
+
+    constructor()
+    {
+        super();
+        this.m_BuffModel = {};
+        APP.SceneManager.CurScene.PutObj(this);
+
+        //添加自定义模型
+        this.on(Laya.Event.REMOVED,this,()=>{ this.destroy() })
+        var mgr:CharacterManager = GameAPP.CharacterMgr;
+    }
 
     private InitBUffModel( playerModel:Laya.Sprite3D )
     {
@@ -63,21 +87,12 @@ export default class Player extends Laya.Sprite3D
         this.m_BuffModel[itemType] = buffModel;
     }
     
-    constructor()
-    {
-        super();
-        this.m_BuffModel = {};
-        APP.SceneManager.CurScene.PutObj(this);
-
-        //添加自定义模型
-        this.on(Laya.Event.REMOVED,this,()=>{ this.destroy() })
-        var mgr:CharacterManager = GameAPP.CharacterMgr;
-    }
+    
     private m_StateMap:{}
     public SetPlayerModel( model:Laya.Sprite3D )
     {
         this.addChild(model);
-        model.transform.rotate(new Laya.Vector3(0, 180, 0), false, false);
+        this.transform.rotate(new Laya.Vector3(0, 180, 0), false, false);
         this.m_Animator = model.getChildAt(0).getComponent(Laya.Animator);
         var layer:Laya.MapLayer = this.m_Animator.getControllerLayer()._statesMap;
         this.m_StateMap = {};
@@ -125,19 +140,6 @@ export default class Player extends Laya.Sprite3D
         this._LogicPosition = putStep.Position;
         this.m_Animator.play(Character.PlayerAnimName(Character.AnimEnum.Stand));
         this.TouchGround();
-    }
-    set Position( newPS:Laya.Vector3 )
-    {
-        var newPS:Laya.Vector3 = newPS.clone();
-        this.transform.position = newPS;
-    }
-    get Position():Laya.Vector3
-    {
-        return this.transform.position.clone();
-    }
-    get LogicPosition():Laya.Vector3
-    {
-        return this._LogicPosition;
     }
 
     /**
