@@ -4,7 +4,7 @@ import Dialog=Laya.Dialog;
 import Scene=Laya.Scene;
 export module ui {
     export class LoadUIUI extends Laya.View {
-		public dsfasg:Laya.Image;
+		public bg:Laya.Sprite;
 		public _Progress:Laya.ProgressBar;
 		public _Guider:Laya.Image;
 		public _Enter:Laya.Button;

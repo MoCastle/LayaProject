@@ -61,16 +61,6 @@ class GameControler {
         }
         return this._StepLength;
     }
-    
-    //格子边长
-    get StepYLength(): number {
-        if(!this._StepLength)
-        {
-            this._StepLength = 0.88;
-        }
-        return this._StepLength;
-    }
-
     //格子斜对角长度
     get StepDistance(): number {
         if(!this._StepDistance)
@@ -83,7 +73,7 @@ class GameControler {
     get PlayerMoveTime(): number {
         if(!this._PlayerMoveTime)
         {
-            this._PlayerMoveTime = 0.10 * 10000;
+            this._PlayerMoveTime = 0.02 * 10000;
         }
         return this._PlayerMoveTime;
     }
