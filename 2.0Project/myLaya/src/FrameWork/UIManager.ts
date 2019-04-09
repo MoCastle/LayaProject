@@ -72,6 +72,25 @@ export default class UIManager extends BaseManager {
         rootBox.scaleY = scale;
         rootBox.height = UIManager.g_UIHeight * scale;
         rootBox.width = UIManager.g_UIWidth;*/
+        if(!this.m_BottomNode) {
+            return;
+        }
+        var numChild = this.m_BottomNode.numChildren;
+        for(var i = 0;i < numChild;i ++) {
+            var node = this.m_BottomNode.getChildAt(i);
+            if(node && node["Layout"]) {
+                node["Layout"]();
+            }
+        }
+
+        numChild = this.m_BottomNode.numChildren;
+        for(var i = 0;i < numChild;i ++) {
+            var node = this.m_BottomNode.getChildAt(i);
+            if(node && node["Layout"]) {
+                node["Layout"]();
+            }
+        }
+
     }    
 
     public Update()  {

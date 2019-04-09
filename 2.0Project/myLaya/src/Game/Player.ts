@@ -183,7 +183,7 @@ export default class Player extends Laya.Sprite3D
         }
         this.CurStep.StepItem.TouchItem(this);
     }
-    
+     
     /**
      * 移动
      * @param {Laya.Vector3} vector 移动向量值

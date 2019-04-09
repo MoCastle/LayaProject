@@ -59,20 +59,25 @@ export module PlayerControler
                 else
                 {
                     var lastTime = this.Time-Laya.timer.currTimer;
+
                     if( this.IsFalling = false && lastTime*2 > this.Time-Laya.timer.currTimer)
                     {
                         this.IsFalling = true;
                         this.player.JumpDown();
                     }
+
                     var rate = (1-lastTime/ Controler.GameControler.PlayerMoveTime);
+
                     var StepPs:Laya.Vector3 = this.player.CurStep.Position;
                     StepPs.y +=Controler.GameControler.StepLength;
+
                     var curps:Laya.Vector3 = this.player.Position;
-                    curps.y +=Controler.GameControler.StepLength;
+                    curps.y += Controler.GameControler.StepLength;
+
                     var newPs = new Laya.Vector3();
-                    newPs.x = (StepPs.x - curps.x)*rate+ curps.x;
-                    newPs.y = (StepPs.y - curps.y)*rate+curps.y;
-                    newPs.z = (StepPs.z - curps.z)*rate+curps.z;
+                    newPs.x = (StepPs.x - curps.x)*rate + curps.x;
+                    newPs.y = (StepPs.y - curps.y)*rate + curps.y;
+                    newPs.z = (StepPs.z - curps.z)*rate + curps.z;
     
                     this.player.Position = newPs;
                 }

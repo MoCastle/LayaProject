@@ -18,10 +18,42 @@ class ExtendEnterGameUI extends ui.EnterUI {
         this.Panel.vScrollBarSkin = "";
         this.Panel.hScrollBarSkin = "";
         this._Character.on(Laya.Event.CLICK, GameControler.GameControler, GameControler.GameControler.ShowCharacterPanel);
+        //this._Character.on(Laya.Event.CLICK, this, this.showCharacter);
         this._SetPanel.on(Laya.Event.CLICK, GameControler.GameControler, GameControler.GameControler.ShowSetPanel);
         this._Rank.on(Laya.Event.CLICK, GameControler.GameControler, GameControler.GameControler.ShowRankPanel);
-        this._Start.on(Laya.Event.CLICK, GameControler.GameControler, GameControler.GameControler.EnterGame);
+        //this._Start.on(Laya.Event.CLICK, GameControler.GameControler, GameControler.GameControler.EnterGame);
+        this._Start.on(Laya.Event.CLICK, this, this.onStart);
+
+        this._CharacterList.visible = false;
+        this.Panel.visible = false;
+
+        this._Rank["initX"] = this._Rank.x;
+        this._Rank["initY"] = this._Rank.y;
+
+        this._SetPanel["initX"] = this._SetPanel.x;
+        this._SetPanel["initY"] = this._SetPanel.y;
+
+        this._Start["initX"] = this._Start.x;
+        this._Start["initY"] = this._Start.y;
+
+        this._Character["initX"] = this._Character.x;
+        this._Character["initY"] = this._Character.y;
+
+        this.adv["initX"] = this.adv.x;
+        this.adv["initY"] = this.adv.y;
+
     }
+
+    onStart():void {
+        Laya.Tween.to(this._Rank, {y:this._Rank.y + Laya.stage.height - this._Character.y}, 150, Laya.Ease.sineIn);
+        Laya.Tween.to(this._SetPanel, {y:this._SetPanel.y  + Laya.stage.height - this._Character.y}, 150, Laya.Ease.sineIn);
+        Laya.Tween.to(this._Start, {x:this._Start.y  + Laya.stage.width - this._Start.x}, 250, Laya.Ease.sineIn, Laya.Handler.create(GameControler.GameControler, GameControler.GameControler.EnterGame));
+        Laya.Tween.to(this._Character, {y:this._Character.y  - Laya.stage.height}, 150, Laya.Ease.sineIn);
+        Laya.Tween.to(this.adv, {y:this.adv.y  + Laya.stage.height - this._Character.y}, 150, Laya.Ease.sineIn);
+        Laya.Tween.to(this._logo, {alpha:0.2}, 100, Laya.Ease.sineIn);
+    }
+
+
 }
 
 export default class EnterGameUI extends BaseUI {
@@ -36,7 +68,34 @@ export default class EnterGameUI extends BaseUI {
         this.FixUI(this._UI);
         var uiMgr: UIManager = this._UIManager;
         this.m_BtnGroup = [];
+        // var img = new Laya.Image();
+        // img.loadImage("urere");
+        // this.addChild(img);
         //this._UI._CharacterList.on(Laya.Event.CLICK,null,()=>{ uiMgr.Show<PlayerListUI>(PlayerListUI)});
+        this.Layout();
+    }
+
+    OpenOP()
+    {
+        super.OpenOP();
+        this._UI._logo.alpha = 1;
+        if(!this._UI._Rank["initX"]) {
+            return;
+        }
+        this._UI._Rank.x = this._UI._Rank["initX"];
+        this._UI._Rank.y = this._UI._Rank["initY"];
+
+        this._UI._SetPanel.x = this._UI._SetPanel["initX"];
+        this._UI._SetPanel.y = this._UI._SetPanel["initY"];
+
+        this._UI._Start.x = this._UI._Start["initX"];
+        this._UI._Start.y = this._UI._Start["initY"];
+
+        this._UI._Character.x = this._UI._Character["initX"];
+        this._UI._Character.y = this._UI._Character["initY"];
+
+        this._UI.adv.x = this._UI.adv["initX"];
+        this._UI.adv.y = this._UI.adv["initY"];
     }
 
     private InitBtnGroup() {
@@ -60,6 +119,15 @@ export default class EnterGameUI extends BaseUI {
 
     Update() {
 
+    }
+
+    Layout() {
+        super.Layout();
+        if(!this._UI || !this._UI.bg) {
+            return;
+        }
+        this._UI.bg.width = Laya.stage.width;
+        this._UI.bg.height = Laya.stage.height;
     }
 
     //事件

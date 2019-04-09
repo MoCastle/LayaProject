@@ -22,7 +22,7 @@ export default class RankPanelUI extends BaseUI {
     rankTexture: Laya.Texture;
     constructor(name: string) {
         super(name);
-         this._UIType = BaseEnum.UITypeEnum.Midle;
+        this._UIType = BaseEnum.UITypeEnum.Midle;
         this._UI = new ExtendsRankPanelUI();
         this.FixUI(this._UI);
         this._UI.closeBtn.on(Laya.Event.CLICK, this, () => { 

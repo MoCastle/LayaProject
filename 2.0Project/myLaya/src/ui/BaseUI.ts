@@ -27,7 +27,7 @@ export default abstract class BaseUI extends Laya.Box
         this.left = 0;
 	    this.right = 0;
 		this.bottom = 0;
-		this.top = 0;
+        this.top = 0;
     }
     Hide()
     {
@@ -76,6 +76,11 @@ export default abstract class BaseUI extends Laya.Box
     get Showing():boolean
     {
         return this._Showing;
+    }
+
+    Layout()
+    {
+
     }
 
     /**

@@ -49,6 +49,7 @@ export default class LoadingUI extends BaseUI
         this._UI._Enter.on(Laya.Event.CLICK,this,()=>{
             this._CallBack();
         });
+        this.Layout();
     }
     
     Update()
@@ -56,6 +57,14 @@ export default class LoadingUI extends BaseUI
         var x:number = 0;
         x += this._UI._Progress.width*this._UI._Progress.value;
         this._UI._Guider.pos(x,this._UI.y);
+    }
+
+    Layout() {
+        if(!this._UI || !this._UI["bg"]) {
+            return;
+        }
+        this._UI["bg"].width = Laya.stage.width;
+        this._UI["bg"].height = Laya.stage.height;
     }
 
     set Value(num:number)
@@ -71,9 +80,11 @@ export default class LoadingUI extends BaseUI
 
     Complete(callBack:()=>void)
     {
-        this._CallBack = callBack;
-        this._UI._Enter.visible = true;
-        this._UI._Enter.label = "Enter";//this._Name[0];
+
+        callBack();
+        // this._CallBack = callBack;
+        // this._UI._Enter.visible = true;
+        // this._UI._Enter.label = "Enter";//this._Name[0];
     }
     Reload(callBack:()=>void)
     {

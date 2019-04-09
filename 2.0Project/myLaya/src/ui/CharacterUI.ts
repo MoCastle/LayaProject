@@ -44,6 +44,9 @@ export default class CharacterUI extends BaseUI {
         this.m_CharacterList = [];
         //this.m_GoldDiscribe = this._UI._Gold.text.split("#");
         this.OnMoneyChange();
+        this._UI._Gold.text = PlayerGuestAgent.GuestAgent.Money + "";
+        this._UI._Gold.stroke = 2;
+        this._UI._Gold.strokeColor = "0xff0000";
     }
     static Name(): string {
         return "CharacterUI";

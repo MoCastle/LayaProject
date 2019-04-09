@@ -21,7 +21,7 @@ export module ui {
         }
     }
     export class EndGameUI extends Laya.View {
-		public _GameInfo:Laya.Label;
+		public bg:Laya.Sprite;
 		public _StartBtn:Laya.Button;
 		public _MenueBtn:Laya.Button;
 		public _SetBtn:Laya.Button;
@@ -32,13 +32,16 @@ export module ui {
             this.loadScene("EndGame");
         }
     }
-    export class EnterUI extends View {
+    export class EnterUI extends Laya.View {
+		public bg:Laya.Sprite;
+		public _logo:Laya.Sprite;
 		public _Start:Laya.Button;
 		public _Character:Laya.Button;
 		public _Panel:Laya.Panel;
 		public _Group:Laya.Image;
 		public _SetPanel:Laya.Button;
 		public _CharacterList:Laya.Button;
+		public adv:Laya.Button;
 		public _Rank:Laya.Button;
         constructor(){ super()}
         createChildren():void {
@@ -93,6 +96,7 @@ export module ui {
         }
     }
     export class SetPanelUI extends Laya.View {
+		public bg:Laya.Image;
 		public _Text:Laya.TextArea;
 		public _Return:Laya.Button;
 		public _AudioSwitch:Laya.RadioGroup;

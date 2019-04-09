@@ -31,15 +31,24 @@ export default class SetPanelUI extends BaseUI {
     }
     SetPanel() {
         var info: GameStruct.SetInfo = Controler.GameControler.GetSetInfo();
-        this._UI._AudioSwitch.selectedIndex = info.AudioOn ? 0 : 1;
-        this._UI._OPSwitch.selectedIndex = info.OPIsRight ? 1 : 0;
-        this._UI._Text.text = info.TextInfo;
+        // this._UI._AudioSwitch.selectedIndex = info.AudioOn ? 0 : 1;
+        // this._UI._OPSwitch.selectedIndex = info.OPIsRight ? 1 : 0;
+        // this._UI._Text.text = info.TextInfo;
     }
     SavePanel() {
         var info: GameStruct.SetInfo = new GameStruct.SetInfo();
-        info.AudioOn = this._UI._AudioSwitch.selectedIndex == 0;
-        info.OPIsRight = this._UI._OPSwitch.selectedIndex == 1;
-        Controler.GameControler.SaveSetInfo(info);
+        // info.AudioOn = this._UI._AudioSwitch.selectedIndex == 0;
+        // info.OPIsRight = this._UI._OPSwitch.selectedIndex == 1;
+        // Controler.GameControler.SaveSetInfo(info);
+    }
+
+    Layout() {
+        super.Layout();
+        if(!this._UI || !this._UI.bg) {
+            return;
+        }
+        this._UI.bg.width = Laya.stage.width;
+        this._UI.bg.height = Laya.stage.height;
     }
 
     CloseOP() {
