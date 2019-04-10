@@ -34,6 +34,14 @@ export default class CharacterManager extends GameManager.BaseManager {
         return this.GetInfo<CharacterInfo>(id);
     }
 
+    public GetItemID(id)
+    {
+        var info:CharacterInfo = this.GetInfo<CharacterInfo>(id);
+        if(!info)
+            return ;
+        return info.Item;
+    }
+
     public GetCharacterModel(id: number): Laya.Sprite3D {
         var info:CharacterInfo = this.GetInfo<CharacterInfo>(id);
         if(!info)
@@ -64,6 +72,7 @@ class CharacterInfo extends GameManager.BaseInfo {
         super(characterData);
         this.m_ModelName = characterData.ModelID ? characterData.ModelID : "";
         this.m_Item = characterData.Item ? characterData.Item : -1;
+        this.m_Price = characterData.Price?Number(characterData.Price):0;
     }
 
     public get Name(): string {
