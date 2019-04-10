@@ -23,6 +23,8 @@ export module PlayerControler {
             this.player = player;
         }
         protected abstract _Update(): void;
+        public abstract OnStart(): void;
+        public abstract OnComplete(): void;
     }
 
     //用于角色正常状态下的移动
@@ -45,6 +47,22 @@ export module PlayerControler {
         get TimePercent(): number {
             return this.LastTime / Controler.GameControler.PlayerMoveTime;
         }
+
+        constructor(player: Player = null) {
+            super(player)
+            this.Time = -1;
+            this.IsFalling = true;
+        }
+
+        OnStart(): void  {
+            this.Time = Laya.timer.currTimer + Controler.GameControler.PlayerMoveTime;
+            this.IsFalling = true;
+        }
+
+        OnComplete(): void  {
+
+        }
+
         StartMove() {
             this.Time = Laya.timer.currTimer + Controler.GameControler.PlayerMoveTime;
             this.IsFalling = false;
@@ -57,15 +75,10 @@ export module PlayerControler {
             lookToPS.z = -lookToPS.z
             var upDir: Laya.Vector3 = new Laya.Vector3();
             upDir.y = 1;
-            var startPS:Laya.Vector3 = this.m_StartPS.clone();
+            var startPS: Laya.Vector3 = this.m_StartPS.clone();
             startPS.z = -startPS.z;
             Laya.Quaternion.lookAt(startPS, lookToPS, upDir, rotation);
             this.player.transform.rotation = rotation;
-        }
-        constructor(player: Player = null) {
-            super(player)
-            this.Time = -1;
-            this.IsFalling = true;
         }
 
         protected _Update(): void {
@@ -73,6 +86,7 @@ export module PlayerControler {
                 if (this.Time <= Laya.timer.currTimer) {
                     this.Time = -1;
                     this.player.SetStep(this.player.CurStep);
+                    this.IsFalling = true;
                     return;
                 }
                 else {
@@ -119,6 +133,7 @@ export module PlayerControler {
         SetPlayer(player: Player) {
             super.SetPlayer(player);
             player.Translate(new Laya.Vector3(0, Controler.GameControler.StepLength, 0));
+            player.transform.rotationEuler = new Laya.Vector3(0, 180, 0);
         }
 
         //
@@ -138,5 +153,8 @@ export module PlayerControler {
             var vector: Laya.Vector3 = new Laya.Vector3(0, 0.146, -0.10394)
             this.player.Translate(vector);
         }
+
+        public OnComplete(): void  { }
+        public OnStart(): void  { }
     }
 }
