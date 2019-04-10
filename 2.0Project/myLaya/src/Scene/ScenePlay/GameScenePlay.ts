@@ -352,9 +352,7 @@ export default class GameScenePlay extends Scene.BaseScenePlaye {
         var Headfloor: number = preHead.FloorNum + 1;
         this.HeadFloor.SetLine(Headfloor);
         preHead.SetNextFloor(this.HeadFloor);
-        console.time("PutItem");
         this._PutItemInLine(Headfloor);
-        console.timeEnd("PutItem");
 
         return true;
     }
