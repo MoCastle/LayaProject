@@ -12,14 +12,5 @@
         "ModelID": "c001_adult_01",
         "ItemID": 2,
         "Price": 0
-    },
-    "2": {
-        "ID": "1",
-        "Passscore": "男孩",
-        "ModelID": "c001",
-        "StateList": ["_child","_adult"],
-        "ExtendID": "_01",
-        "ItemList": "",
-        "Price": 100
     }
 ]
