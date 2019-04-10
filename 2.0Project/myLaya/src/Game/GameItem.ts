@@ -43,6 +43,7 @@ export module Item {
     BuffSlot[ItemType.Collector] = 0;
     BuffSlot[ItemType.Protect] = 1;
     BuffSlot[ItemType.HolyProtect] = 1;
+    BuffSlot[ItemType.Fly] = 1;
     BuffSlot[ItemType.Vine] = 2;
 
     //物品布局
@@ -626,6 +627,7 @@ export module Item {
             var flyCtrl = new PlayerControler.PlayerFly(this.Speed);
             flyCtrl.SetPlayer(player)
             player.AddCtrler(flyCtrl);
+            player.Fly();
             Controler.GameControler.GameDir.GamePlay.AddInputCtrler(new Input.DIYInput());
             Controler.GameControler.GameDir.GamePlay.SetSafePS(this._FinalLocation);
             player.FlyPrepare();

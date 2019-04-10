@@ -1,11 +1,16 @@
-{
-    "1": {
-        "ID": "1",
+[
+    {
+        "ID": 1,
         "Passscore": "男孩",
-        "ModelID": "c001",
-        "StateList": ["_child","_adult"],
-        "ExtendID": "_01",
-        "ItemList": "",
+        "ModelID": "c001_child_01",
+        "ItemID": -1,
+        "Price": 0
+    },
+    {
+        "ID": 2,
+        "Passscore": "上班族",
+        "ModelID": "c001_adult_01",
+        "ItemID": 2,
         "Price": 0
     }
-}
+]

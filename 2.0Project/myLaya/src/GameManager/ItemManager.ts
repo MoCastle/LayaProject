@@ -47,7 +47,7 @@ class ItemInfo extends GameManager.BaseInfo {
     private m_ModelName: string;
     private m_ExtendID: string;
     private m_Price: number;
-
+    private m_ItemType:number;
     public get Name(): string {
         return this.m_ModelName + this.m_ExtendID;
     }
@@ -59,5 +59,6 @@ class ItemInfo extends GameManager.BaseInfo {
         this.m_ModelName = data.ModelName ? data.ModelName : "";
         this.m_ExtendID = data.ExtendID ? data.ExtendID : "";
         this.m_Price = data.Price ? Number(data.Price) : 0;
+        this.m_ItemType = data.ItemType? Number(data.ItemType):0;
     }
 }

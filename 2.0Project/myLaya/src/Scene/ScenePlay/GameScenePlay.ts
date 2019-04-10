@@ -247,7 +247,7 @@ export default class GameScenePlay extends Scene.BaseScenePlaye {
         var player = new Player();
         this.Player = player;
         var gameAgent = GameAgent.Agent;
-        var playerModel = GameAPP.CharacterMgr.GetCharacterModel(gameAgent.CurCharacterID,gameAgent.CurLevel);
+        var playerModel = GameAPP.CharacterMgr.GetCharacterModel(gameAgent.CurCharacterID);
         player.SetPlayerModel(playerModel);
         APP.SceneManager.CurScene.PutObj(this.Player);
 
