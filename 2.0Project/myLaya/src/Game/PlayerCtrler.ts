@@ -82,7 +82,6 @@ export module PlayerControler {
                     var fallTimePoint: number = 0.4;
                     var startPS: Laya.Vector3;
                     var targetPS: Laya.Vector3;
-                    console.log(rate);
                     if (rate > fallTimePoint) {
                         if (!this.IsFalling) {
                             this.IsFalling = true;

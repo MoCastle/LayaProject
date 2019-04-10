@@ -86,9 +86,12 @@ export default class LoadingUI extends BaseUI
         // this._UI._Enter.visible = true;
         // this._UI._Enter.label = "Enter";//this._Name[0];
     }
-    Reload(callBack:()=>void)
+    Reload(str, callBack:()=>void)
     {
+        this._UI.ErrorInfo.text = str;
         this._UI.ErrorInfo.visible = true;
+        this._UI.ErrorInfo.width = Laya.stage.width;
+        this._UI.ErrorInfo.height = Laya.stage.height;
     }
 
 }

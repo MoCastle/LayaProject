@@ -53,7 +53,7 @@ class LoadScenePlaye extends Scene.BaseScenePlaye
 {
     private m_Count2DLoad:number;
     private m_Count3DLoad:number;
-    private m_LoadFaile:boolean;
+    private m_LoadFaile:string;
     private m_CountValue:number;
     private m_LoadingUI:LoadingUI;
     
@@ -62,14 +62,14 @@ class LoadScenePlaye extends Scene.BaseScenePlaye
         super();
         this.m_Count2DLoad = 0;
         this.m_Count3DLoad = 0;
-        this.m_LoadFaile = false;
+        this.m_LoadFaile = "";
         this.m_CountValue = 0;
     }
 
     private StartLoad()
     {
         this.m_CountValue = 0;
-        this.m_LoadFaile = false;
+        this.m_LoadFaile = "";
         var resource2DArr = [
             path.GetDepathUIJS("Enter"),
             path.GetDepathUIJS("GameRank"),
@@ -148,7 +148,7 @@ class LoadScenePlaye extends Scene.BaseScenePlaye
     }
     private onError(str:string)
     {
-        this.m_LoadFaile = true;
+        this.m_LoadFaile += str;
         console.debug("LoadError:"+str);
     }
 
@@ -157,7 +157,7 @@ class LoadScenePlaye extends Scene.BaseScenePlaye
         if(this.m_LoadFaile)
         {
             var thiDir = this;
-            this.m_LoadingUI.Reload(function():void{thiDir.Load()} );
+            this.m_LoadingUI.Reload(this.m_LoadFaile,function():void{thiDir.Load()} );
         }else
         {
             APP.SceneManager.BG = new BG();
@@ -172,7 +172,7 @@ class LoadScenePlaye extends Scene.BaseScenePlaye
         this.m_Count3DLoad = 0.5;
         this.m_Count2DLoad = 0.5;
         this.m_CountValue = 1;
-        this.m_LoadFaile = false;
+        this.m_LoadFaile = "";
         this.StartLoad();
     }
     
