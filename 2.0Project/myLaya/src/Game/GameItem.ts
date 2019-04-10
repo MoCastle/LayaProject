@@ -54,7 +54,7 @@ export module Item {
             this.BarrierList.push(new LayItemMgr(10, 2, ItemType.Vine, 10))
             this.RewardList.push(new LayItemMgr(10, 1, ItemType.Coin))
 
-            this.RewardList.push(new LayItemMgr(50, 1000, ItemType.Fly, 20))
+            this.RewardList.push(new LayItemMgr(50, 1, ItemType.Fly, 20))
 
             this.RewardList.push(new LayItemMgr(50, 1, ItemType.Collector))
             this.RewardList.push(new LayItemMgr(50, 1, ItemType.Protect));
