@@ -2,7 +2,7 @@ export module path {
     export var IsEditor: boolean = true;
     export var version: string = "?v=5";
     export var SceneAssetPath: string = "LayaScene_";
-    export var ResourcePath: string = IsEditor ? "../NetResource_3_29/" : "https://www.gsjgame.com/Resource/NetResource_3_29/";
+    export var ResourcePath: string = IsEditor ? "NetResource_3_29/" : "https://www.gsjgame.com/Resource/NetResource_3_29/";
     export var UIPath: string = ResourcePath + "UI/";
     export var ModelPath: string = ResourcePath + "3D/"
     export var ConfigPath: string = ResourcePath + "Config/"

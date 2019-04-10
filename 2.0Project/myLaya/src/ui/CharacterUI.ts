@@ -112,7 +112,7 @@ export default class CharacterUI extends BaseUI {
     //事件
     private OnClickImg(id: number) {
         if (id == PlayerGuestAgent.GuestAgent.CharacterID)  {
-            APP.UIManager.Close(this);
+            this.BackGameBtn();
             return;
         }
         GameControler.GameControler.SetPlayerID(id);
@@ -122,7 +122,7 @@ export default class CharacterUI extends BaseUI {
         if (!this.Showing)  {
             return;
         }
-        APP.UIManager.Close(this);
+        this.BackGameBtn();
     }
 
     private OnChangeList()  {
