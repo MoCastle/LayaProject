@@ -14,6 +14,7 @@ export module Item {
     //物品标识
     const ItemID: string = "Item";
     const ModelID: string = "Model"
+    
     export enum ModelType {
         Coin
     }
@@ -30,7 +31,6 @@ export module Item {
         Collector,
         Coin = 20,
     }
-
     export class LineItemInfo {
         Type: ItemType;
         Number: number;
@@ -39,6 +39,12 @@ export module Item {
             this.Number = num;
         }
     }
+    export var BuffSlot:{[key:number]:number} ={};
+    BuffSlot[ItemType.Collector] = 0;
+    BuffSlot[ItemType.Protect] = 1;
+    BuffSlot[ItemType.HolyProtect] = 1;
+    BuffSlot[ItemType.Fly] = 1;
+    BuffSlot[ItemType.Vine] = 2;
 
     //物品布局
     export class ItemLayout {
@@ -51,7 +57,7 @@ export module Item {
             this.BarrierList.push(new LayItemMgr(10, 1, ItemType.Empty, 10));
             this.BarrierList.push(new LayItemMgr(10, 5, ItemType.Rock, 10));
             this.BarrierList.push(new LayItemMgr(10, 2, ItemType.Thorn, 10));
-            this.BarrierList.push(new LayItemMgr(10, 2, ItemType.Vine, 10))
+            this.BarrierList.push(new LayItemMgr(10, 2, ItemType.Vine, 1))
             this.RewardList.push(new LayItemMgr(10, 1, ItemType.Coin))
 
             this.RewardList.push(new LayItemMgr(50, 1, ItemType.Fly, 20))
@@ -166,6 +172,7 @@ export module Item {
             }
         }
     }
+
     export function StepItemFactory(itemType: ItemType, Step) {
         if (Step == undefined) {
             return
@@ -188,6 +195,7 @@ export module Item {
         item.ResetItem();
         return item;
     }
+
     export function ItemBuffFactory(itemType: ItemType): BasePlayerBuff  {
         var buff: BasePlayerBuff = null;
         switch (itemType)  {
@@ -212,32 +220,7 @@ export module Item {
         }
         return buff;
     }
-    export function AddBuffToPlayer(player: Player, itemType: ItemType): boolean  {
-        //
 
-        var buff: BasePlayerBuff;// = ItemBuffFactory();
-        switch (itemType)  {
-            case ItemType.Collector:
-                buff = new CollectBuff(10000);
-                break;
-            case ItemType.Fly:
-                buff = new FlyBuff();
-                break;
-            case ItemType.Protect:
-                buff = new ProtectBuff(3000);
-                break;
-            case ItemType.HolyProtect:
-                buff = new ProtectBuff(3000, true);
-                break;
-            case ItemType.Vine:
-                buff = new VineBuff();
-                break;
-            case ItemType.Rope:
-                buff = new RopeBuff();
-                break;
-        }
-        return true;
-    }
     export class StepItem {
         Step: Step;
         ItemType: ItemType;
@@ -251,6 +234,7 @@ export module Item {
         get IsForbiden(): boolean {
             return this.ItemType == ItemType.Rock;
         }
+
         //重置
         ResetItem() {
             //this._InitItemModel();
@@ -266,6 +250,7 @@ export module Item {
             }
             this.Model.active = true;
         }
+
         PutItem = function (itemType = ItemType.None) {
             this.DesPawn();
             this.Step.StepItem = StepItemFactory(itemType, this.Step);
@@ -289,21 +274,26 @@ export module Item {
             }
         }
 
-        public GenBuff(): BasePlayerBuff  {
-            return ItemBuffFactory(this.ItemType);
+        public AddBuffToPlayer(player:Player,putBackItem:boolean = true): boolean  {
+            var Buff:BasePlayerBuff = ItemBuffFactory(this.ItemType);
+            var success:boolean = Buff.AddToPlayer(player);
+            if(success)
+                this.PutItem();
+            return success;
         }
         /**
          * 突破保护
          * @returns 是否被突破
          */
         BreakProtect(player: Player): boolean {
-            var curBuff = player.GetBuff(ProtectBuff.Idx);
+            var curBuff = player.GetBuff(BuffSlot[ItemType.Thorn]);
             if (curBuff) {
                 switch (curBuff.Type) {
                     case ItemType.Protect:
-                        curBuff.Complete();
+                        curBuff.RemoveSelf();
                     case ItemType.HolyProtect:
                         return true;
+                    break;
                 }
             }
             return false;
@@ -366,36 +356,41 @@ export module Item {
         }
     }
 
-    export class BasePlayerBuff {
-        Type: Item.ItemType;
-        Idx: number;
-        Player: Player;
+    export abstract class BasePlayerBuff {
+        private m_Type:ItemType;
+        private m_Player:Player;
+        public get Type(): Item.ItemType
+        {
+            return this.m_Type;
+        }
+        public get Slot(): number
+        {
+            return BuffSlot[this.Type];
+        }
+        public get Player(): Player
+        {
+            return this.m_Player;
+        }
+        constructor(type: Item.ItemType) {
+            this.m_Type = type;
+        }
         Update() {
         }
-        GenBuffMod() {
-            this._BuffMod = new Laya.MeshSprite3D(Laya.PrimitiveMesh.createSphere(0.3, 8, 8));
-        }
-        Start(player: Player) {
-            this.Player = player;
-            //创建模型显示对象
-            this.Player.Fly()
-            if (this._StartFunc != null) {
-                this._StartFunc();
-            }
-        }
 
-        Complete() {
-            this.Player.CompleteBuff(this.Idx);
-            this._BuffMod.destroy();
+        //向玩家添加BUFF
+        public AddToPlayer(player:Player):boolean
+        {
+            this.m_Player = player;
+            player.AddBuff(this);
+            return true;
         }
-        //
-        protected _BuffMod: Laya.Sprite3D;
-        constructor(type: Item.ItemType, idx: number = 0) {
-            this.Type = type;
-            this.Idx = idx;
-            this.GenBuffMod();
+        
+        public abstract Start();
+        public RemoveSelf():void {
+            this.Player.CompleteBuff(this.Slot);
         }
-        private _StartFunc: () => void;
+        public abstract Removed();
+        
     }
 
     class Rock extends StepItem {
@@ -448,32 +443,36 @@ export module Item {
         }
 
         TouchItem(player: Player) {
-            if (player.GetBuff(ProtectBuff.Idx) != null)
-                return;
-            var Buff: BasePlayerBuff = this.GenBuff();
-            this._AddBuffToPlayer(player, Buff);
+            this.AddBuffToPlayer(player);  
         }
     }
     GameStruct.ItemDictType[ItemType.Protect] = Protect;
 
     class ProtectBuff extends BasePlayerBuff {
         Time: number;
-        static get Idx(): number {
-            return 0;
-        }
         /**
          * 
          * @param time 持续时间
          * @param IsHoly 是否绝对无敌
          */
         constructor(time: number = 0, IsHoly: boolean = false) {
-            super(IsHoly ? ItemType.HolyProtect : ItemType.Protect, ProtectBuff.Idx);
+            super(IsHoly ? ItemType.HolyProtect : ItemType.Protect);
             this.Time = Controler.GameControler.GameDir.GameTime + time;
         }
+
         Update() {
             if (this.Time < Controler.GameControler.GameDir.GameTime) {
-                this.Complete();
+                this.RemoveSelf();
             }
+        }
+
+        public Start()
+        {
+
+        }
+
+        public Removed()
+        {
         }
     }
     class HolyProtect extends StepItem {
@@ -488,10 +487,7 @@ export module Item {
         }
 
         TouchItem(player: Player) {
-            if (player.GetBuff(ProtectBuff.Idx) != null)
-                return;
-            var Buff: BasePlayerBuff = this.GenBuff();
-            this._AddBuffToPlayer(player, Buff);
+            this.AddBuffToPlayer(player);
         }
     }
     GameStruct.ItemDictType[ItemType.HolyProtect] = HolyProtect;
@@ -525,9 +521,7 @@ export module Item {
 
     class Collecter extends StepItem {
         TouchItem(player: Player) {
-            if (player.GetBuff(CollectBuff.Idx) != null)
-                return;
-            player.AddBuff(this.GenBuff());
+            this.AddBuffToPlayer(player);
             this.PutItem();
         }
         constructor(step: Step) {
@@ -549,22 +543,25 @@ export module Item {
         Time: number;
         GameDir: GameDirector;
         CountFloor: number;
-        static get Idx(): number {
+        static get Slot(): number {
             return 1;
         }
         constructor(time: number = 0) {
-            super(ItemType.Collector, CollectBuff.Idx);
+            super(ItemType.Collector);
             this.GameDir = Controler.GameControler.GameDir;
             this.Time = this.GameDir.GameTime + time;
             this.CountFloor = 0;
         }
-        Start(player: Player) {
-            super.Start(player);
+        Start() {
             this.CountFloor = this.GameDir.GamePlay.PlayerFloor - 2;
+        }
+        Removed()
+        {
+
         }
         Update() {
             if (this.Time < this.GameDir.GameTime) {
-                this.Complete();
+                this.RemoveSelf();
             } else {
                 if (this.GameDir.GamePlay.PlayerFloor - this.CountFloor + 1 < 0) {
                     return;
@@ -583,9 +580,8 @@ export module Item {
 
     class FLy extends StepItem {
         TouchItem(player: Player) {
-            if (player.GetBuff(0))
-                return;
-            player.AddBuff(this.GenBuff());
+            this.AddBuffToPlayer(player);
+            this.PutItem();
         }
 
         constructor(step: Step) {
@@ -602,7 +598,7 @@ export module Item {
     GameStruct.ItemDictType[ItemType.Fly] = FLy;
 
     class FlyBuff extends BasePlayerBuff {
-        static get Idx(): number {
+        static get Slot(): number {
             return 0;
         }
         Speed: number;
@@ -610,12 +606,19 @@ export module Item {
         private _FinalLocation: GameStruct.MLocation;
         private _FinalZ: number;
 
+        constructor(speed: number = 0.15, floor: number = 10) {
+            super(ItemType.Fly);
+            this.Speed = speed;
+            this.Floor = floor;
+            this._FinalLocation = null;
+            this._FinalZ = 0;
+        }
 
-        Start(player: Player) {
-            super.Start(player)
+        Start() {
             var time: number = Laya.timer.currTimer;
+            var player:Player = this.Player;
             if (player.CurStep == null) {
-                this.Complete();
+                this.RemoveSelf();
             }
             this._FinalLocation = player.CurStep.Location;
             this._FinalLocation.Y += this.Floor;
@@ -624,17 +627,19 @@ export module Item {
             var flyCtrl = new PlayerControler.PlayerFly(this.Speed);
             flyCtrl.SetPlayer(player)
             player.AddCtrler(flyCtrl);
+            player.Fly();
             Controler.GameControler.GameDir.GamePlay.AddInputCtrler(new Input.DIYInput());
             Controler.GameControler.GameDir.GamePlay.SetSafePS(this._FinalLocation);
             player.FlyPrepare();
         }
 
-        constructor(speed: number = 0.15, floor: number = 10) {
-            super(ItemType.Fly, ProtectBuff.Idx);
-            this.Speed = speed;
-            this.Floor = floor;
-            this._FinalLocation = null;
-            this._FinalZ = 0;
+        Removed()
+        {
+            var step: Step = Controler.GameControler.GameDir.GamePlay.GetStepByLocation(this._FinalLocation);
+            this.Player.LayStep(step);
+            this.Player.BaseCtrler.StartMove();
+            this.Player.PopCtrler();
+            Controler.GameControler.GameDir.GamePlay.PopInputCtrler();
         }
 
         Update() {
@@ -642,22 +647,14 @@ export module Item {
                 return;
             }
             if (this._FinalZ - this.Player.Position.z > -0.2) {
-                var step: Step = Controler.GameControler.GameDir.GamePlay.GetStepByLocation(this._FinalLocation);
-                this.Player.LayStep(step);
-                this.Player.BaseCtrler.StartMove();
-                this.Player.PopCtrler();
-
-                Controler.GameControler.GameDir.GamePlay.PopInputCtrler();
-                super.Complete();
+                super.RemoveSelf();
             }
         }
     }
 
     class Rope extends StepItem {
         TouchItem(player: Player) {
-            if (player.GetBuff(0))
-                return;
-            player.AddBuff(this.GenBuff());
+            this.AddBuffToPlayer(player,false);
         }
         constructor(step: Step) {
             super(ItemType.Rope, step);
@@ -675,7 +672,7 @@ export module Item {
         Speed: number;
         Floor: number;
 
-        static get Idx(): number {
+        static get Slot(): number {
             return 0;
         }
         Update() {
@@ -683,19 +680,11 @@ export module Item {
                 return;
             }
             if (this._FinalZ - this.Player.Position.z > -0.2) {
-                var step: Step = Controler.GameControler.GameDir.GamePlay.GetStepByLocation(this._FinalLocation);
-                this.End(step);
+                this.RemoveSelf();
             }
         }
-        End(step: Step) {
-            this.Player.LayStep(step);
-            this.Player.BaseCtrler.StartMove();
-            this.Player.PopCtrler();
-            Controler.GameControler.GameDir.GamePlay.PopInputCtrler();
-            super.Complete();
-        }
-        Start(player: Player) {
-            super.Start(player)
+        Start() {
+            var player:Player = this.Player;
             this._FinalLocation = player.CurStep.Location;
             this._FinalLocation.Y += this.Floor;
             this._FinalZ = player.Position.z - Controler.GameControler.StepDistance / 2 * this.Floor;
@@ -706,11 +695,19 @@ export module Item {
             Controler.GameControler.GameDir.GamePlay.AddInputCtrler(new Input.DIYInput(this, this._Input));
             Controler.GameControler.GameDir.GamePlay.SetSafePS(this._FinalLocation);
         }
+        Removed()
+        {
+            var step: Step = Controler.GameControler.GameDir.GamePlay.GetStepByLocation(this._FinalLocation);
+            this.Player.LayStep(step);
+            this.Player.BaseCtrler.StartMove();
+            this.Player.PopCtrler();
+            Controler.GameControler.GameDir.GamePlay.PopInputCtrler();
+        }
 
         private _FinalLocation: GameStruct.MLocation;
         private _FinalZ: number;
         constructor(speed: number = 0.1, floor: number = 10) {
-            super(ItemType.Rope, ProtectBuff.Idx);
+            super(ItemType.Rope);
             this.Speed = speed;
             this.Floor = floor;
             this._FinalLocation = null;
@@ -730,17 +727,13 @@ export module Item {
             if (step.StepItem.IsForbiden) {
                 return
             }
-            this.End(step);
+            this.RemoveSelf();
         }
     }
 
     class Vine extends StepItem {
         TouchItem(player: Player) {
-            var curBuff: BasePlayerBuff = player.GetBuff(0);
-            if (!this.BreakProtect(player)) {
-                player.AddBuff(this.GenBuff());
-            }
-            this.PutItem();
+            this.AddBuffToPlayer(player,false);
         }
         constructor(step: Step) {
             super(ItemType.Vine, step);
@@ -749,8 +742,6 @@ export module Item {
         protected _GenItemModel() {
             var Idx = Math.floor(1 + Math.random() * 2);
             var name: string = Idx == 1 ? path.GetLH("trap_entangle_01") : path.GetLH("trap_chomper_01")
-            //var name:string = path.GetLH("trap_entangle_01")
-            //var name:string = path.GetLH("trap_chomper_01")
 
             var model: Laya.Sprite3D = Laya.loader.getRes(name).clone();
             this.Model = model;
@@ -761,16 +752,16 @@ export module Item {
     class VineBuff extends BasePlayerBuff {
         CountTime: number;
         InputDir: boolean;
-        Start(player: Player) {
-            super.Start(player)
+        Start() {
             Controler.GameControler.GameDir.GamePlay.AddInputCtrler(new Input.DIYInput(this, this._Input));
         }
-        Complete() {
+
+        Removed() {
             Controler.GameControler.GameDir.GamePlay.PopInputCtrler();
-            super.Complete();
         }
+
         constructor(countTime: number = 4, inputDir: boolean = true) {
-            super(ItemType.Vine, 0);
+            super(ItemType.Vine);
             this.CountTime = countTime;
             this.InputDir = inputDir;
             this._ShowGameInfo();
@@ -781,10 +772,10 @@ export module Item {
                 this.InputDir = !this.InputDir;
                 --this.CountTime;
             }
-            if (this.CountTime <= 0) {
-                this.Complete();
-            }
             this._ShowGameInfo();
+            if (this.CountTime <= 0) {
+                this.RemoveSelf();
+            }
         }
         private _ShowGameInfo() {
             var info: string;

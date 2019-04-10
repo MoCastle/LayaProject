@@ -112,6 +112,16 @@ export module MessageMD {
         Add(dlg: Delegate)  {
             this.DelegateList.push(dlg);
         }
+
+        /**
+         * 注册方法
+         * @param listener 监听事件
+         * @param owner 拥有者
+         */
+        AddFunc(listener:(param:any)=>any,owner:object)
+        {
+            var dlg:Delegate = new Delegate(owner,listener);
+        }
         /**
         * 移除委托
         * @param {function} action 消息名字

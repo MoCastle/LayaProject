@@ -16,30 +16,30 @@ export module GameManager {
             }
         }
         protected abstract GenInfo(data): BaseInfo;
-        protected GetInfo<T extends BaseInfo>(id: number): T  {
-            if (!id || id < 0)  {
+        protected GetInfo<T extends BaseInfo>(id: number): T {
+            if (!id || id < 0) {
 
                 id = 0;
             }
             var BaseInfo = this.m_Map[id];
-            if (!BaseInfo)  {
+            if (!BaseInfo) {
                 BaseInfo = this.m_Map[this.m_BottomID];
             }
-            if (BaseInfo)  {
+            if (BaseInfo) {
                 return BaseInfo as T;
-            } else  {
+            } else {
                 return null;
             }
         }
         /**
          * 获取ID数组
          */
-        public GetIDList(): Array<number>  {
+        public GetIDList(): Array<number> {
             var map: { [ID: number]: BaseInfo } = this.m_Map;
             var IDList: Array<number> = []
-            for (var key in map)  {
+            for (var key in map) {
                 var data = map[key]
-                if(data)
+                if (data)
                     IDList.push(data.ID);
             }
             return IDList;
@@ -53,7 +53,7 @@ export module GameManager {
         }
 
         constructor(data: any) {
-            this.m_ID = data.ID ? Number(data.ID) : -1;
+            this.m_ID = data.ID ? Number(data.ID) - 1 : -1;
         }
     }
 }
