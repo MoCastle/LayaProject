@@ -57,7 +57,7 @@ export module Item {
             this.BarrierList.push(new LayItemMgr(10, 1, ItemType.Empty, 10));
             this.BarrierList.push(new LayItemMgr(10, 5, ItemType.Rock, 10));
             this.BarrierList.push(new LayItemMgr(10, 2, ItemType.Thorn, 10));
-            this.BarrierList.push(new LayItemMgr(10, 2, ItemType.Vine, 1))
+            this.BarrierList.push(new LayItemMgr(10, 2, ItemType.Vine, 10))
             this.RewardList.push(new LayItemMgr(10, 1, ItemType.Coin))
 
             this.RewardList.push(new LayItemMgr(50, 1, ItemType.Fly, 20))
