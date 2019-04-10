@@ -129,7 +129,30 @@ export default class Player extends Laya.Sprite3D
     {
         return (this.BuffArr[idx] !=null&&this.BuffArr[idx]!=undefined)?this.BuffArr[idx]:null;
     }
+    /**
+     * 添加BUFF
+     * @param buff 
+     * @param index 
+     */
+    AddBuff(buff:Item.BasePlayerBuff):boolean
+    {
+        var index:number = buff.Idx;
+        if(this.BuffArr[index]!=null||this.BuffArr[index]!=undefined)
+        {
+            return false;
+        }
 
+        var buffModel:Laya.Sprite3D = this.m_BuffModel[buff.Type];
+        if(buffModel) 
+        {
+            buffModel.active = true;
+        }
+        
+        this.BuffArr[index] = buff;
+        buff.Idx = index;
+        buff.Start(this);
+        return true;
+    }
     //摆放角色
     SetStep(putStep:Step):void
     {
@@ -192,7 +215,7 @@ export default class Player extends Laya.Sprite3D
      */
     Translate( vector:Laya.Vector3 ):void
     {
-        this.transform.translate(vector);
+        this.transform.translate(vector,false);
         Laya.Vector3.add(this._LogicPosition,vector,this._LogicPosition);
     }
 
@@ -202,10 +225,14 @@ export default class Player extends Laya.Sprite3D
      */
     AddCtrler(newCtrler:PlayerControler.BasePlayerCtrler ):void
     {
+        if(this._Ctrler)
+            this._Ctrler.OnComplete();
         var ctrler:PlayerControler.BasePlayerCtrler = this._Ctrler;
         this._Ctrler = newCtrler;
         newCtrler.NextCtrl =ctrler;
         newCtrler.SetPlayer(this);
+        if(this._Ctrler)
+            this._Ctrler.OnStart();
     }
 
     /**
@@ -213,30 +240,13 @@ export default class Player extends Laya.Sprite3D
      */
     PopCtrler():void
     {
+        if(this._Ctrler)
+            this._Ctrler.OnComplete();
         this._Ctrler = this._Ctrler.NextCtrl;
+        if(this._Ctrler)
+            this._Ctrler.OnStart();
     }
-    /**
-     * 添加BUFF
-     * @param buff 
-     * @param index 
-     */
-    AddBuff(buff:Item.BasePlayerBuff):boolean
-    {
-        var index:number = buff.Idx;
-        if(this.BuffArr[index]!=null||this.BuffArr[index]!=undefined)
-        {
-            return false;
-        }
-        var buffModel:Laya.Sprite3D = this.m_BuffModel[buff.Type];
-        if(buffModel) 
-        {
-            buffModel.active = true;
-        }
-        this.BuffArr[index] = buff;
-        buff.Idx = index;
-        buff.Start(this);
-        return true;
-    }
+    
     
     /**
      * 结束BUFF
