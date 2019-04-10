@@ -11,6 +11,7 @@ import PlayerGuestAgent from "./../Agent/PlayerGuestAgent"
 import { MessageMD } from "./../FrameWork/MessageCenter"
 import { Player } from "./../Agent/PlayerEntity"
 import GameAPP from "../controler/GameAPP";
+import EnterGameUI from "./EnterGameUI";
 
 class ExtendCharactersUI extends ui.CharacterUI {
     createChildren(): void {
@@ -47,13 +48,41 @@ export default class CharacterUI extends BaseUI {
         this._UI._Gold.text = PlayerGuestAgent.GuestAgent.Money + "";
         this._UI._Gold.stroke = 2;
         this._UI._Gold.strokeColor = "0xff0000";
+
+        this._UI.backBtn.on(Laya.Event.CLICK, this, this.BackGameBtn);
+        this.Layout();
+
+        this.InitPosition();
     }
+
+    InitPosition(): void {
+        
+    }
+
+    BackGameBtn(): void {
+        var enterpanel:EnterGameUI = APP.UIManager.GetUIByName("EnterGameUI") as EnterGameUI;
+        enterpanel._UI.y = Laya.stage.height;
+        Laya.Tween.to(enterpanel._UI, {y: 0}, 150, Laya.Ease.sineOut);
+        Laya.Tween.to(this, {y: -Laya.stage.height}, 150, Laya.Ease.sineOut, Laya.Handler.create(this, ()=>{
+            APP.UIManager.Close(this);
+        }));
+    }
+
     static Name(): string {
         return "CharacterUI";
     }
 
     GetCharacterList()  {
         this.m_CharacterList = GameAPP.CharacterMgr.GetIDList();
+    }
+
+    Layout() {
+        super.Layout();
+        if(!this._UI || !this._UI.bg) {
+            return;
+        }
+        this._UI.bg.width = Laya.stage.width;
+        this._UI.bg.height = Laya.stage.height;
     }
 
     SetList() {

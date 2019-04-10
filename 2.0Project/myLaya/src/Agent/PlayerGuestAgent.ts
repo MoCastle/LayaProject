@@ -20,7 +20,7 @@ export default class PlayerGuestAgent extends BaseAgent {
     }
 
     private constructor() {
-        super();
+        super();    
     }
 
     public BuyCharacter(id: number)  {

@@ -17,7 +17,7 @@ class ExtendEnterGameUI extends ui.EnterUI {
         this.Panel = this._Panel;
         this.Panel.vScrollBarSkin = "";
         this.Panel.hScrollBarSkin = "";
-        this._Character.on(Laya.Event.CLICK, GameControler.GameControler, GameControler.GameControler.ShowCharacterPanel);
+        this._Character.on(Laya.Event.CLICK, this, this.ShowCharacterPanel);
         //this._Character.on(Laya.Event.CLICK, this, this.showCharacter);
         this._SetPanel.on(Laya.Event.CLICK, GameControler.GameControler, GameControler.GameControler.ShowSetPanel);
         //this._Rank.on(Laya.Event.CLICK, GameControler.GameControler, GameControler.GameControler.ShowRankPanel);
@@ -29,19 +29,21 @@ class ExtendEnterGameUI extends ui.EnterUI {
 
         this._Rank["initX"] = this._Rank.x;
         this._Rank["initY"] = this._Rank.y;
-
         this._SetPanel["initX"] = this._SetPanel.x;
         this._SetPanel["initY"] = this._SetPanel.y;
-
         this._Start["initX"] = this._Start.x;
         this._Start["initY"] = this._Start.y;
-
         this._Character["initX"] = this._Character.x;
         this._Character["initY"] = this._Character.y;
-
         this.adv["initX"] = this.adv.x;
         this.adv["initY"] = this.adv.y;
+    }
 
+    ShowCharacterPanel(): void {
+        var node = GameControler.GameControler.ShowCharacterPanel();
+        node.y = -Laya.stage.height;
+        Laya.Tween.to(node, {y: 0}, 200, Laya.Ease.sineOut);
+        Laya.Tween.to(this, {y: Laya.stage.height}, 200, Laya.Ease.sineOut);
     }
 
     onStart():void {
@@ -52,8 +54,6 @@ class ExtendEnterGameUI extends ui.EnterUI {
         Laya.Tween.to(this.adv, {y:this.adv.y  + Laya.stage.height - this._Character.y}, 150, Laya.Ease.sineIn);
         Laya.Tween.to(this._logo, {alpha:0.2}, 100, Laya.Ease.sineIn);
     }
-
-
 }
 
 export default class EnterGameUI extends BaseUI {
@@ -75,29 +75,6 @@ export default class EnterGameUI extends BaseUI {
         this.Layout();
     }
 
-    OpenOP()
-    {
-        super.OpenOP();
-        this._UI._logo.alpha = 1;
-        if(!this._UI._Rank["initX"]) {
-            return;
-        }
-        this._UI._Rank.x = this._UI._Rank["initX"];
-        this._UI._Rank.y = this._UI._Rank["initY"];
-
-        this._UI._SetPanel.x = this._UI._SetPanel["initX"];
-        this._UI._SetPanel.y = this._UI._SetPanel["initY"];
-
-        this._UI._Start.x = this._UI._Start["initX"];
-        this._UI._Start.y = this._UI._Start["initY"];
-
-        this._UI._Character.x = this._UI._Character["initX"];
-        this._UI._Character.y = this._UI._Character["initY"];
-
-        this._UI.adv.x = this._UI.adv["initX"];
-        this._UI.adv.y = this._UI.adv["initY"];
-    }
-
     private InitBtnGroup() {
         var CurMaxLevel = GameAgent.Agent.CurMaxLevel;
         var curLevel = GameAgent.Agent.CurLevel;
@@ -115,6 +92,21 @@ export default class EnterGameUI extends BaseUI {
 
     public Open() {
         this.InitBtnGroup();
+        this.y = 0;
+        this._UI._logo.alpha = 1;
+        if(!this._UI._Rank["initX"]) {
+            return;
+        }
+        this._UI._Rank.x = this._UI._Rank["initX"];
+        this._UI._Rank.y = this._UI._Rank["initY"];
+        this._UI._SetPanel.x = this._UI._SetPanel["initX"];
+        this._UI._SetPanel.y = this._UI._SetPanel["initY"];
+        this._UI._Start.x = this._UI._Start["initX"];
+        this._UI._Start.y = this._UI._Start["initY"];
+        this._UI._Character.x = this._UI._Character["initX"];
+        this._UI._Character.y = this._UI._Character["initY"];
+        this._UI.adv.x = this._UI.adv["initX"];
+        this._UI.adv.y = this._UI.adv["initY"];
     }
 
     Update() {

@@ -18,28 +18,52 @@ class ExtendsSetPanelUI extends ui.SetPanelUI {
 
 export default class SetPanelUI extends BaseUI {
     _UI: ExtendsSetPanelUI;
+    selectedIndex:number;
     constructor(name: string) {
         super(name);
-        this._UIType = BaseEnum.UITypeEnum.Midle;
+        this._UIType = BaseEnum.UITypeEnum.Midle; 
         this._UI = new ExtendsSetPanelUI();
         this.FixUI(this._UI);
         this._UI._Return.on(Laya.Event.CLICK, this, () => { this._UIManager.CloseCurView(); GuiderManager.Mgr.EnterScene() });
+        this._UI.voiceopen.on(Laya.Event.CLICK, this, this.VoiceOpen);
+        this._UI.voiceclose.on(Laya.Event.CLICK, this, this.VoiceClose); 
+        var info: GameStruct.SetInfo = Controler.GameControler.GetSetInfo();
+        this.selectedIndex = info.AudioOn ? 1 : 0;
         this.SetPanel();
+        this.Layout();
     }
     static Name(): string {
         return "SetPanelUI";
     }
+    
+    VoiceOpen() {
+        this.selectedIndex = 1;
+        this.SetPanel();
+    }
+
+    VoiceClose() {
+        this.selectedIndex = 0;
+        this.SetPanel();
+    }
+
     SetPanel() {
-        var info: GameStruct.SetInfo = Controler.GameControler.GetSetInfo();
-        // this._UI._AudioSwitch.selectedIndex = info.AudioOn ? 0 : 1;
-        // this._UI._OPSwitch.selectedIndex = info.OPIsRight ? 1 : 0;
+        if(this.selectedIndex == 1) {
+            (this._UI.voiceopen.getChildAt(2) as Laya.Image).visible = true;
+            (this._UI.voiceclose.getChildAt(1) as Laya.Image).visible = false;
+        }
+        else
+        {
+            (this._UI.voiceopen.getChildAt(2) as Laya.Image).visible = false;
+            (this._UI.voiceclose.getChildAt(1) as Laya.Image).visible = true;
+        }
+        //this._UI._OPSwitch.selectedIndex = info.OPIsRight ? 1 : 0;
         // this._UI._Text.text = info.TextInfo;
     }
     SavePanel() {
         var info: GameStruct.SetInfo = new GameStruct.SetInfo();
-        // info.AudioOn = this._UI._AudioSwitch.selectedIndex == 0;
-        // info.OPIsRight = this._UI._OPSwitch.selectedIndex == 1;
-        // Controler.GameControler.SaveSetInfo(info);
+        info.AudioOn = this.selectedIndex == 1;
+        //info.OPIsRight = this.selectedIndex == 1;
+        Controler.GameControler.SaveSetInfo(info);
     }
 
     Layout() {

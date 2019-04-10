@@ -150,7 +150,7 @@ export default class UIManager extends BaseManager {
             node.visible = true;
         }
 
-        return newUI as T;
+        return (newUI as T);
     }
 
     Close(ui: BaseUI)  {

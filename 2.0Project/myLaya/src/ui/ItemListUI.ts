@@ -45,9 +45,11 @@ export default class ItemListUI extends BaseUI
         this.UI.BtnListener = new MessageMD.Delegate(this,()=>{ this._UIManager.Close(this)})
         this._UIType = BaseEnum.UITypeEnum.Midle;
         this.UpdateList();
-        this.m_Gold = this.UI._Gold.text.split("#");
+        //this.m_Gold = this.UI._Gold.text.split("#");
         this.UI._BG.alpha = 0;
         this.UI._BG.on(Laya.Event.CLICK,this,this.CloseUI);
+        this.UI.backBtn.on(Laya.Event.CLICK,this,this.CloseUI);
+        this.Layout();
     }
 
     public Open()
@@ -88,8 +90,8 @@ export default class ItemListUI extends BaseUI
         {
             return
         }
-        this.m_Gold[1] ="" + PlayerGuestAgent.GuestAgent.Money;
-         this.UI._Gold.text = this.m_Gold[0] + this.m_Gold[1];
+        // this.m_Gold[1] ="" + PlayerGuestAgent.GuestAgent.Money;
+        this.UI._Gold.text = PlayerGuestAgent.GuestAgent.Money + "";
     }
 
     private _RenderHandler(cell:Laya.Box,index:number):void
@@ -102,7 +104,7 @@ export default class ItemListUI extends BaseUI
         roleElement.RegistChoose(this,this.ChooseItem);
         roleElement.IsGray = itemList[this.m_ItemList[index]]?false:true;
         roleElement.Num = itemList[this.m_ItemList[index]]?itemList[this.m_ItemList[index]]:0;
-        roleElement.BtnLable = "" + GameAPP.ItemMgr.GetPrice(this.m_ItemList[index]) + "$";
+        roleElement.BtnLable = "" + GameAPP.ItemMgr.GetPrice(this.m_ItemList[index]) + "";
         //roleElement.SetBtn(this.BtnListener.Listener,this.BtnListener.Action);
     }
 
@@ -125,6 +127,15 @@ export default class ItemListUI extends BaseUI
     Update()
     {
 
+    }
+
+    Layout() {
+        super.Layout();
+        if(!this.UI || !this.UI.bg) {
+            return;
+        }
+        this.UI.bg.width = Laya.stage.width;
+        this.UI.bg.height = Laya.stage.height;
     }
     
     private BuyItem(id:number)

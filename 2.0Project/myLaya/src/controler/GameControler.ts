@@ -8,6 +8,7 @@ import GameScene from "./../Scene/GameScene"
 import GameDirector from "./../Scene/GameDirector"
 import APP from "./APP"
 import PlayerGuestAgent from "./../Agent/PlayerGuestAgent";
+import EnterGameUI from "../ui/EnterGameUI";
 
 type ItemType = Item.ItemType;
 export default class Controler
@@ -107,6 +108,7 @@ class GameControler {
     //显示角色面板
     public ShowCharacterPanel() {
         var character = APP.UIManager.Show<CharacterUI>(CharacterUI);
+        return character;
     }
 
     private _SetInfo;

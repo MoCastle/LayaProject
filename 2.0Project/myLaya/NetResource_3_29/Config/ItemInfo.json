@@ -11,14 +11,14 @@
         "Passscore": "无敌",
         "ModelName": "untouchable",
         "ExtendID": "01",
-        "Price": "1"
+        "Price": "2"
     },
     "3": {
         "ID": "3",
         "Passscore": "飞",
         "ModelName": "flyer",
         "ExtendID": "01",
-        "Price": "1"
+        "Price": "3"
     },
     "4": {
         "ID": "4",
@@ -29,7 +29,7 @@
         "Passscore": "收集",
         "ModelName": "absord_01",
         "ExtendID": "01",
-        "Price": "1"
+        "Price": "4"
     },
     "6": {
         "ID": "6",

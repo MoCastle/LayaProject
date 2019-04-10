@@ -24,10 +24,10 @@ export default abstract class BaseUI extends Laya.Box
         this._Name = name;
         this._UIManager = FW.FM.GetManager<UIManager>(UIManager);
         this._Showing = true;
-        this.left = 0;
-	    this.right = 0;
-		this.bottom = 0;
-        this.top = 0;
+        // this.left = 0;
+	    // this.right = 0;
+		// this.bottom = 0;
+        // this.top = 0;
     }
     Hide()
     {

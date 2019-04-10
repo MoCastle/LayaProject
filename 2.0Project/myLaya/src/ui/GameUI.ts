@@ -66,6 +66,10 @@ export default class GameUI extends BaseUI {
     constructor(name: string) {
         super(name);
         this._IsMutex = true;
+        this.left = 0;
+        this.right = 0;
+        this.bottom = 0;
+        this.top = 0;
         this._UI = new ExtendsGameUI();
         this.FixUI(this._UI);
         var opIsRight = GameControler.GameControler.SetInfo.OPIsRight;
@@ -85,6 +89,7 @@ export default class GameUI extends BaseUI {
         this.ShowInputInfo("");
         this._UI._PlayerItem.on(Laya.Event.CLICK, this, this.OnClickPlayerItem);
         this._UI._SkillItem.on(Laya.Event.CLICK, this, this.OnClickSkillItem);
+        
     }
 
     SetLeftTouch(owner: any, Listener: () => void): void {
