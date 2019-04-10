@@ -1,8 +1,8 @@
 export module path {
     export var IsEditor: boolean = true;
-    export var version: string = "?v=4";
+    export var version: string = "?v=5";
     export var SceneAssetPath: string = "LayaScene_";
-    export var ResourcePath: string = IsEditor ? "../NetResource_3_29/" : "https://www.gsjgame.com/Resource/NetResource_3_29/";
+    export var ResourcePath: string = IsEditor ? "NetResource_3_29/" : "https://www.gsjgame.com/Resource/NetResource_3_29/";
     export var UIPath: string = ResourcePath + "UI/";
     export var ModelPath: string = ResourcePath + "3D/"
     export var ConfigPath: string = ResourcePath + "Config/"
@@ -12,7 +12,7 @@ export module path {
      * @param fileName 文件名
      */
     export function GetAtlPath(fileName: string): string {
-        return UIPath + fileName + ".atlas" + version;
+        return UIPath + fileName + ".atlas" + (IsEditor?"":version);
     }
 
     /**
@@ -20,7 +20,7 @@ export module path {
      * @param fileName 文件名
      */
     export function GetDepathUIJS(fileName: string): string {
-        return UIPath + fileName + ".json" + version;
+        return UIPath + fileName + ".json" + (IsEditor?"":version);
     }
 
 
@@ -29,7 +29,7 @@ export module path {
      * @param fileName 文件名
      */
     export function GetLH(fileName: string): string {
-        return ModelPath + SceneAssetPath + fileName + "/Conventional/" + fileName + ".lh" + version;
+        return ModelPath + SceneAssetPath + fileName + "/Conventional/" + fileName + ".lh" + (IsEditor?"":version);
     }
 
     /**
@@ -37,6 +37,6 @@ export module path {
      * @param fileName 文件名
      */
     export function GetJsonPath(fileName: string): string {
-        return ConfigPath + fileName + ".json" + version;
+        return ConfigPath + fileName + ".json" +  + (IsEditor?"":version);
     }
 }

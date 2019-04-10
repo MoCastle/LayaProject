@@ -109,6 +109,9 @@ export default class CharacterUI extends BaseUI {
         }
         //this.m_GoldDiscribe[1] = "" + PlayerGuestAgent.GuestAgent.Money;
         //this._UI._Gold.text = this.m_GoldDiscribe[0] + this.m_GoldDiscribe[1];
+        this._UI._Gold.text = PlayerGuestAgent.GuestAgent.Money + "";
+        this._UI._Gold.stroke = 2;
+        this._UI._Gold.strokeColor = "0xff0000";
     }
 }
 

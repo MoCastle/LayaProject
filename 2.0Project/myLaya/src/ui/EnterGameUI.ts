@@ -20,7 +20,7 @@ class ExtendEnterGameUI extends ui.EnterUI {
         this._Character.on(Laya.Event.CLICK, GameControler.GameControler, GameControler.GameControler.ShowCharacterPanel);
         //this._Character.on(Laya.Event.CLICK, this, this.showCharacter);
         this._SetPanel.on(Laya.Event.CLICK, GameControler.GameControler, GameControler.GameControler.ShowSetPanel);
-        this._Rank.on(Laya.Event.CLICK, GameControler.GameControler, GameControler.GameControler.ShowRankPanel);
+        //this._Rank.on(Laya.Event.CLICK, GameControler.GameControler, GameControler.GameControler.ShowRankPanel);
         //this._Start.on(Laya.Event.CLICK, GameControler.GameControler, GameControler.GameControler.EnterGame);
         this._Start.on(Laya.Event.CLICK, this, this.onStart);
 
