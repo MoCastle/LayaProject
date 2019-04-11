@@ -12,6 +12,7 @@ import ItemElement from "./../script/ItemElement"
 import GameControler from "./../controler/GameControler"
 import PlayerGuestAgent from "./../Agent/PlayerGuestAgent"
 import GameAPP from "./../controler/GameAPP"
+import { GameModule } from "../Game/GameModule";
 
 class ExtendsItemListUI extends ui.ItemListUI
 {
@@ -57,12 +58,14 @@ export default class ItemListUI extends BaseUI
         APP.MessageManager.Regist(Player.Event.OnMoneyChange,this.ShowGold,this);
         APP.MessageManager.Regist(Player.Event.OnItemListChange,this.RefreshList,this);
         
+        APP.MessageManager.Fire(GameModule.Event.OnTimePause);
         this.ShowGold();
         this.UpdateList();
     }
 
     public Close()
     {
+        APP.MessageManager.Fire(GameModule.Event.OnTimeContinue);
         APP.MessageManager.DesRegist(Player.Event.OnMoneyChange,this.ShowGold,this);
         APP.MessageManager.DesRegist(Player.Event.OnItemListChange,this.RefreshList,this);
     }
