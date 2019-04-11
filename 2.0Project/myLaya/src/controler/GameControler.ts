@@ -9,6 +9,7 @@ import GameDirector from "./../Scene/GameDirector"
 import APP from "./APP"
 import PlayerGuestAgent from "./../Agent/PlayerGuestAgent";
 import EnterGameUI from "../ui/EnterGameUI";
+import { GameModule } from "../Game/GameModule";
 
 type ItemType = Item.ItemType;
 export default class Controler
@@ -21,9 +22,6 @@ export default class Controler
 
 class GameControler {
     private static _Mgr: GameControler;
-    private constructor() {
-    }
-
     static get Mgr(): GameControler {
         if (GameControler._Mgr == null) {
             GameControler._Mgr = new GameControler();
@@ -35,6 +33,11 @@ class GameControler {
     _StepLength:number;
     _StepDistance:number;
     _PlayerMoveTime:number;
+    
+    private constructor() {
+    }
+
+    
     //常量定义
     //每行最大格子数
     get LineStepNum(): number
@@ -157,4 +160,15 @@ class GameControler {
     {
         PlayerGuestAgent.GuestAgent.BuyItem(id);
     }
+
+    TimePause():void
+    {
+        APP.MessageManager.Fire(GameModule.Event.OnTimePause);
+    }
+
+    TimeContinue():void
+    {
+        APP.MessageManager.Fire(GameModule.Event.OnTimeContinue);
+    }
+
 }

@@ -6,14 +6,14 @@ export default class TimeManager extends BaseManager {
     }
     private m_StartTime: number;
     private m_GameTime: number;
-    private m_PausingTime:number;
-    private m_PauseTime:number
+    private m_PausingTime: number;
+    private m_PauseTime: number
 
     public get StartTimer(): number {
         return this.m_StartTime;
     }
     public get GameTime(): number {
-        return (Laya.timer.currTimer - this.m_StartTime)/1000 ;
+        return (Laya.timer.currTimer - this.m_StartTime -this.m_PauseTime - this.PausingTime) / 1000;
     }
 
     constructor() {
@@ -28,12 +28,15 @@ export default class TimeManager extends BaseManager {
     }
 
     public Pause() {
-        if(this.m_PausingTime<=0)
+        if (this.m_PausingTime <= 0)
             this.m_PausingTime = Laya.timer.currTimer;
     }
-
+    public get PausingTime():number
+    {
+        return this.m_PausingTime > 0 ? (Laya.timer.currTimer - this.m_PausingTime ) : 0;
+    }
     public Continue() {
-        this.m_PauseTime += this.m_PausingTime;
+        this.m_PauseTime += this.PausingTime;
         this.m_PausingTime = 0;
     }
 }

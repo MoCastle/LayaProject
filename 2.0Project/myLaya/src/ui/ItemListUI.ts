@@ -13,6 +13,7 @@ import GameControler from "./../controler/GameControler"
 import PlayerGuestAgent from "./../Agent/PlayerGuestAgent"
 import GameAPP from "./../controler/GameAPP"
 import { GameModule } from "../Game/GameModule";
+import Controler from "./../controler/GameControler";
 
 class ExtendsItemListUI extends ui.ItemListUI
 {
@@ -58,14 +59,14 @@ export default class ItemListUI extends BaseUI
         APP.MessageManager.Regist(Player.Event.OnMoneyChange,this.ShowGold,this);
         APP.MessageManager.Regist(Player.Event.OnItemListChange,this.RefreshList,this);
         
-        APP.MessageManager.Fire(GameModule.Event.OnTimePause);
+        Controler.GameControler.TimePause();
         this.ShowGold();
         this.UpdateList();
     }
 
     public Close()
     {
-        APP.MessageManager.Fire(GameModule.Event.OnTimeContinue);
+        Controler.GameControler.TimeContinue();
         APP.MessageManager.DesRegist(Player.Event.OnMoneyChange,this.ShowGold,this);
         APP.MessageManager.DesRegist(Player.Event.OnItemListChange,this.RefreshList,this);
     }

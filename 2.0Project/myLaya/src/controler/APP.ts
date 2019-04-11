@@ -47,8 +47,8 @@ export default class APP {
         APP.g_TimeMgr = fm.AddManager<TimeManager>(TimeManager);
         APP.g_UIManager = fm.AddManager<UIManager>(UIManager);
         
-        APP.g_Message.Regist(GameModule.Event.OnTimePause,APP.g_TimeMgr.Pause,null)
-        APP.g_Message.Regist(GameModule.Event.OnTimeContinue,APP.g_TimeMgr.Continue,null)
+        APP.g_Message.Regist(GameModule.Event.OnTimePause,APP.g_TimeMgr.Pause,APP.g_TimeMgr)
+        APP.g_Message.Regist(GameModule.Event.OnTimeContinue,APP.g_TimeMgr.Continue,APP.g_TimeMgr)
     }
 }
 
