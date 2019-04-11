@@ -11,21 +11,20 @@ export default class CharacterManager extends GameManager.BaseManager {
     constructor() {
         super("CharacterInfo");
     }
-    protected GenInfo(data:any)
-    {
+    protected GenInfo(data: any) {
         return new CharacterInfo(data);
     }
 
     public GetSkillItem(id): number {
-        var info:CharacterInfo = this.GetInfo<CharacterInfo>(id);
-        if(info)
+        var info: CharacterInfo = this.GetInfo<CharacterInfo>(id);
+        if (info)
             return info.Item;
         return null;
     }
 
     public GetPrice(id): number {
-        var info:CharacterInfo = this.GetInfo<CharacterInfo>(id);
-        if(info)
+        var info: CharacterInfo = this.GetInfo<CharacterInfo>(id);
+        if (info)
             return info.Price;
         return null;
     }
@@ -34,18 +33,17 @@ export default class CharacterManager extends GameManager.BaseManager {
         return this.GetInfo<CharacterInfo>(id);
     }
 
-    public GetItemID(id)
-    {
-        var info:CharacterInfo = this.GetInfo<CharacterInfo>(id);
-        if(!info)
-            return ;
+    public GetItemID(id) {
+        var info: CharacterInfo = this.GetInfo<CharacterInfo>(id);
+        if (!info)
+            return;
         return info.Item;
     }
 
     public GetCharacterModel(id: number): Laya.Sprite3D {
-        var info:CharacterInfo = this.GetInfo<CharacterInfo>(id);
-        if(!info)
-            return ;
+        var info: CharacterInfo = this.GetInfo<CharacterInfo>(id);
+        if (!info)
+            return;
         var characterData: CharacterInfo = this.GetCharacterInfo(id);
         var sampleModel: Laya.Sprite3D = Laya.loader.getRes(path.GetLH(characterData.Name));
         var model = sampleModel.clone();
@@ -65,14 +63,11 @@ class CharacterInfo extends GameManager.BaseInfo {
     public get Price(): number {
         return this.m_Price;
     }
-    public get ID(): number  {
-        return this.m_ID;
-    }
     constructor(characterData: any) {
         super(characterData);
         this.m_ModelName = characterData.ModelID ? characterData.ModelID : "";
-        this.m_Item = characterData.Item ? characterData.Item : -1;
-        this.m_Price = characterData.Price?Number(characterData.Price):0;
+        this.m_Item = characterData.ItemID ? Number(characterData.ItemID - 1) : -1;
+        this.m_Price = characterData.Price ? Number(characterData.Price) : 0;
     }
 
     public get Name(): string {

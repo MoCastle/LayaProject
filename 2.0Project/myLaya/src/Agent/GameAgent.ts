@@ -41,11 +41,10 @@ export class GameAgent extends BaseAgent {
             return;
         this.m_PlayerEntity.CurItem = id;
     }
-    public get CurItemNum(): number  {
-        return this.m_PlayerEntity.CurItemNum < this.m_UseItemNum ? this.m_PlayerEntity.CurItem : this.m_UseItemNum;
+    public get GameItemNum(): number {
+        return this.m_PlayerEntity.CurItemNum < this.m_UseItemNum ? this.m_PlayerEntity.CurItemNum : this.m_UseItemNum;
     }
-    public get SkillItemNum():number
-    {
+    public get SkillItemNum(): number  {
         return this.m_SkillItemNum;
     }
 
@@ -69,33 +68,33 @@ export class GameAgent extends BaseAgent {
         this.m_PlayerEntity.CurScore = score;
     }
 
-    public get CurScore():number {
+    public get CurScore(): number {
         return this.m_PlayerEntity.CurScore;
     }
 
 
     public ResetGameItem() {
-        this.m_UseItemNum = this.m_PlayerEntity.CurItem > 0 ? 1 : 0;
         APP.MessageManager.Fire(Player.Event.OnCurItemNumChange);
+        this.m_UseItemNum = 1;
     }
 
     public ResetSkillItem() {
-        var CharacterID:number = this.m_PlayerEntity.CurCharacterID;
+        var CharacterID: number = this.m_PlayerEntity.CurCharacterID;
         this.m_SkillItemNum = GameAPP.CharacterMgr.GetSkillItem(CharacterID) < 0 ? 0 : 1;
         APP.MessageManager.Fire(GameModule.Event.OnCharacterItemChange);
+        this.m_SkillItemNum = 1;
     }
 
-    public UseGameItem()  {
-        if (this.m_UseItemNum < 1)  {
+    public UseGameItem() {
+        if (this.GameItemNum < 1) {
             return
         }
-        -- this.m_UseItemNum;
+        --this.m_UseItemNum;
         this.m_PlayerEntity.ReduceItem(this.CurItem);
     }
 
-    public UseSkillItem()  {
-        if (this.m_SkillItemNum<1)
-        {
+    public UseSkillItem() {
+        if (this.SkillItemNum < 1)  {
             return;
         }
         --this.m_SkillItemNum;

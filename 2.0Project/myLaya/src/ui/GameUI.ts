@@ -121,7 +121,7 @@ export default class GameUI extends BaseUI {
      * 显示玩家选择道具
      */
     protected ShowPlayerItem() {
-        var itemNum = GameAgent.Agent.CurItemNum;
+        var itemNum = GameAgent.Agent.GameItemNum;
         if (itemNum < 1) {
             this._UI._PlayerItem.visible = false;
         } else {

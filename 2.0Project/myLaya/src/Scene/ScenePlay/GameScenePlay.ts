@@ -260,6 +260,8 @@ export default class GameScenePlay extends Scene.BaseScenePlaye {
     protected StartGame() {
 
         APP.SceneManager.CurScene.SceneObj.ambientColor = new Laya.Vector3(1, 1, 1)
+        GameAgent.Agent.ResetGameItem();
+        GameAgent.Agent.ResetSkillItem();
         this._SafeLocation = new GameStruct.MLocation(0, 0);
         //重置物品
         this.ItemLayout = new Item.ItemLayout()
@@ -651,18 +653,19 @@ export default class GameScenePlay extends Scene.BaseScenePlaye {
     }
 
     public UseSkillItem()  {
-        GameAgent.Agent.UseSkillItem();
         if (GameAgent.Agent.SkillItemNum < 1)
             return;
+        GameAgent.Agent.UseSkillItem();
         var characterID:number = GameAgent.Agent.CurCharacterID;
         var ItemID:number = GameAPP.CharacterMgr.GetItemID(characterID);
         var ItemType:number = GameAPP.ItemMgr.GetItemType(ItemID);
         var newBuff:Item.BasePlayerBuff = Item.ItemBuffFactory(ItemType);
         newBuff.AddToPlayer(this.Player);
+        
     }
 
     public UsePlayerItem()  {
-        if (GameAgent.Agent.CurItemNum < 1)
+        if (GameAgent.Agent.GameItemNum < 1)
             return;
         GameAgent.Agent.UseGameItem();
         var ItemID:number = GameAgent.Agent.CurItem;
