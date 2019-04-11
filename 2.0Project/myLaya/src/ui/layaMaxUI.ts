@@ -13,9 +13,18 @@ export module ui {
     }
     export class CharacterUI extends Laya.View {
 		public bg:Laya.Image;
+		public layoutbg:Laya.Box;
+		public roleName:Laya.Label;
+		public desc:Laya.Label;
+		public roleuseNoney:Laya.Label;
+		public characterrole1bg:Laya.Sprite;
+		public characterrole4bg:Laya.Sprite;
+		public characterrole2bg:Laya.Sprite;
+		public characterrole3bg:Laya.Sprite;
+		public characterrole0bg:Laya.Sprite;
 		public _Gold:Laya.Label;
-		public _List:Laya.List;
 		public backBtn:Laya.Button;
+		public _List:Laya.List;
         constructor(){ super()}
         createChildren():void {
             super.createChildren();
@@ -28,6 +37,8 @@ export module ui {
 		public _MenueBtn:Laya.Button;
 		public _SetBtn:Laya.Button;
 		public _PlayerListBtn:Laya.Button;
+		public distance:Laya.Label;
+		public gold:Laya.Label;
         constructor(){ super()}
         createChildren():void {
             super.createChildren();
@@ -105,8 +116,6 @@ export module ui {
 		public _Return:Laya.Button;
 		public voiceopen:Laya.Box;
 		public voiceclose:Laya.Box;
-		public leftOptBtn:Laya.Button;
-		public rightOpt:Laya.Button;
         constructor(){ super()}
         createChildren():void {
             super.createChildren();

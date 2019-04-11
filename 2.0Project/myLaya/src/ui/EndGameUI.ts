@@ -5,6 +5,7 @@ import {path} from "./../Utility/Path"
 import GuiderManager from "../Scene/GuiderManager";
 import {GameStruct }  from "./../Game/GameStruct"
 import Controler from "./../controler/GameControler"
+import GameControler from "../controler/GameControler";
 
 class ExtendEndGameUI extends ui.EndGameUI {
     Panel:Laya.Panel;
@@ -38,6 +39,8 @@ export default class EndGameUI extends BaseUI
         this.FixUI(this.UI);
         //this.UI._CharacterList.on(Laya.Event.CLICK,null,()=>{ this._UIManager.Show<PlayerListUI>(PlayerListUI)});
         this.Layout();
+        this.UI.distance.text = GameControler.GameControler.GameDir.GamePlay.Distance + "";
+        this.UI.gold.text = GameControler.GameControler.GameDir.GamePlay.GameGold + "";
     }
     
     Update()
