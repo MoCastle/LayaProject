@@ -24,6 +24,16 @@ export default class ItemManager extends GameManager.BaseManager {
         if (info)
             return info.Price;
     }
+    
+    /**
+     * 获取道具价格
+     * @param id 道具ID
+     */
+    public GetItemIcon(id: number): string {
+        var info: ItemInfo = this.GetInfo<ItemInfo>(id);
+        if (info)
+            return info.Icon;
+    }
 
     /**
     * 获取ID数组
@@ -55,6 +65,7 @@ class ItemInfo extends GameManager.BaseInfo {
     private m_ExtendID: string;
     private m_Price: number;
     private m_ItemType:number;
+    private m_Icon:string;
     public get Name(): string {
         return this.m_ModelName + this.m_ExtendID;
     }
@@ -65,12 +76,16 @@ class ItemInfo extends GameManager.BaseInfo {
     {
         return this.m_ItemType;
     }
-
+    public get Icon():string
+    {
+        return this.m_Icon;
+    }
     constructor(data: any) {
         super(data);
         this.m_ModelName = data.ModelName ? data.ModelName : "";
         this.m_ExtendID = data.ExtendID ? data.ExtendID : "";
         this.m_Price = data.Price ? Number(data.Price) : 0;
         this.m_ItemType = data.ItemType? Number(data.ItemType):0;
+        this.m_Icon = data.Icon?data.Icon:"";
     }
 }

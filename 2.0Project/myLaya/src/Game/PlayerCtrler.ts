@@ -78,7 +78,8 @@ export module PlayerControler {
             var startPS: Laya.Vector3 = this.m_StartPS.clone();
             startPS.z = -startPS.z;
             Laya.Quaternion.lookAt(startPS, lookToPS, upDir, rotation);
-            this.player.transform.rotation = rotation;
+            this.player.FaceModelTo(rotation)
+            
         }
 
         protected _Update(): void {
@@ -133,6 +134,7 @@ export module PlayerControler {
             super.SetPlayer(player);
             player.Translate(new Laya.Vector3(0, Controler.GameControler.StepLength, 0));
             player.transform.rotationEuler = new Laya.Vector3(0, 180, 0);
+            player.ModelRotateEular(new Laya.Vector3(0, 180, 0));
         }
 
         //

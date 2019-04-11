@@ -7,7 +7,6 @@ import BaseAgent from "./BaseAgent"
 
 export class GameAgent extends BaseAgent {
     private static _Agent: GameAgent;
-
     static get Agent(): GameAgent {
         if (this._Agent == null) {
             this._Agent = new GameAgent();
@@ -71,7 +70,6 @@ export class GameAgent extends BaseAgent {
     public get CurScore(): number {
         return this.m_PlayerEntity.CurScore;
     }
-
 
     public ResetGameItem() {
         APP.MessageManager.Fire(Player.Event.OnCurItemNumChange);

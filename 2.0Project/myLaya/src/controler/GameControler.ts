@@ -170,5 +170,4 @@ class GameControler {
     {
         APP.MessageManager.Fire(GameModule.Event.OnTimeContinue);
     }
-
 }

@@ -277,7 +277,7 @@ export module Item {
         public AddBuffToPlayer(player:Player,putBackItem:boolean = true): boolean  {
             var Buff:BasePlayerBuff = ItemBuffFactory(this.ItemType);
             var success:boolean = Buff.AddToPlayer(player);
-            if(success)
+            if(success && putBackItem)
                 this.PutItem();
             return success;
         }
@@ -286,7 +286,7 @@ export module Item {
          * @returns 是否被突破
          */
         BreakProtect(player: Player): boolean {
-            var curBuff = player.GetBuff(BuffSlot[ItemType.Thorn]);
+            var curBuff = player.GetBuff(BuffSlot[ItemType.Protect]);
             if (curBuff) {
                 switch (curBuff.Type) {
                     case ItemType.Protect:
@@ -731,11 +731,16 @@ export module Item {
     }
 
     class Vine extends StepItem {
+        private m_Touched:boolean;
         TouchItem(player: Player) {
+            if(this.m_Touched)
+                return
             this.AddBuffToPlayer(player,false);
+            this.m_Touched = true;
         }
         constructor(step: Step) {
             super(ItemType.Vine, step);
+            this.m_Touched = false;
         }
         //由父类统一管理模型生成
         protected _GenItemModel() {
@@ -744,6 +749,11 @@ export module Item {
 
             var model: Laya.Sprite3D = Laya.loader.getRes(name).clone();
             this.Model = model;
+        }
+        //消除 把自己存入内存池
+        DesPawn() {
+            this.m_Touched = false;
+            super.DesPawn();
         }
     }
     GameStruct.ItemDictType[ItemType.Vine] = Vine;
