@@ -34,7 +34,6 @@ class Game
         APP.Init();
         var sceneMgr:SceneManager = APP.SceneManager;
         sceneMgr.ChangeScene(new LoadScene());
-        APP.FrameWork.AddManager<UIManager>(UIManager)
         Laya.timer.frameLoop(3,this,this.Update);
     }
 

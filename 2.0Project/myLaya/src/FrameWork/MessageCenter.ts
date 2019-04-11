@@ -38,12 +38,12 @@ export module MessageMD {
         /**
         * 注册
         * @param {string} name 消息名字
-        * @param {Function} action 委托
-        * @param {Obj} listener 监听者
+        * @param {Function} listener 监听者
+        * @param {Obj} owner 拥有者
         */
-        Regist(name: string, action: () => void, listener: Object):MEvent  {
+        Regist(name: string, listener: () => void, owner: Object):MEvent  {
             var getEvent: MEvent = this._GetEvent(name);
-            var newDlgt: Delegate = new Delegate(listener, action);
+            var newDlgt: Delegate = new Delegate(owner, listener);
             getEvent.Add(newDlgt);
             return getEvent
         }
@@ -51,12 +51,12 @@ export module MessageMD {
         /**
          * 注销某个监听
          * @param {string} name 消息名字
-         * @param {Function} action 委托
-         * @param {Obj} listener 监听者
+         * @param {Function} listener 监听者
+         * @param {Obj} owner 拥有者
          */
-        DesRegist(name: string, action: () => void, listener: Object)  {
+        DesRegist(name: string, listener: () => void, owner: Object)  {
             var getEvent: MEvent = this._GetEvent(name);
-            getEvent.Rmv(action, listener)
+            getEvent.Rmv(listener, owner)
         }
 
         /**

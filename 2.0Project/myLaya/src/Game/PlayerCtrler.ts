@@ -40,7 +40,7 @@ export module PlayerControler {
         IsFalling: boolean;
         Time: number;
         get LastTime(): number {
-            var lastTime: number = Controler.GameControler.PlayerMoveTime - (this.Time - Laya.timer.currTimer);
+            var lastTime: number = Controler.GameControler.PlayerMoveTime - (this.Time - APP.TimeManager.GameTime);
             return lastTime;
         }
         /**已消耗时间百分比 */
@@ -55,7 +55,7 @@ export module PlayerControler {
         }
 
         OnStart(): void  {
-            this.Time = Laya.timer.currTimer + Controler.GameControler.PlayerMoveTime;
+            this.Time = APP.TimeManager.GameTime + Controler.GameControler.PlayerMoveTime;
             this.IsFalling = true;
         }
 
@@ -64,7 +64,7 @@ export module PlayerControler {
         }
 
         StartMove() {
-            this.Time = Laya.timer.currTimer + Controler.GameControler.PlayerMoveTime;
+            this.Time = APP.TimeManager.GameTime + Controler.GameControler.PlayerMoveTime;
             this.IsFalling = false;
             this.m_StartPS = this.player.Position;
             this.m_TargetPS = this.player.CurStep.Position;
@@ -83,7 +83,7 @@ export module PlayerControler {
 
         protected _Update(): void {
             if (this.Time > 0) {
-                if (this.Time <= Laya.timer.currTimer) {
+                if (this.Time <= APP.TimeManager.GameTime) {
                     this.Time = -1;
                     this.player.SetStep(this.player.CurStep);
                     this.IsFalling = true;

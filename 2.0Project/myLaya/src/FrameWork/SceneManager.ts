@@ -17,7 +17,6 @@ export default class SceneManager extends BaseManager {
     {
         return this.CurScene.Director;
     }
-
     static Name(): string {
         return "SceneManager";
     }

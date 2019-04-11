@@ -115,6 +115,15 @@ export default class MountLine extends Laya.Sprite3D
     {
         this.active = false;
     }
+
+    public Continue()
+    {
+
+    }
+    public Pause()
+    {
+        
+    }
     private _Seted:boolean;
     constructor(lineIdx:number,floor:number = 0)
     {

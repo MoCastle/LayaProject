@@ -4,6 +4,7 @@ import SceneMgr from "./../FrameWork/SceneManager"
 import FW from "./../FrameWork/FrameWork"
 import TimeManager from "./../FrameWork/TimeManager"
 import FrameWork from "./../FrameWork/FrameWork";
+import { GameModule } from "../Game/GameModule";
 
 export default class APP {
     private static g_SceneMgr: SceneMgr;
@@ -46,6 +47,8 @@ export default class APP {
         APP.g_TimeMgr = fm.AddManager<TimeManager>(TimeManager);
         APP.g_UIManager = fm.AddManager<UIManager>(UIManager);
         
+        APP.g_Message.Regist(GameModule.Event.OnTimePause,APP.g_TimeMgr.Pause,null)
+        APP.g_Message.Regist(GameModule.Event.OnTimeContinue,APP.g_TimeMgr.Continue,null)
     }
 }
 

@@ -79,7 +79,7 @@ export module Scene {
             if (this._TimeUpClock > 0) {
                 return this._TimeUpClock - this._StartGameTime - this._TimeUpCount;
             } else {
-                return Laya.timer.currTimer - this._StartGameTime - this._TimeUpCount;
+                return APP.TimeManager.GameTime - this._StartGameTime - this._TimeUpCount;
             }
         }
         set GameTime(value: number) {
@@ -104,7 +104,7 @@ export module Scene {
             this._TimeUpCount = 0;
             this._StartGameTime = 0;
             this._TimeUpClock = -1;
-            this._StartGameTime = Laya.timer.currTimer;
+            this._StartGameTime = APP.TimeManager.GameTime;
         }
 
         public abstract Start(): void ;
@@ -114,7 +114,7 @@ export module Scene {
         public TimeUp(): void {
             if (this._TimeUpClock <= 0) {
                 //APP.MessageCenter.Trigger(GameEvent.GameTimeUp);
-                this._TimeUpClock = Laya.timer.currTimer;
+                this._TimeUpClock = APP.TimeManager.GameTime;
             }
         }
 
@@ -126,7 +126,7 @@ export module Scene {
 
         public ContinueTime(): void {
             //APP.MessageCenter.Trigger(GameEvent.GameContinue);
-            this._TimeUpCount += Laya.timer.currTimer - this._TimeUpClock;
+            this._TimeUpCount += APP.TimeManager.GameTime - this._TimeUpClock;
             this._TimeUpClock = -1;
         }
         /**

@@ -8,6 +8,7 @@ import { Item } from "./GameItem"
 import { Character } from "./Character"
 import GameAPP from "./../controler/GameAPP"
 import CharacterManager from "../GameManager/CharacterMamager";
+import { GameModule } from "./GameModule";
 var num: number = 0;
 //该脚本用于游戏玩家对象管理
 //玩家对象
@@ -53,7 +54,16 @@ export default class Player extends Laya.Sprite3D {
         this.on(Laya.Event.REMOVED, this, () => { this.destroy() })
         var mgr: CharacterManager = GameAPP.CharacterMgr;
     }
-
+    public Pause()
+    {
+        this.clearTimer(this,this._Update);
+        this.m_Animator.speed = 0;
+    }
+    public Continue()
+    {
+        this.frameLoop(1,this,this._Update);
+        this.m_Animator.speed = 1;
+    }
     private InitBUffModel(playerModel: Laya.Sprite3D)  {
         this.SetModel("item_flyer_01", "R_hand", playerModel, Item.ItemType.Fly);
         this.SetModel("item_shield_01", "head", playerModel, Item.ItemType.Protect);
@@ -232,8 +242,6 @@ export default class Player extends Laya.Sprite3D {
         if (this._Ctrler)
             this._Ctrler.OnStart();
     }
-
-    
 
     _Update(): void  {
         if (this.PlayerDeath)

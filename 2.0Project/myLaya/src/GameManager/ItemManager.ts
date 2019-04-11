@@ -41,6 +41,13 @@ export default class ItemManager extends GameManager.BaseManager {
         }
         return IDList;
     }
+    
+    public GetItemType(id:number):number
+    {
+        var info: ItemInfo = this.GetInfo<ItemInfo>(id);
+        if (info)
+            return info.ItemType;
+    }
 }
 
 class ItemInfo extends GameManager.BaseInfo {
@@ -54,6 +61,11 @@ class ItemInfo extends GameManager.BaseInfo {
     public get Price(): number {
         return this.m_Price;
     }
+    public get ItemType():number
+    {
+        return this.m_ItemType;
+    }
+
     constructor(data: any) {
         super(data);
         this.m_ModelName = data.ModelName ? data.ModelName : "";

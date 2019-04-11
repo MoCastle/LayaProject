@@ -93,7 +93,7 @@ export class GameAgent extends BaseAgent {
         this.m_PlayerEntity.ReduceItem(this.CurItem);
     }
 
-    public UseCharacterSkillItem()  {
+    public UseSkillItem()  {
         if (this.m_SkillItemNum<1)
         {
             return;

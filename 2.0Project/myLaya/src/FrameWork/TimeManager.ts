@@ -1,43 +1,38 @@
 import BaseManager from "./../FrameWork/BaseManager"
+import APP from "../controler/APP";
 export default class TimeManager extends BaseManager {
     static Name(): string {
         return "TimeManager";
     }
-    private m_StartTime:number;
-    private m_GameTime:number;
-    private m_FrameTime:number;
-    private m_IsPaused:boolean;
+    private m_StartTime: number;
+    private m_GameTime: number;
+    private m_PausingTime:number;
+    private m_PauseTime:number
 
-    public get StartTimer():number
-    {
+    public get StartTimer(): number {
         return this.m_StartTime;
     }
-    public get GameTime():number
-    {
-        return this.m_GameTime;
+    public get GameTime(): number {
+        return (Laya.timer.currTimer - this.m_StartTime)/1000 ;
     }
-    
-    constructor()  {
+
+    constructor() {
         super();
         this.m_StartTime = Laya.timer.currTimer;
         this.m_GameTime = 0;
-        this.m_FrameTime = 1 /Number(Laya.stage.frameRate);
+        this.m_PauseTime = 0;
     }
 
-    public Update()  {
-        if(this.m_IsPaused)
-        {
-            return;
-        }
-        this.m_GameTime += this.m_FrameTime;
+    public Update() {
     }
 
-    public Pause(){
-        this.m_IsPaused = true;
+    public Pause() {
+        if(this.m_PausingTime<=0)
+            this.m_PausingTime = Laya.timer.currTimer;
     }
 
-    public Continue()
-    {
-        this.m_IsPaused = false
+    public Continue() {
+        this.m_PauseTime += this.m_PausingTime;
+        this.m_PausingTime = 0;
     }
 }

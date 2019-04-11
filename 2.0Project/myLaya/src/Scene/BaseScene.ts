@@ -12,29 +12,16 @@ export default abstract class BaseScene extends LifeObj {
     CurDir: BaseDirector;
     IsLoadComplete: boolean;
     Scene: Laya.Scene3D;
-    IsLoading: boolean;
 
     //结束场景
     Leave(nextStage: BaseScene): void  {
         this._NextScene = nextStage;
-        nextStage.StartLoad();
         this._Leave();
-    }
-    StartLoad()//;//CallBack:()=>void);//)CallBack():void=>);
-    {
-        this.IsLoading = true;
     }
 
     //开始场景
     Start(): void  {
-        if (!this.IsLoadComplete && !this.IsLoading)  {
-            this.StartLoad();
-            if (this._LoadCallBack == null)  {
-                this._LoadCallBack = this._Start;
-            }
-        }
-        else if (!this.IsLoading)
-            this._Start();
+        this._Start();
     }
     //放对象
     PutObj(node: Laya.Sprite3D): void  {
@@ -52,8 +39,6 @@ export default abstract class BaseScene extends LifeObj {
 
     constructor()  {
         super();
-        this.IsLoading = false;
-        this.IsLoadComplete = false
         this.CurDir = null;
         this.Scene = null;
         this._UIManager = FW.FM.GetManager<UIManager>(UIManager);
@@ -93,7 +78,6 @@ export default abstract class BaseScene extends LifeObj {
 
     protected _LoadComplete()  {
         this.IsLoadComplete = true;
-        this.IsLoading = false;
         if (this._LoadCallBack != null)  {
             this._LoadCallBack();
             this._LoadCallBack = null;
@@ -107,12 +91,7 @@ export default abstract class BaseScene extends LifeObj {
         }
     }
     protected _Starting()  {
-        //资源都没下完就不要走其它逻辑了
-        if (this.IsLoading && this.IsLoadComplete)  {
-            this._LoadComplete();
-        }
-        else
-            super._Starting();
+        super._Starting();
     }
     protected _StartComplete()  {
         this._UIManager.Clear();

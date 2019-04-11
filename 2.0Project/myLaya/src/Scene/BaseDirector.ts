@@ -25,7 +25,7 @@ export default abstract class BaseDirector extends LifeObj
         if(this._TimeUpClock<=0)
         {
             //APP.MessageCenter.Trigger(GameEvent.GameTimeUp);
-            this._TimeUpClock = Laya.timer.currTimer;
+            this._TimeUpClock = APP.TimeManager.GameTime;
         }
     }
 
@@ -40,7 +40,7 @@ export default abstract class BaseDirector extends LifeObj
     ContinueTime():void
     {
         //APP.MessageCenter.Trigger(GameEvent.GameContinue);
-        this._TimeUpCount += Laya.timer.currTimer - this._TimeUpClock;
+        this._TimeUpCount += APP.TimeManager.GameTime - this._TimeUpClock;
         this._TimeUpClock = -1;
     }
 
@@ -83,7 +83,7 @@ export default abstract class BaseDirector extends LifeObj
             return this._TimeUpClock- this._StartGameTime - this._TimeUpCount;
         }else
         {
-            return Laya.timer.currTimer- this._StartGameTime - this._TimeUpCount;
+            return APP.TimeManager.GameTime- this._StartGameTime - this._TimeUpCount;
         }
     }
     set GameTime(value:number)
@@ -97,7 +97,7 @@ export default abstract class BaseDirector extends LifeObj
     }
     protected _Start():void
     {
-        this._StartGameTime = Laya.timer.currTimer;
+        this._StartGameTime = APP.TimeManager.GameTime;
         super._Start();
     }
 

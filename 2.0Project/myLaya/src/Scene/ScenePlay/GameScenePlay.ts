@@ -76,14 +76,14 @@ export default class GameScenePlay extends Scene.BaseScenePlaye {
         floor = Math.round(floor / (Controler.GameControler.StepDistance / 2));
         return Math.abs(floor);
     }
-    public get Distance(): number  {
+    public get Distance(): number {
         return Math.floor(this.PlayerFloor)
     }
 
     get PlayerFloorLine(): MountLine {
         return this.GetFloorByFloor(this.PlayerFloor);
     }
-    get GameTime(): number  {
+    get GameTime(): number {
         return (this.m_owner as GameDirector).GameTime;
     }
 
@@ -163,7 +163,7 @@ export default class GameScenePlay extends Scene.BaseScenePlaye {
         //ui.SetGameInfo(this.PlayerDistance,this._GoldNum);
     }
 
-    End(): void  {
+    End(): void {
 
     }
     //重新开始
@@ -258,7 +258,7 @@ export default class GameScenePlay extends Scene.BaseScenePlaye {
 
     //进入游戏的设置放这里 重新开始走这里
     protected StartGame() {
-        
+
         APP.SceneManager.CurScene.SceneObj.ambientColor = new Laya.Vector3(1, 1, 1)
         this._SafeLocation = new GameStruct.MLocation(0, 0);
         //重置物品
@@ -289,10 +289,10 @@ export default class GameScenePlay extends Scene.BaseScenePlaye {
         this._LogicGoldNum = 0;
 
         this.PanelUI = APP.UIManager.Show(GameUI);
-        this.PanelUI.RegistClickPlayerItem(this,this.UsePlayerItem);
-        this.PanelUI.RegistClickSkillItem(this,this.UseSkillItem);
+        this.PanelUI.RegistClickPlayerItem(this, this.UsePlayerItem);
+        this.PanelUI.RegistClickSkillItem(this, this.UseSkillItem);
         this.PanelUI.Gold = 0;
-        this._CountTime = this.GameTime + 6000;
+        this._CountTime = this.GameTime + 4;
         this._BootomFloor = 0;
         this._GameUpdate = this._StartCount;
         WechatOpen.getInstances().drawpass(0);
@@ -303,7 +303,6 @@ export default class GameScenePlay extends Scene.BaseScenePlaye {
             this._GameUpdate();
         }
     }
-
 
     //正常运行时的每帧逻辑
     private _RunGameUpdate() {
@@ -320,8 +319,8 @@ export default class GameScenePlay extends Scene.BaseScenePlaye {
         if (flooVector.z - this.Player.Position.z > 3 * Controler.GameControler.StepDistance / 2) {
             this._PushFLoor();
         }
-        if (this._CountTime < this.GameTime) {
-            this._CountTime = this.GameTime + 3000;
+        if (this._CountTime < APP.TimeManager.GameTime) {
+            this._CountTime = APP.TimeManager.GameTime + 3;
             this._DestroyLine(this._BootomFloor);
             this._BootomFloor += 1;
         }
@@ -331,13 +330,13 @@ export default class GameScenePlay extends Scene.BaseScenePlaye {
     //开始倒计时期间的每帧逻辑
     private _StartCount() {
         var time: string = ""
-        var countTime: number = this._CountTime - this.GameTime;
-        if (countTime > 0)
-            time += Math.floor(countTime / 1000);
+        var countTime: number = this._CountTime - APP.TimeManager.GameTime;
+        if (countTime > 0.9)
+            time += Math.floor(countTime);
         else {
             this.PanelUI.GamePanel = true;
             this._GameUpdate = this._RunGameUpdate;
-            this._CountTime = this.GameTime + 3000;
+            this._CountTime = this.GameTime + 3;
             GameAgent.Agent.ResetGameItem();
             GameAgent.Agent.ResetSkillItem();
         }
@@ -651,20 +650,40 @@ export default class GameScenePlay extends Scene.BaseScenePlaye {
         this.Player.TouchGround();
     }
 
-    public UseSkillItem()
-    {
-        GameAgent.Agent.UseCharacterSkillItem();
+    public UseSkillItem()  {
+        GameAgent.Agent.UseSkillItem();
+        if (GameAgent.Agent.SkillItemNum < 1)
+            return;
+        var characterID:number = GameAgent.Agent.CurCharacterID;
+        var ItemID:number = GameAPP.CharacterMgr.GetItemID(characterID);
+        var ItemType:number = GameAPP.ItemMgr.GetItemType(ItemID);
+        var newBuff:Item.BasePlayerBuff = Item.ItemBuffFactory(ItemType);
+        newBuff.AddToPlayer(this.Player);
     }
 
-    public UsePlayerItem()
-    {
+    public UsePlayerItem()  {
+        if (GameAgent.Agent.CurItemNum < 1)
+            return;
         GameAgent.Agent.UseGameItem();
+        var ItemID:number = GameAgent.Agent.CurItem;
+        var ItemType:number = GameAPP.ItemMgr.GetItemType(ItemID);
+        var newBuff:Item.BasePlayerBuff = Item.ItemBuffFactory(ItemType);
+        newBuff.AddToPlayer(this.Player);
     }
 
-    private OnGameComplete()  {
+    private OnGameComplete() {
         APP.MessageManager.DesRegist(MessageMD.GameEvent.PlayerDeath, this.Death, this);
         var ui: EndGameUI = APP.UIManager.Show<EndGameUI>(EndGameUI);
         GameAgent.Agent.AddGold(this._GoldNum);
         GameAgent.Agent.AddScore(this._GoldNum * 10 + this.Distance * 10);
+    }
+
+    private OnTimePause()
+    {
+        this.Player.Pause();
+    }
+    private OnCountinue()
+    {
+        this.Player.Continue();
     }
 }

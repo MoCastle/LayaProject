@@ -203,13 +203,13 @@ export module Item {
                 buff = new FlyBuff();
                 break;
             case ItemType.Collector:
-                buff = new CollectBuff(10000);
+                buff = new CollectBuff(10);
                 break;
             case ItemType.Protect:
-                buff = new ProtectBuff(3000);
+                buff = new ProtectBuff(3);
                 break;
             case ItemType.HolyProtect:
-                buff = new ProtectBuff(3000, true);
+                buff = new ProtectBuff(3, true);
                 break;
             case ItemType.Vine:
                 buff = new VineBuff();
@@ -293,7 +293,6 @@ export module Item {
                         curBuff.RemoveSelf();
                     case ItemType.HolyProtect:
                         return true;
-                    break;
                 }
             }
             return false;
@@ -457,11 +456,11 @@ export module Item {
          */
         constructor(time: number = 0, IsHoly: boolean = false) {
             super(IsHoly ? ItemType.HolyProtect : ItemType.Protect);
-            this.Time = Controler.GameControler.GameDir.GameTime + time;
+            this.Time = APP.TimeManager.GameTime + time;
         }
 
         Update() {
-            if (this.Time < Controler.GameControler.GameDir.GameTime) {
+            if (this.Time < APP.TimeManager.GameTime) {
                 this.RemoveSelf();
             }
         }
@@ -549,7 +548,7 @@ export module Item {
         constructor(time: number = 0) {
             super(ItemType.Collector);
             this.GameDir = Controler.GameControler.GameDir;
-            this.Time = this.GameDir.GameTime + time;
+            this.Time = APP.TimeManager.GameTime + time;
             this.CountFloor = 0;
         }
         Start() {
@@ -560,7 +559,7 @@ export module Item {
 
         }
         Update() {
-            if (this.Time < this.GameDir.GameTime) {
+            if (this.Time < APP.TimeManager.GameTime) {
                 this.RemoveSelf();
             } else {
                 if (this.GameDir.GamePlay.PlayerFloor - this.CountFloor + 1 < 0) {
@@ -615,7 +614,7 @@ export module Item {
         }
 
         Start() {
-            var time: number = Laya.timer.currTimer;
+            var time: number = APP.TimeManager.GameTime;
             var player:Player = this.Player;
             if (player.CurStep == null) {
                 this.RemoveSelf();

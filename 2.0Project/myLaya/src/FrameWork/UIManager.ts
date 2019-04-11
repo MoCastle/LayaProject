@@ -3,6 +3,7 @@ import BaseUI from "./../ui/BaseUI"
 import { BaseEnum } from "./../Base/BaseEnum"
 import { UIFunc } from "./../Utility/UIFunc"
 import { BaseFunc } from "./../Base/BaseFunc"
+import APP from "../controler/APP";
 enum NodeType {
     Bottom,
     Middle,
@@ -96,11 +97,11 @@ export default class UIManager extends BaseManager {
     public Update()  {
         
         //定帧刷新UI
-        if (this.m_UpdateTime < Laya.timer.currTimer)  {
+        if (this.m_UpdateTime <  APP.TimeManager.GameTime)  {
             this.UpdateUI(this.m_BottomNode);
             this.UpdateUI(this.m_MidleNode);
             this._UpdateCount = 0;
-            this.m_UpdateTime = Laya.timer.currTimer + 30;
+            this.m_UpdateTime = APP.TimeManager.GameTime + 0.3;
         }
         
     }
