@@ -21,6 +21,7 @@ export default class TimeManager extends BaseManager {
         this.m_StartTime = Laya.timer.currTimer;
         this.m_GameTime = 0;
         this.m_PauseTime = 0;
+        this.m_PausingTime = 0;
     }
 
     public Update() {
