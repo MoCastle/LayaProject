@@ -1,0 +1,22 @@
+[
+    {
+        "ID": 1,
+        "Passscore": 154,
+        "RewardActorID": -1
+    },
+    {
+        "ID": 2,
+        "Passscore": 254,
+        "RewardActorID": 2
+    },
+    {
+        "ID": 3,
+        "Passscore": 354,
+        "RewardActorID": -1
+    },
+    {
+        "ID": 4,
+        "Passscore": 0,
+        "RewardActorID": -1
+    }
+]
