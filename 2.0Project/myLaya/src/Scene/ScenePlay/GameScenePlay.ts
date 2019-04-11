@@ -38,7 +38,7 @@ export default class GameScenePlay extends Scene.BaseScenePlaye {
     private _StartPosition: Laya.Vector3;
     private _GameUpdate: () => void;
     private _PanelUI: GameUI;
-    private _GoldNum: number;
+    private m_GoldNum: number;
     private _LogicGoldNum: number;
     private _CurBG: BGUI;
     private _SafeLocation: GameStruct.MLocation;
@@ -86,6 +86,10 @@ export default class GameScenePlay extends Scene.BaseScenePlaye {
     get GameTime(): number {
         return (this.m_owner as GameDirector).GameTime;
     }
+    get GameGold():number
+    {
+        return this.m_GoldNum;
+    }
 
     constructor() {
         super();
@@ -117,11 +121,11 @@ export default class GameScenePlay extends Scene.BaseScenePlaye {
         this.InputCtrl = this.InputCtrl.NextInput;
     }
     AddGold(num: number) {
-        this._GoldNum += num;
+        this.m_GoldNum += num;
         this.AddLogicGold(num);
     }
     AddGoldUnLogicGold(num: number) {
-        this._GoldNum += num;
+        this.m_GoldNum += num;
     }
     AddLogicGold(num: number) {
         this._LogicGoldNum += num;
@@ -287,7 +291,7 @@ export default class GameScenePlay extends Scene.BaseScenePlaye {
             this._PutItemInLine(idx);
         }
         this.Camera.Reset(new Laya.Vector3(), new Laya.Vector3(this.Player.Position.x, Controler.GameControler.StepLength * 10.5, Controler.GameControler.StepLength * 9), this.Player);
-        this._GoldNum = 0;
+        this.m_GoldNum = 0;
         this._LogicGoldNum = 0;
 
         this.PanelUI = APP.UIManager.Show(GameUI);
@@ -677,8 +681,8 @@ export default class GameScenePlay extends Scene.BaseScenePlaye {
     private OnGameComplete() {
         APP.MessageManager.DesRegist(MessageMD.GameEvent.PlayerDeath, this.Death, this);
         var ui: EndGameUI = APP.UIManager.Show<EndGameUI>(EndGameUI);
-        GameAgent.Agent.AddGold(this._GoldNum);
-        GameAgent.Agent.AddScore(this._GoldNum * 10 + this.Distance * 10);
+        GameAgent.Agent.AddGold(this.m_GoldNum);
+        GameAgent.Agent.AddScore(this.m_GoldNum * 10 + this.Distance * 10);
     }
 
     private OnTimePause()
