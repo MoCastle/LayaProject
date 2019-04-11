@@ -42,8 +42,8 @@ class ExtendEnterGameUI extends ui.EnterUI {
     ShowCharacterPanel(): void {
         var node = GameControler.GameControler.ShowCharacterPanel();
         node.y = -Laya.stage.height;
-        Laya.Tween.to(node, {y: 0}, 200, Laya.Ease.sineOut);
-        Laya.Tween.to(this, {y: Laya.stage.height}, 200, Laya.Ease.sineOut);
+        Laya.Tween.to(node, {y: 0}, 500, Laya.Ease.sineOut);
+        Laya.Tween.to(this, {y: Laya.stage.height}, 500, Laya.Ease.sineOut);
     }
 
     onStart():void {

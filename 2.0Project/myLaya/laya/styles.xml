@@ -5,4 +5,5 @@
    <item name="entersceneui/mainbg.jpg" type="Sprite" compress="0" pack="1" quality="80" props="" picType="0" scale="0"/>
    <item name="entersceneui/logo.png" type="Sprite" compress="0" pack="1" quality="80" props="" picType="0" scale="0"/>
    <item name="entersceneui/inputtextarea.png" type="Sprite" compress="0" pack="1" quality="80" props="" picType="0" scale="0"/>
+   <item name="entersceneui/loadbgstart.png" type="Sprite" compress="0" pack="1" quality="80" props="" picType="0" scale="0"/>
 </res>

@@ -62,8 +62,8 @@ export default class CharacterUI extends BaseUI {
     BackGameBtn(): void {
         var enterpanel:EnterGameUI = APP.UIManager.GetUIByName("EnterGameUI") as EnterGameUI;
         enterpanel._UI.y = Laya.stage.height;
-        Laya.Tween.to(enterpanel._UI, {y: 0}, 150, Laya.Ease.sineOut);
-        Laya.Tween.to(this, {y: -Laya.stage.height}, 150, Laya.Ease.sineOut, Laya.Handler.create(this, ()=>{
+        Laya.Tween.to(enterpanel._UI, {y: 0}, 500, Laya.Ease.sineOut);
+        Laya.Tween.to(this, {y: -Laya.stage.height}, 500, Laya.Ease.sineOut, Laya.Handler.create(this, ()=>{
             APP.UIManager.Close(this);
         }));
     }
