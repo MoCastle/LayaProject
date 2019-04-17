@@ -58,12 +58,12 @@ export module Item {
             this.BarrierList.push(new LayItemMgr(10, 1, ItemType.Empty, 10));
             this.BarrierList.push(new LayItemMgr(10, 5, ItemType.Rock, 10));
             this.BarrierList.push(new LayItemMgr(10, 2, ItemType.Thorn, 10));
-            this.RewardList.push(new LayItemMgr(10, 2, ItemType.Vine, 10))
-            this.RewardList.push(new LayItemMgr(10, 10, ItemType.Coin))
+            this.RewardList.push(new LayItemMgr(10, 2, ItemType.Vine, 10));
+            this.RewardList.push(new LayItemMgr(10, 1, ItemType.Coin));
 
-            this.RewardList.push(new LayItemMgr(50, 1, ItemType.Fly, 20))
+            //this.RewardList.push(new LayItemMgr(50, 100, ItemType.Fly, 20));
 
-            this.RewardList.push(new LayItemMgr(50, 10, ItemType.Collector))
+            this.RewardList.push(new LayItemMgr(50, 10, ItemType.Collector));
             this.RewardList.push(new LayItemMgr(50, 1, ItemType.Protect));
             this.RewardList.push(new LayItemMgr(50, 1, ItemType.HolyProtect));
 
@@ -367,7 +367,7 @@ export module Item {
         {
             return BuffSlot[this.Type];
         }
-        public get Player(): Player
+        public get player(): Player
         {
             return this.m_Player;
         }
@@ -387,7 +387,7 @@ export module Item {
         
         public abstract Start();
         public RemoveSelf():void {
-            this.Player.CompleteBuff(this.Slot);
+            this.player.CompleteBuff(this.Slot);
         }
         public abstract Removed();
         
@@ -573,7 +573,7 @@ export module Item {
         private CountCoins(step: Step) {
             if (step.StepItem.ItemType == ItemType.Coin) {
                 var Coin: Coin = step.StepItem as Coin;
-                Coin.FlyToPlayer(this.Player);
+                Coin.FlyToPlayer(this.player);
             }
         }
     }
@@ -605,6 +605,7 @@ export module Item {
         Floor: number;
         private _FinalLocation: GameStruct.MLocation;
         private _FinalZ: number;
+        private m_FloorSwitch:number;
 
         constructor(speed: number = 0.15, floor: number = 10) {
             super(ItemType.Fly);
@@ -616,10 +617,11 @@ export module Item {
 
         Start() {
             var time: number = APP.TimeManager.GameTime;
-            var player:Player = this.Player;
+            var player:Player = this.player;
             if (player.CurStep == null) {
                 this.RemoveSelf();
             }
+            this.m_FloorSwitch = player.CurStep.Floor.rightSwitch;
             this._FinalLocation = player.CurStep.Location;
             this._FinalLocation.Y += this.Floor;
             this._FinalZ = player.Position.z - GameModule.DSpace * this.Floor;
@@ -631,22 +633,24 @@ export module Item {
             Controler.GameControler.GameDir.GamePlay.AddInputCtrler(new Input.DIYInput());
             Controler.GameControler.GameDir.GamePlay.SetSafePS(this._FinalLocation);
             player.FlyPrepare();
+            Controler.GameControler.GameDir.GamePlay.gameMap.SetNextFlpprDirSwitch(this.m_FloorSwitch);
         }
 
         Removed()
         {
-            var step: Step = Controler.GameControler.GameDir.GamePlay.GetStepByLocation(this._FinalLocation);
-            this.Player.LayStep(step);
-            this.Player.BaseCtrler.StartMove();
-            this.Player.PopCtrler();
+            var step: Step = Controler.GameControler.GameDir.GamePlay.GetStepByLocation(this._FinalLocation,this.m_FloorSwitch);
+            
+            this.player.LayStep(step);
+            this.player.BaseCtrler.StartMove();
+            this.player.PopCtrler();
             Controler.GameControler.GameDir.GamePlay.PopInputCtrler();
         }
 
         Update() {
-            if (this.Player == null) {
+            if (this.player == null) {
                 return;
             }
-            if (this._FinalZ - this.Player.Position.z > -0.2) {
+            if (this._FinalZ - this.player.Position.z > -0.2) {
                 super.RemoveSelf();
             }
         }
@@ -676,15 +680,15 @@ export module Item {
             return 0;
         }
         Update() {
-            if (this.Player == null) {
+            if (this.player == null) {
                 return;
             }
-            if (this._FinalZ - this.Player.Position.z > -0.2) {
+            if (this._FinalZ - this.player.Position.z > -0.2) {
                 this.RemoveSelf();
             }
         }
         Start() {
-            var player:Player = this.Player;
+            var player:Player = this.player;
             this._FinalLocation = player.CurStep.Location;
             this._FinalLocation.Y += this.Floor;
             this._FinalZ = player.Position.z - GameModule.DSpace * this.Floor;
@@ -698,9 +702,9 @@ export module Item {
         Removed()
         {
             var step: Step = Controler.GameControler.GameDir.GamePlay.GetStepByLocation(this._FinalLocation);
-            this.Player.LayStep(step);
-            this.Player.BaseCtrler.StartMove();
-            this.Player.PopCtrler();
+            this.player.LayStep(step);
+            this.player.BaseCtrler.StartMove();
+            this.player.PopCtrler();
             Controler.GameControler.GameDir.GamePlay.PopInputCtrler();
         }
 

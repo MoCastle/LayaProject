@@ -51,8 +51,7 @@ export default class GameScenePlay extends Scene.BaseScenePlaye {
     CurLineBarriers: Array<LineItemInfo>;
     name: number;
     FreshBGCount: number;
-    get gameMap():Gamemap
-    {
+    get gameMap(): Gamemap  {
         return this.m_GameMap;
     }
     get ColumsNum(): number {
@@ -192,8 +191,14 @@ export default class GameScenePlay extends Scene.BaseScenePlaye {
      * 通过坐标获取台阶
      * @param location 索引,层数
      */
-    GetStepByLocation(location: GameStruct.MLocation): Step {
-        var getStep: Step = this.GetFloorByFloor(location.Y).GetStep(location.X);
+    GetStepByLocation(location: GameStruct.MLocation, rightSwitchNum: number = 0): Step {
+        if (rightSwitchNum * rightSwitchNum > 0.001)  {
+            var floor:MountLine = this.GetFloorByFloor(location.Y);
+            var getStep: Step = floor.GetStep(location.X + floor.rightSwitch - rightSwitchNum);
+        }
+        else
+            var getStep: Step = this.GetFloorByFloor(location.Y).GetStep(location.X);
+
         return getStep;
     }
 
