@@ -75,10 +75,13 @@ class LoadScenePlaye extends Scene.BaseScenePlaye
             path.GetDepathUIJS("GameRank"),
             path.GetDepathUIJS("SetPanel"),
             path.GetDepathUIJS("ItemList"),
+            path.GetDepathUIJS("toolItem"),
             path.GetDepathUIJS("Character"),
             path.GetDepathUIJS("PlayerList"),
             path.GetDepathUIJS("BG"),
             path.GetAtlPath("entersceneui"),
+            path.GetAtlPath("entersceneui/res1"),
+            path.GetAtlPath("entersceneui/res2"),
             path.GetAtlPath("comp"),
             path.GetJsonPath("CharacterInfo"),
             path.GetJsonPath("ItemInfo"),
@@ -153,7 +156,7 @@ class LoadScenePlaye extends Scene.BaseScenePlaye
     }
 
     protected onComplete(data)
-    {
+    {   
         if(this.m_LoadFaile)
         {
             var thiDir = this;

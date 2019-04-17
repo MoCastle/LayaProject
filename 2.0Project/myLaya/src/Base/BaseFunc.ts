@@ -1,5 +1,4 @@
 import BaseMgr from "../FrameWork/BaseManager";
-
 /**
  * 定义基础结构体
  */

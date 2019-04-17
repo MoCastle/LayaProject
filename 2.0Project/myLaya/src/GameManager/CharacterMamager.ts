@@ -39,6 +39,19 @@ export default class CharacterManager extends GameManager.BaseManager {
             return;
         return info.Item;
     }
+    public GetName(id) {
+        var info: CharacterInfo = this.GetInfo<CharacterInfo>(id);
+        if (!info)
+            return "";
+        return info.mName;
+    }
+
+    public GetDesc(id) {
+        var info: CharacterInfo = this.GetInfo<CharacterInfo>(id);
+        if (!info)
+            return "";
+        return info.Desc;
+    }
 
     public GetCharacterModel(id: number): Laya.Sprite3D {
         var info: CharacterInfo = this.GetInfo<CharacterInfo>(id);
@@ -56,6 +69,16 @@ class CharacterInfo extends GameManager.BaseInfo {
     private m_ModelName: string;
     private m_ExtendID: string;
     private m_Item: number;
+    private m_Name: string;
+    private m_Desc: string;
+
+    public get mName(): string {
+        return this.m_Name;
+    }
+
+    public get Desc(): string {
+        return this.m_Desc;
+    }
 
     public get Item(): number {
         return this.m_Item;
@@ -65,9 +88,12 @@ class CharacterInfo extends GameManager.BaseInfo {
     }
     constructor(characterData: any) {
         super(characterData);
+        this.m_ID = characterData.ID ? characterData.ID : "";
         this.m_ModelName = characterData.ModelID ? characterData.ModelID : "";
         this.m_Item = characterData.ItemID ? Number(characterData.ItemID - 1) : -1;
         this.m_Price = characterData.Price ? Number(characterData.Price) : 0;
+        this.m_Name = characterData.Passscore ? characterData.Passscore : "";
+        this.m_Desc = characterData.Desc ? characterData.Desc : "";
     }
 
     public get Name(): string {

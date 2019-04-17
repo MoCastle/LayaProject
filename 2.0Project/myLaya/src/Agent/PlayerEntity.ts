@@ -117,17 +117,29 @@ export module Player {
         }
 
         constructor() {
-            this.m_Money = 0;
-            this.m_CurCharacterID = 0;
-            this.m_CharacterList = [1];
-            this.m_HistoryMaxLevel = 0;
-            this.m_CurItem = 0;
+            var interestinglife = (Laya.LocalStorage.getItem("Interestinglife") != null ? JSON.parse(Laya.LocalStorage.getItem("Interestinglife")) : {});
+            this.m_Money = interestinglife.m_Money || 0;
+            this.m_CurCharacterID = interestinglife.m_CurCharacterID|| 0;
+            this.m_CharacterList = interestinglife.m_CharacterList || [1,0,0,0,0];
+            this.m_HistoryMaxLevel = interestinglife.m_HistoryMaxLevel || 0;
+            this.m_CurItem = interestinglife.m_CurItem || 0;
             this.m_FrameWork = FrameWork.FM;
             this.m_MessageMgr = FrameWork.FM.GetManager<MessageMD.MessageCenter>(MessageMD.MessageCenter);
-            this.m_ItemList = [];
-            this.m_CurScore = 0;
+            this.m_ItemList = interestinglife.m_ItemList || [];
+            this.m_CurScore = interestinglife.m_CurScore || 0;
         }
 
+        public saveDataToLocal(): void {
+            var localData:any = {};
+            localData.m_Money = this.m_Money;
+            localData.m_CurCharacterID = this.m_CurCharacterID;
+            localData.m_CharacterList = this.m_CharacterList;
+            localData.m_HistoryMaxLevel = this.m_HistoryMaxLevel;
+            localData.m_CurItem = this.m_CurItem;
+            localData.m_ItemList = this.m_ItemList;
+            localData.m_CurScore = this.m_CurScore;
+            Laya.LocalStorage.setItem("Interestinglife", localData);
+        }
         public AddCharacter(id: number) {
             this.m_CharacterList[id] = 1;
             this.m_MessageMgr.Fire(Event.OnCharacterListChange);

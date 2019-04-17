@@ -1,4 +1,5 @@
 import { path } from "../Utility/Path";
+import CharacterManager from "../GameManager/CharacterMamager";
 
 export default class CharacterUIScene extends Laya.Scene3D{
 
@@ -18,8 +19,9 @@ export default class CharacterUIScene extends Laya.Scene3D{
 
     public moveCallBack;
 
-    constructor(moveCallBack) { 
+    constructor(cntSelectIndex, moveCallBack) { 
         super();
+        this.cntSelectIndex = cntSelectIndex;
         this.moveCallBack = moveCallBack;
         this.ambientColor = new Laya.Vector3(1, 1, 1);
         
@@ -27,26 +29,28 @@ export default class CharacterUIScene extends Laya.Scene3D{
         this.camera.transform.translate(new Laya.Vector3(0, 0, 0.2));
         this.camera.transform.rotate(new Laya.Vector3( 0, 0, 0), true, false);
         
-        var model: Laya.Sprite3D = Laya.loader.getRes(path.GetLH("c001_child_01"));
-        var model1: Laya.Sprite3D = Laya.loader.getRes(path.GetLH("L01_spr_barrier_04"));
+        // var model: Laya.Sprite3D = Laya.loader.getRes(path.GetLH("c001_child_01"));
+        // var model1: Laya.Sprite3D = Laya.loader.getRes(path.GetLH("L01_spr_barrier_04"));
         
         for(var i = 0 ;i < this.cntNum;i ++) {
-            var audt:Laya.Sprite3D = i % 2 == 0 ? model.clone() : model1.clone();
+            var characterModel =  CharacterManager.Mgr.GetCharacterModel(i);
+            var audt:Laya.Sprite3D = characterModel;
             audt.transform.localScale = new Laya.Vector3(this.initScalNum, this.initScalNum, this.initScalNum);
             this.addChild(audt);
             this.arrayDis.push(audt);
 
-            var ao = (this.startao + i * this.perao) % 360
-            var x = this.r * Math.cos(ao * 3.14 / 180);
-            var y = this.startY + this.r * Math.sin(ao * 3.14 / 180);
-            audt.transform.position = new Laya.Vector3(x, y, 0);
+            // var ao = (this.startao + i * this.perao) % 360
+            // var x = this.r * Math.cos(ao * 3.14 / 180);
+            // var y = this.startY + this.r * Math.sin(ao * 3.14 / 180);
+            // audt.transform.position = new Laya.Vector3(x, y, 0);
         }
-        //this.updateSelect();
+        this.cntSelectIndex = (this.cntSelectIndex + 5) % 5;
+        this.nextAo = (this.startao + (this.cntNum - this.cntSelectIndex) * this.perao + 360) % 360;
+        this.updateSelect();
      }
 
     calCntStartao(): void {
         this.cntSelectIndex = (this.cntSelectIndex + 5) % 5;
-        //this.cntstartao = (this.startao + (this.cntNum - this.cntSelectIndex) * this.perao + 360) % 360;
         this.nextAo = (this.startao + (this.cntNum - this.cntSelectIndex) * this.perao + 360) % 360;
 
         if((this.nextAo - this.cntstartao + 360) % 360 >= 180) {
@@ -63,6 +67,7 @@ export default class CharacterUIScene extends Laya.Scene3D{
         if(this.cntstartao == this.nextAo) {
             this.cntstartao = this.nextAo;
             this.nextAo = -1;
+            this.moveCallBack && this.moveCallBack(1);
             Laya.timer.clear(this, this.timeAoChange);
             return;
         }
@@ -82,6 +87,7 @@ export default class CharacterUIScene extends Laya.Scene3D{
             this.nextAo = -1;
         }
         if(this.nextAo == -1) {
+            this.moveCallBack && this.moveCallBack(1);
             Laya.timer.clear(this, this.timeAoChange);
         }
         this.updateSelect();
@@ -105,6 +111,10 @@ export default class CharacterUIScene extends Laya.Scene3D{
         this.moveCallBack && this.moveCallBack();
     }
     
+    clearRoateTimer(): void {
+        Laya.timer.clear(this, this.timeAoChange);
+    }
+
     lastRole(): void {
         this.cntSelectIndex --;
         this.calCntStartao();
@@ -116,6 +126,9 @@ export default class CharacterUIScene extends Laya.Scene3D{
     }
 
     updateSelectIndex(selectIndex:number): void {
+        if(selectIndex == this.cntSelectIndex) {
+            return;
+        }
         this.cntSelectIndex = selectIndex;
         this.calCntStartao();
     } 

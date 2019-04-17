@@ -8,12 +8,14 @@ import UIManager from "../FrameWork/UIManager";
 import FW from "../FrameWork/FrameWork";
 import RoleElement from "./../script/RoleElement"
 import PlayerGuestAgent from "./../Agent/PlayerGuestAgent"
-import { MessageMD } from "./../FrameWork/MessageCenter"
+import { MessageMD } from "./../FrameWork/MessageCenter" 
 import { Player } from "./../Agent/PlayerEntity"
 import GameAPP from "../controler/GameAPP";
 import EnterGameUI from "./EnterGameUI";
 import CharacterUIScene from "../Scene/CharacterUIScene";
 import EndGameUI from "./EndGameUI";
+import CharacterManager from "../GameManager/CharacterMamager";
+import { GameManager } from "../GameManager/GameManager";
 
 class ExtendCharactersUI extends ui.CharacterUI {
     createChildren(): void {
@@ -31,23 +33,32 @@ export default class CharacterUI extends BaseUI {
     private m_GoldDiscribe: string[];
     private spriteBgArr:Laya.Sprite[] = [];
     private characterUIScene:CharacterUIScene;
-
-    private _RenderHandler(cell: Laya.Box, index: number): void {
-        var roleElement: RoleElement = cell as RoleElement;
-        roleElement.Reset();
-        var characterList: Array<number> = PlayerGuestAgent.GuestAgent.CharacterList;
-        roleElement.gray = characterList[index] ? false : true;
-        roleElement.CharacterID = index;
-        roleElement.RegistOnImgClick(() => { this.OnClickImg(index) });
-    }
+    private cntCharacterId:number;
     private _UI: ExtendCharactersUI;
+
+    private config = {"img":
+        [   
+            {key:"bg",textureName:"mainbg.jpg"},
+            {key:"characterrole0bg",textureName:"rolebgcircle.png"},
+            {key:"characterrole1bg",textureName:"rolebgcircle.png"},
+            {key:"characterrole2bg",textureName:"rolebgcircle.png"},
+            {key:"characterrole3bg",textureName:"rolebgcircle.png"},
+            {key:"characterrole4bg",textureName:"rolebgcircle.png"}
+        ],
+        "btn":
+        [
+            {key:"backBtn",textureName:"back.png"},
+            {key:"buyBtn",textureName:"buy.png"},
+            {key:"startGame",textureName:"start.png"}
+        ]
+    };
 
     constructor(name: string) {
         super(name);
         this._UI = new ExtendCharactersUI();
         this.FixUI(this._UI);
         this.GetCharacterList();
-        this.SetList();
+        //this.SetList();
         this.m_CharacterList = [];
         //this.m_GoldDiscribe = this._UI._Gold.text.split("#");
         this.OnMoneyChange();
@@ -70,16 +81,80 @@ export default class CharacterUI extends BaseUI {
             this.spriteBgArr[i].name = i + "";
             this.spriteBgArr[i].on(Laya.Event.CLICK, this, this.selectRolePosition);
         }
+        this.cntCharacterId = PlayerGuestAgent.GuestAgent.CharacterID;
+        this.updateRoleInfo(this.cntCharacterId);
+
+        this._UI.startGame.on(Laya.Event.CLICK, this, this.startEvent);
+        this._UI.buyBtn.on(Laya.Event.CLICK, this, this.OnClickImg);
+        this.updateSelfSceneUI();
     }
 
-    selectRolePosition(e:Laya.Event): void {
+    updateSelfSceneUI() {
+        for(var key in this.config) {
+            var len = this.config[key].length;
+            for(var i = 0;i < len;i ++) {
+                this._UI[this.config[key][i].key].skin = (PlayerGuestAgent.GuestAgent.SkinDir + this.config[key][i].textureName);
+            }
+        }
+    }
+
+    startEvent(): void {
+        GameControler.GameControler.SetPlayerID(this.characterUIScene.cntSelectIndex);
+        APP.UIManager.Close(this);
+        GameControler.GameControler.EnterGame();
+    }
+
+    checkIsLock(id): boolean {
+        var character = PlayerGuestAgent.GuestAgent.CharacterList;
+        if(character[id]) {
+            return true;
+        }
+        return false;
+    }
+
+    updateRoleInfo(id): void {
+        if(this.checkIsLock(id)) {
+            this._UI.startGame.visible = true;
+            this._UI.buyBtn.visible = false;
+            this._UI.goldimg.visible = false;
+            this._UI.roleuseNoney.visible = true;
+            this._UI.roleuseNoney.text = "已解锁";
+        }
+        else 
+        {
+            this._UI.startGame.visible = false;
+            this._UI.buyBtn.visible = true;
+            this._UI.goldimg.visible = true;
+            this._UI.roleuseNoney.visible = true;
+            this._UI.roleuseNoney.text = CharacterManager.Mgr.GetPrice(this.cntCharacterId) + "";
+        }
+        this._UI.roleName.text = CharacterManager.Mgr.GetName(id);
+        this._UI.desc.text = CharacterManager.Mgr.GetDesc(id);
+        this._UI._Gold.text = PlayerGuestAgent.GuestAgent.Money + "";
+    }
+
+    selectRolePosition(e:Laya.Event): void { 
         var cntTarget = e.currentTarget;
+        if(!this.characterUIScene || this.characterUIScene.cntSelectIndex == parseInt(cntTarget.name)) {
+            return;
+        }
+        
+        this._UI.startGame.visible = false;
+        this._UI.buyBtn.visible = false;
+        this._UI.goldimg.visible = false;
+        this._UI.roleuseNoney.visible = false;
+
         this.characterUIScene.updateSelectIndex(parseInt(cntTarget.name));
-        this.InitPosition();
+        this.InitPosition(null);
     }
 
-    InitPosition(): void {
+    InitPosition(data): void {
         if(!this.characterUIScene) {
+            return;
+        }
+        if(data) {
+            this.cntCharacterId = this.characterUIScene.cntSelectIndex;
+            this.updateRoleInfo(this.cntCharacterId);
             return;
         }
         var num = this.characterUIScene.arrayDis.length;
@@ -99,6 +174,7 @@ export default class CharacterUI extends BaseUI {
     }
 
     BackGameBtn(): void {
+        this.stopRoateTimer();
         var enterpanel:EnterGameUI = APP.UIManager.GetUIByName("EnterGameUI") as EnterGameUI;
         enterpanel._UI.y = Laya.stage.height;
         Laya.Tween.to(enterpanel._UI, {y: 0}, 500, Laya.Ease.sineOut);
@@ -106,6 +182,12 @@ export default class CharacterUI extends BaseUI {
             APP.UIManager.Close(this);
         }));
         this._UI.removeChild(this.characterUIScene);
+    }
+
+    stopRoateTimer(): void {
+        if(this.characterUIScene) {
+            this.characterUIScene.clearRoateTimer();
+        }
     }
 
     static Name(): string {
@@ -135,27 +217,18 @@ export default class CharacterUI extends BaseUI {
             this._UI.layoutbg.x = _outPos.x;
             this._UI.layoutbg.y = _outPos.y;
             this._UI.layoutbg.scaleX = this._UI.layoutbg.scaleY = scaleY;
-            this.InitPosition();
+            this.InitPosition(null);
         }
     }
 
-    SetList() {
-        // var listArray: Array<any> = this.m_CharacterList;
-        // this._UI._List.hScrollBarSkin = "";
-        // this._UI._List.renderHandler = new Laya.Handler(this, this._RenderHandler);
-        // this._UI._List.array = listArray;
-        // this._UI._List.scrollBar.elasticBackTime = 200;//设置橡皮筋回弹时间。单位为毫秒。
-        // this._UI._List.scrollBar.elasticDistance = 50
-    }
-
-    Update() {
-
+    Update() {  
+        
     }
     Open()  {
         APP.MessageManager.Regist(Player.Event.OnCurCharacterIDChange, this.OnNeedCloseUI, this);
         APP.MessageManager.Regist(Player.Event.OnMoneyChange, this.OnMoneyChange, this);
         APP.MessageManager.Regist(Player.Event.OnCharacterListChange, this.OnChangeList, this);
-        this.characterUIScene = new CharacterUIScene(this.InitPosition.bind(this));
+        this.characterUIScene = new CharacterUIScene(this.cntCharacterId , this.InitPosition.bind(this));
         this._UI.addChild(this.characterUIScene);
         this.characterUIScene.visible = false;
         var len = this.spriteBgArr.length;
@@ -165,7 +238,7 @@ export default class CharacterUI extends BaseUI {
         setTimeout(function(){
             this.characterUIScene.visible = true;
             this.InitPosition();
-        }.bind(this), 480);
+        }.bind(this), 500);
         this.Layout();
     }
 
@@ -173,16 +246,17 @@ export default class CharacterUI extends BaseUI {
         APP.MessageManager.DesRegist(Player.Event.OnCurCharacterIDChange, this.OnNeedCloseUI, this);
         APP.MessageManager.DesRegist(Player.Event.OnMoneyChange, this.OnMoneyChange, this);
         APP.MessageManager.DesRegist(Player.Event.OnCharacterListChange, this.OnChangeList, this);
-       
     }
 
     //事件
     private OnClickImg(id: number) {
-        if (id == PlayerGuestAgent.GuestAgent.CharacterID)  {
-            this.BackGameBtn();
+        if (this.checkIsLock(this.characterUIScene.cntSelectIndex))  {
+            //this.BackGameBtn();
             return;
         }
-        GameControler.GameControler.SetPlayerID(id);
+        GameControler.GameControler.SetPlayerID(this.characterUIScene.cntSelectIndex);
+        this.OnMoneyChange();
+        this.updateRoleInfo(this.characterUIScene.cntSelectIndex);
     }
 
     private OnNeedCloseUI(): void  {

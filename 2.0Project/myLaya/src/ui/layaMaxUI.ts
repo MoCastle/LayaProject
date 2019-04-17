@@ -16,12 +16,15 @@ export module ui {
 		public layoutbg:Laya.Box;
 		public roleName:Laya.Label;
 		public desc:Laya.Label;
+		public goldimg:Laya.Sprite;
 		public roleuseNoney:Laya.Label;
+		public buyBtn:Laya.Button;
 		public characterrole1bg:Laya.Sprite;
 		public characterrole4bg:Laya.Sprite;
 		public characterrole2bg:Laya.Sprite;
 		public characterrole3bg:Laya.Sprite;
 		public characterrole0bg:Laya.Sprite;
+		public startGame:Laya.Button;
 		public _Gold:Laya.Label;
 		public backBtn:Laya.Button;
 		public _List:Laya.List;
@@ -33,10 +36,14 @@ export module ui {
     }
     export class EndGameUI extends Laya.View {
 		public bg:Laya.Sprite;
+		public endgamebgicon:Laya.Image;
+		public dibg:Laya.Image;
 		public _StartBtn:Laya.Button;
 		public _MenueBtn:Laya.Button;
 		public _SetBtn:Laya.Button;
 		public _PlayerListBtn:Laya.Button;
+		public endgamehentiao:Laya.Sprite;
+		public endgametitle:Laya.Sprite;
 		public distance:Laya.Label;
 		public gold:Laya.Label;
         constructor(){ super()}
@@ -95,6 +102,12 @@ export module ui {
 		public _List:Laya.List;
 		public backBtn:Laya.Button;
 		public _Gold:Laya.Label;
+		public roleName:Laya.Label;
+		public desc:Laya.Label;
+		public goldimg:Laya.Sprite;
+		public roleuseNoney:Laya.Label;
+		public buyBtn:Laya.Button;
+		public ownertxt:Laya.Label;
         constructor(){ super()}
         createChildren():void {
             super.createChildren();
@@ -120,6 +133,15 @@ export module ui {
         createChildren():void {
             super.createChildren();
             this.loadScene("SetPanel");
+        }
+    }
+    export class toolItemUI extends Laya.View {
+		public toolicon:Laya.Sprite;
+		public toolname:Laya.Label;
+        constructor(){ super()}
+        createChildren():void {
+            super.createChildren();
+            this.loadScene("toolItem");
         }
     }
 }

@@ -9,6 +9,10 @@ export default class PlayerGuestAgent extends BaseAgent {
         return this._Agent;
     }
 
+    public get SkinDir():String {
+        return "entersceneui/res2/";
+    }
+
     public get Money(): number {
         return this.m_PlayerEntity.Money;
     }
@@ -17,6 +21,10 @@ export default class PlayerGuestAgent extends BaseAgent {
     }
     public get CharacterList(): Array<number> {
         return this.m_PlayerEntity.CharacterList;
+    }
+
+    public get ItemList(): Array<number> {
+        return this.m_PlayerEntity.ItemList;
     }
 
     private constructor() {

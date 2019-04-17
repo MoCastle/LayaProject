@@ -6,6 +6,7 @@ import GuiderManager from "../Scene/GuiderManager";
 import {GameStruct }  from "./../Game/GameStruct"
 import Controler from "./../controler/GameControler"
 import GameControler from "../controler/GameControler";
+import PlayerGuestAgent from "../Agent/PlayerGuestAgent";
 
 class ExtendEndGameUI extends ui.EndGameUI {
     Panel:Laya.Panel;
@@ -32,6 +33,33 @@ export default class EndGameUI extends BaseUI
         return "EndGameUI";
     }
     UI:ExtendEndGameUI;
+
+    private config = {"img":
+        [   
+            {key:"bg",textureName:"mainbg.jpg"},
+            {key:"endgametitle",textureName:"endgamedaizi.png"},
+            {key:"endgamehentiao",textureName:"infotiao.png"},
+            {key:"endgamebgicon",textureName:"inputtextarea.png"},
+            {key:"dibg",textureName:"inputtextarea.png"}
+        ],
+        "btn":
+        [
+            {key:"_StartBtn",textureName:"restart.png"},
+            {key:"_MenueBtn",textureName:"homeBtn.png"},
+            {key:"_SetBtn",textureName:"setting.png"},
+            {key:"_PlayerListBtn",textureName:"paihang.png"}
+        ]
+    };
+
+    updateSelfSceneUI() {
+        for(var key in this.config) {
+            var len = this.config[key].length;
+            for(var i = 0;i < len;i ++) {
+                this.UI[this.config[key][i].key].skin = (PlayerGuestAgent.GuestAgent.SkinDir + this.config[key][i].textureName);
+            }
+        }
+    }
+
     constructor(name:string)
     {
         super(name);
@@ -41,6 +69,7 @@ export default class EndGameUI extends BaseUI
         this.Layout();
         this.UI.distance.text = GameControler.GameControler.GameDir.GamePlay.Distance + "";
         this.UI.gold.text = GameControler.GameControler.GameDir.GamePlay.GameGold + "";
+        this.updateSelfSceneUI();
     }
     
     Update()

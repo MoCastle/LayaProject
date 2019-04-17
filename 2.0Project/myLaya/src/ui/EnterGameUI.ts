@@ -6,6 +6,7 @@ import UIManager from "./../FrameWork/UIManager"
 import PlayerListUI from "./../ui/PlayerListUI"
 import GameControler from "./../controler/GameControler"
 import { GameAgent } from "./../Agent/GameAgent"
+import PlayerGuestAgent from "../Agent/PlayerGuestAgent";
 
 class ExtendEnterGameUI extends ui.EnterUI {
     Panel: Laya.Panel;
@@ -60,7 +61,21 @@ export default class EnterGameUI extends BaseUI {
     static Name(): string {
         return "EnterGameUI";
     }
+
     _UI: ExtendEnterGameUI;
+    private config = {"img":
+        [   
+            {key:"bg",textureName:"mainbg.jpg"}
+        ],
+        "btn":
+        [
+            {key:"_Character",textureName:"role.png"},
+            {key:"_Start",textureName:"start.png"},
+            {key:"_SetPanel",textureName:"setting.png"},
+            {key:"adv",textureName:"ad.png"}
+        ]
+    };
+
     private m_BtnGroup: Array<Laya.Image>;
     constructor(name: string) {
         super(name);
@@ -73,6 +88,16 @@ export default class EnterGameUI extends BaseUI {
         // this.addChild(img);
         //this._UI._CharacterList.on(Laya.Event.CLICK,null,()=>{ uiMgr.Show<PlayerListUI>(PlayerListUI)});
         this.Layout();
+        this.updateSelfSceneUI();
+    }
+
+    updateSelfSceneUI() {
+        for(var key in this.config) {
+            var len = this.config[key].length;
+            for(var i = 0;i < len;i ++) {
+                this._UI[this.config[key][i].key].skin = (PlayerGuestAgent.GuestAgent.SkinDir + this.config[key][i].textureName);
+            }
+        }
     }
 
     private InitBtnGroup() {

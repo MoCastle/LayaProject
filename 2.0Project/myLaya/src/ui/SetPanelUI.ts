@@ -19,6 +19,15 @@ class ExtendsSetPanelUI extends ui.SetPanelUI {
 export default class SetPanelUI extends BaseUI {
     _UI: ExtendsSetPanelUI;
     selectedIndex:number;
+    private config = {"img":
+        [   
+            {key:"bg",textureName:"mainbg.jpg"}
+        ],
+        "btn":
+        [
+            {key:"_Return",textureName:"back.png"}
+        ]
+    };
     constructor(name: string) {
         super(name);
         this._UIType = BaseEnum.UITypeEnum.Midle; 

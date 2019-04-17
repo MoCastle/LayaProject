@@ -81,10 +81,10 @@ export default class LoadingUI extends BaseUI
     Complete(callBack:()=>void)
     {
 
-        callBack();
-        // this._CallBack = callBack;
-        // this._UI._Enter.visible = true;
-        // this._UI._Enter.label = "Enter";//this._Name[0];
+        //callBack();
+        this._CallBack = callBack;
+        this._UI._Enter.visible = true;
+        this._UI._Enter.label = "";//this._Name[0];
     }
     Reload(str, callBack:()=>void)
     {

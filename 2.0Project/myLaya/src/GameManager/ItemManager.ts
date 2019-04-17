@@ -58,6 +58,12 @@ export default class ItemManager extends GameManager.BaseManager {
         if (info)
             return info.ItemType;
     }
+
+    public GetItemInfo(id:number):ItemInfo
+    {
+        var info: ItemInfo = this.GetInfo<ItemInfo>(id);
+        return info;
+    }
 }
 
 class ItemInfo extends GameManager.BaseInfo {
@@ -66,6 +72,14 @@ class ItemInfo extends GameManager.BaseInfo {
     private m_Price: number;
     private m_ItemType:number;
     private m_Icon:string;
+    private m_Passscore:string;
+    private m_Desc:string;
+    public get Desc(): string {
+        return this.m_Desc;
+    }
+    public get Passscore(): string {
+        return this.m_Passscore;
+    }
     public get Name(): string {
         return this.m_ModelName + this.m_ExtendID;
     }
@@ -82,10 +96,13 @@ class ItemInfo extends GameManager.BaseInfo {
     }
     constructor(data: any) {
         super(data);
+        this.m_ID = data.ID ? data.ID : "";
+        this.m_Passscore = data.Passscore ? data.Passscore: "";
         this.m_ModelName = data.ModelName ? data.ModelName : "";
         this.m_ExtendID = data.ExtendID ? data.ExtendID : "";
         this.m_Price = data.Price ? Number(data.Price) : 0;
         this.m_ItemType = data.ItemType? Number(data.ItemType):0;
         this.m_Icon = data.Icon?data.Icon:"";
+        this.m_Desc = data.Desc?data.Desc:"";
     }
 }

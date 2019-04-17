@@ -75,9 +75,9 @@ export default class GameUI extends BaseUI {
         var opIsRight = GameControler.GameControler.SetInfo.OPIsRight;
         this._UI._ItemListBtn.on(Laya.Event.CLICK, null, () => {
             this._UIManager.Show<ItemListUI>(ItemListUI)
-        })
+        });
         this.SetCountTime();
-
+ 
         this.DistanceStr = this._UI._TxtDistance.text.split("#");
         this.DistanceStr[1] = "0"
         this._ShowDistance();
@@ -93,7 +93,7 @@ export default class GameUI extends BaseUI {
     }
 
     SetLeftTouch(owner: any, Listener: () => void): void {
-        this._UI._LeftTouch.on(Laya.Event.CLICK, owner, Listener);
+        this._UI._LeftTouch.on(Laya.Event.CLICK, owner, Listener); 
     }
 
     SetRightTouch(owner: any, Listener: () => void): void {

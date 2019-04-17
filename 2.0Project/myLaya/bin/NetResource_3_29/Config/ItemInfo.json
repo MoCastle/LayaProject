@@ -1,48 +1,59 @@
-[
-    {
-        "ID": 1,
+{
+    "0": {
+        "ID": "0",
         "Passscore": "保护",
         "ModelName": "shield",
         "ExtendID": "01",
-        "Price": 1,
-        "ItemType": 11
+        "Price": 0,
+        "ItemType": 11,
+        "Icon": "entersceneui/jinzhongzhao.png",
+        "Desc": "踩到陷阱可以免伤一次，触发即消失功能"
     },
-    {
-        "ID": 2,
+    "1": {
+        "ID": "1",
         "Passscore": "无敌",
         "ModelName": "untouchable",
         "ExtendID": "01",
-        "Price": 1,
-        "ItemType": 12
+        "Price": 0,
+        "ItemType": 12,
+        "Icon": "entersceneui/jinzhongzhao.png",
+        "Desc": "穿上后无视任何伤害，可踩碎脚下的陷阱获得金币，持续时间5秒"
     },
-    {
-        "ID": 3,
+    "2": {
+        "ID": "2",
         "Passscore": "飞",
         "ModelName": "flyer",
         "ExtendID": "01",
-        "Price": 1,
-        "ItemType": 13
+        "Price": 0,
+        "ItemType": 13,
+        "Icon": "entersceneui/jinzhongzhao.png",
+        "Desc": "使用小蜻蜓后，直接飞行10米，无视任何陷阱和空洞"
     },
-    {
-        "ID": 4,
+    "3": {
+        "ID": "3",
         "Passscore": "绳子",
         "Price": -1,
-        "ItemType": 14
+        "ItemType": 14,
+        "Icon": "entersceneui/jinzhongzhao.png",
+        "Desc": "使用小蜻蜓后，直接飞行10米，无视任何陷阱和空洞"
     },
-    {
-        "ID": 5,
+    "4": {
+        "ID": "4",
         "Passscore": "收集",
         "ModelName": "absord_01",
         "ExtendID": "01",
-        "Price": 1,
-        "ItemType": 15
+        "Price": 0,
+        "ItemType": 15,
+        "Icon": "entersceneui/jinzhongzhao.png",
+        "Desc": "自动收集周围所有金币（上中下三排），10秒后自动失效"
     },
-    {
-        "ID": 6,
+    "5": {
+        "ID": "5",
         "Passscore": "金币",
         "ModelName": "coin_01",
         "ExtendID": "01",
         "Price": -1,
-        "ItemType": 16
+        "ItemType": 16,
+        "Icon": "entersceneui/gold.png"
     }
-]
+}
