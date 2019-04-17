@@ -24,9 +24,9 @@
 		},
 		"child":[
 			{
-				"type":"MeshSprite3D",
+				"type":"Sprite3D",
 				"props":{
-					"name":"L01_spr_plat_02",
+					"name":"秋天—底座-褐",
 					"active":true,
 					"isStatic":false,
 					"layer":0,
@@ -36,27 +36,66 @@
 						0
 					],
 					"rotation":[
-						0.7071068,
 						0,
 						0,
-						-0.7071068
+						0,
+						-1
 					],
 					"scale":[
 						1,
 						1,
 						1
-					],
-					"meshPath":"Assets/L01_spr_plat_02-L01_spr_plat_02.lm",
-					"enableRender":true,
-					"materials":[
-						{
-							"type":"Laya.BlinnPhongMaterial",
-							"path":"Assets/Materials/L01_spr_plat_02.lmat"
-						}
 					]
 				},
-				"components":[],
-				"child":[]
+				"components":[
+					{
+						"type":"Animator",
+						"avatar":{
+							"path":"Assets/Resource/秋天—底座-褐/秋天—底座-褐-秋天—底座-褐-秋天—底座-褐Avatar.lav",
+							"linkSprites":{}
+						},
+						"layers":[],
+						"cullingMode":0,
+						"playOnWake":true
+					}
+				],
+				"child":[
+					{
+						"type":"MeshSprite3D",
+						"props":{
+							"name":"秋天—底座-褐",
+							"active":true,
+							"isStatic":false,
+							"layer":0,
+							"position":[
+								0,
+								0,
+								0
+							],
+							"rotation":[
+								0.7071068,
+								0,
+								0,
+								-0.7071067
+							],
+							"scale":[
+								1,
+								1,
+								1
+							],
+							"meshPath":"Assets/Resource/秋天—底座-褐/秋天—底座-褐-秋天—底座-褐.lm",
+							"enableRender":true,
+							"materials":[
+								{
+									"type":"Laya.BlinnPhongMaterial",
+									"path":"Assets/Resource/秋天—底座-褐/秋天—底座-褐.lmat"
+								}
+							]
+						},
+						"components":[],
+						"child":[]
+					}
+				]
 			}
 		]
 	}
