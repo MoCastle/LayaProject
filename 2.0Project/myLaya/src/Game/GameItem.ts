@@ -9,6 +9,7 @@ import GameDirector from "./../Scene/GameDirector"
 import { PlayerControler } from "./PlayerCtrler"
 import { Input } from "./Input";
 import Controler from "./../controler/GameControler"
+import { GameModule } from "./GameModule";
 type AnimCoin = AnimObj.AnimCoin
 export module Item {
     //物品标识
@@ -57,12 +58,12 @@ export module Item {
             this.BarrierList.push(new LayItemMgr(10, 1, ItemType.Empty, 10));
             this.BarrierList.push(new LayItemMgr(10, 5, ItemType.Rock, 10));
             this.BarrierList.push(new LayItemMgr(10, 2, ItemType.Thorn, 10));
-            this.BarrierList.push(new LayItemMgr(10, 2, ItemType.Vine, 10))
-            this.RewardList.push(new LayItemMgr(10, 1, ItemType.Coin))
+            this.RewardList.push(new LayItemMgr(10, 2, ItemType.Vine, 10))
+            this.RewardList.push(new LayItemMgr(10, 10, ItemType.Coin))
 
             this.RewardList.push(new LayItemMgr(50, 1, ItemType.Fly, 20))
 
-            this.RewardList.push(new LayItemMgr(50, 1, ItemType.Collector))
+            this.RewardList.push(new LayItemMgr(50, 10, ItemType.Collector))
             this.RewardList.push(new LayItemMgr(50, 1, ItemType.Protect));
             this.RewardList.push(new LayItemMgr(50, 1, ItemType.HolyProtect));
 
@@ -173,8 +174,8 @@ export module Item {
         }
     }
 
-    export function StepItemFactory(itemType: ItemType, Step) {
-        if (Step == undefined) {
+    export function StepItemFactory(itemType: ItemType, step) {
+        if (step == undefined) {
             return
         }
         if (itemType == undefined) {
@@ -186,12 +187,12 @@ export module Item {
         if (item == null) {
             if (GameStruct.ItemDictType[itemType] != null && GameStruct.ItemDictType[itemType] != undefined) {
                 var clas: any = GameStruct.ItemDictType[itemType];
-                item = new clas(Step);
+                item = new clas(step);
             } else {
-                item = new StepItem(itemType, Step)
+                item = new StepItem(itemType, step)
             }
         }
-        item.Step = Step;
+        item.Step = step;
         item.ResetItem();
         return item;
     }
@@ -621,7 +622,7 @@ export module Item {
             }
             this._FinalLocation = player.CurStep.Location;
             this._FinalLocation.Y += this.Floor;
-            this._FinalZ = player.Position.z - Controler.GameControler.StepDistance / 2 * this.Floor;
+            this._FinalZ = player.Position.z - GameModule.DSpace * this.Floor;
 
             var flyCtrl = new PlayerControler.PlayerFly(this.Speed);
             flyCtrl.SetPlayer(player)
@@ -686,7 +687,7 @@ export module Item {
             var player:Player = this.Player;
             this._FinalLocation = player.CurStep.Location;
             this._FinalLocation.Y += this.Floor;
-            this._FinalZ = player.Position.z - Controler.GameControler.StepDistance / 2 * this.Floor;
+            this._FinalZ = player.Position.z - GameModule.DSpace * this.Floor;
 
             var flyCtrl = new PlayerControler.PlayerFly(this.Speed);
             flyCtrl.SetPlayer(player)
@@ -731,16 +732,24 @@ export module Item {
     }
 
     class Vine extends StepItem {
-        private m_Touched:boolean;
+        private m_BeTouched:boolean;
+        get Touched():boolean
+        {
+            return this.m_BeTouched;
+        }
+        set Touched(value:boolean)
+        {
+            this.m_BeTouched = value
+        }
         TouchItem(player: Player) {
-            if(this.m_Touched)
+            if(this.Touched)
                 return
             this.AddBuffToPlayer(player,false);
-            this.m_Touched = true;
+            this.Touched = true;
         }
         constructor(step: Step) {
             super(ItemType.Vine, step);
-            this.m_Touched = false;
+            this.Touched = false;
         }
         //由父类统一管理模型生成
         protected _GenItemModel() {
@@ -752,7 +761,7 @@ export module Item {
         }
         //消除 把自己存入内存池
         DesPawn() {
-            this.m_Touched = false;
+            this.Touched = false;
             super.DesPawn();
         }
     }

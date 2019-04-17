@@ -35,7 +35,7 @@ export module Scene {
             this.m_Message = FrameWork.FM.GetManager<MessageMD.MessageCenter>(MessageMD.MessageCenter);
         }
 
-        public PutObj(sprite3D: Laya.Sprite3D): void {
+        public PutObj(sprite3D: Laya.Node): void {
             if (this.m_SceneObj) {
                 this.m_SceneObj.addChild(sprite3D);
             } else {
@@ -108,7 +108,6 @@ export module Scene {
         }
 
         public abstract Start(): void ;
-
         public abstract End(): void;
 
         public TimeUp(): void {

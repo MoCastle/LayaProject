@@ -57,6 +57,7 @@ class GameControler {
         }
         return this._MaxLineNum;
     } 
+    
     //格子边长
     get StepLength(): number {
         if(!this._StepLength)
@@ -65,14 +66,7 @@ class GameControler {
         }
         return this._StepLength;
     }
-    //格子斜对角长度
-    get StepDistance(): number {
-        if(!this._StepDistance)
-        {
-            this._StepDistance = Math.sqrt((this.StepLength * this.StepLength) * 2);
-        }
-        return this._StepDistance;
-    }
+    
     //玩家移动时间
     get PlayerMoveTime(): number {
         if(!this._PlayerMoveTime)

@@ -1,5 +1,3 @@
-import BaseScene from "./BaseScene"
-import BaseDirector from "./BaseDirector"
 import {ui} from "./../ui/layaMaxUI"
 import {path} from "./../Utility/Path"
 import {Scene} from "./../Scene/Scene"

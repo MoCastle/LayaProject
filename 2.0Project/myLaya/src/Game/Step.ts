@@ -32,7 +32,7 @@ export default class Step extends Laya.Sprite3D
     }
     get Location():MLocation
     {
-        return new GameStruct.MLocation(this.Idx-1,this.Floor.FloorNum);
+        return new GameStruct.MLocation(this.Idx,this.Floor.FloorNum);
     }
     get IsDeadRoad():boolean
     {
@@ -63,12 +63,10 @@ export default class Step extends Laya.Sprite3D
         this.StepItem.PutItem(itemEnume);
     }
 
-    ResetStep(newPs:Laya.Vector3,ignoreActive:boolean = false)
+    ResetStep(newPs:Laya.Vector3 = null)
     {
-        this.Position = newPs;
-        if(!ignoreActive)
-            this.active = true;
-        var modelPs = this.transform.position;
+        if(newPs)
+            this.Position = newPs;
         this.StepItem.PutItem(Item.ItemType.None);
 
         this.LeftParent = null;
@@ -77,13 +75,13 @@ export default class Step extends Laya.Sprite3D
         this.RightChild = null;
         this._IsDeadRoad = false;
         this.RoadNum = 0;
+        this.active = true;
     }
     _StepModel:Laya.Sprite3D;
     constructor(floor:MountLine,idx:number)
     {
         //super(new Laya.BoxMesh(1,1,1) );
         super();
-        APP.SceneManager.CurScene.PutObj(this);
         if(this.Idx != 0)
         {
             var Idx = Math.floor(1+ Math.random()*Step.stepModelNum);

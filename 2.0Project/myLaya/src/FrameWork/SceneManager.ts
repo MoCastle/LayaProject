@@ -1,5 +1,3 @@
-import BaseScene from "./../Scene/BaseScene"
-import BaseDirector from "./../Scene/BaseDirector"
 import BaseManager from "./../FrameWork/BaseManager"
 import {FSM} from "./../Base/FSM"
 import {Scene} from "./../Scene/Scene"

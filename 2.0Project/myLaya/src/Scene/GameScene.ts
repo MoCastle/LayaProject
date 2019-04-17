@@ -3,8 +3,6 @@
 跳山羊场景核心功能
 */
 import SceneManager from "./../FrameWork/SceneManager"
-import BaseScene from "./BaseScene"
-import BaseDirector from "./BaseDirector"
 import FW from "./../FrameWork/FrameWork"
 import UIManager from "./../FrameWork/UIManager"
 import EnterGameUI from "./../ui/EnterGameUI"
@@ -17,7 +15,6 @@ import {Input} from "./../Game/Input"
 import {GameStruct} from "./../Game/GameStruct"
 import {Scene} from "./../Scene/Scene"
 import GameUI from "./../ui/GameUI"
-import MountLine from "./../Game/MountLine"
 import {Item} from "./../Game/GameItem"
 import Step from "./../Game/Step"
 import GameDirector from "./GameDirector"

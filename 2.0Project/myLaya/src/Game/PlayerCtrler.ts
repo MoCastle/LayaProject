@@ -156,6 +156,8 @@ export module PlayerControler {
         }
 
         public OnComplete(): void  { }
-        public OnStart(): void  { }
+        public OnStart(): void  { 
+            Controler.GameControler.GameDir.GamePlay.gameMap.SetNextFlpprDirSwitch(this.player.CurStep.Floor.rightSwitch);
+        }
     }
 }

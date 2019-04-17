@@ -1,6 +1,4 @@
 import SceneManager from "./../FrameWork/SceneManager"
-import BaseScene from "./BaseScene"
-import BaseDirector from "./BaseDirector"
 import FW from "./../FrameWork/FrameWork"
 import UIManager from "./../FrameWork/UIManager"
 import EnterGameUI from "./../ui/EnterGameUI"
@@ -44,7 +42,6 @@ export default class GuiderManager
 class GuiderScene extends Scene.BaseScene
 {
     GuidDir:GuiderDirector;
-    CurDir:BaseDirector;
     constructor()
     {
         super();
