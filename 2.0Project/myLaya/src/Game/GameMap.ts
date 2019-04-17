@@ -44,8 +44,8 @@ export default class Gamemap extends Laya.Node {
      * @param column 列数
      */
     constructor(floorNum: number, column: number) {
-        floorNum = 3;
-        column = 5;
+        //floorNum = 3;
+        //column = 5;
         super();
         this.m_MountLines = [];
         this.m_CurIdx = 0;
