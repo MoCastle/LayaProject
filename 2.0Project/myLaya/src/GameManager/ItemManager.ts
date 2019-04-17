@@ -8,9 +8,11 @@ export default class ItemManager extends GameManager.BaseManager {
         }
         return ItemManager.g_Mgr;
     }
+    
     constructor() {
         super("ItemInfo");
     }
+
     protected GenInfo(data: any): GameManager.BaseInfo {
         return new ItemInfo(data);
     }
