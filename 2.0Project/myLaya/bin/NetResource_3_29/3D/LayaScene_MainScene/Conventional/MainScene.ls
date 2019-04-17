@@ -21,6 +21,50 @@
 		},
 		"child":[
 			{
+				"type":"Camera",
+				"props":{
+					"name":"Main Camera",
+					"active":true,
+					"isStatic":false,
+					"layer":0,
+					"position":[
+						0,
+						2.71,
+						-14.51
+					],
+					"rotation":[
+						0,
+						1,
+						0,
+						0
+					],
+					"scale":[
+						1,
+						1,
+						1
+					],
+					"clearFlag":1,
+					"orthographic":false,
+					"fieldOfView":60,
+					"nearPlane":0.3,
+					"farPlane":1000,
+					"viewport":[
+						0,
+						0,
+						1,
+						1
+					],
+					"clearColor":[
+						0.1921569,
+						0.3019608,
+						0.4745098,
+						0
+					]
+				},
+				"components":[],
+				"child":[]
+			},
+			{
 				"type":"Sprite3D",
 				"props":{
 					"name":"主界面_秋1_待机",
