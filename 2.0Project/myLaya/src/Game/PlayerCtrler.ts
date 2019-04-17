@@ -2,6 +2,7 @@ import Player from "./Player"
 import APP from "./../controler/APP"
 import { GameStruct } from "./GameStruct";
 import Controler from "./../controler/GameControler"
+import { GameModule } from "./GameModule";
 export module PlayerControler {
     export abstract class BasePlayerCtrler {
         //公共接口
@@ -132,7 +133,7 @@ export module PlayerControler {
          */
         SetPlayer(player: Player) {
             super.SetPlayer(player);
-            player.Translate(new Laya.Vector3(0, Controler.GameControler.StepLength, 0));
+            player.Translate(new Laya.Vector3(0, GameModule.VSpace, 0));
             player.transform.rotationEuler = new Laya.Vector3(0, 180, 0);
             player.ModelRotateEular(new Laya.Vector3(0, 180, 0));
         }
@@ -151,13 +152,13 @@ export module PlayerControler {
             }
             //var vector = new Laya.Vector3(0,Controler.GameControler.StepLength,-1*Controler.GameControler.StepDistance/2);
             // Laya.Vector3.scale(vector,this.Speed,vector);
-            var vector: Laya.Vector3 = new Laya.Vector3(0, 0.146, -0.10394)
+            var vector: Laya.Vector3 = new Laya.Vector3(0, GameModule.VSpace, -GameModule.DSpace);
+            Laya.Vector3.scale(vector,0.1,vector);
             this.player.Translate(vector);
         }
 
         public OnComplete(): void  { }
         public OnStart(): void  { 
-            Controler.GameControler.GameDir.GamePlay.gameMap.SetNextFlpprDirSwitch(this.player.CurStep.Floor.rightSwitch);
         }
     }
 }

@@ -90,10 +90,13 @@ export default class MountLine extends Laya.Sprite3D {
         var dir:number = lastFloor.rightSwitch - this.rightSwitch;
         var switchDir: number = 0;
         if (dir * dir > 0.01) {
+            switchDir = dir;
+            /*
             if (dir > 0)
                 switchDir = 1;
             else
                 switchDir = -1;
+                */
         } else  {
             if (this.JugIsOdd())  {
                 switchDir = -1;
