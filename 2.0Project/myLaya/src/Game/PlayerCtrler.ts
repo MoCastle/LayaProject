@@ -126,6 +126,7 @@ export module PlayerControler {
 
     //玩家飞行
     export class PlayerFly extends BasePlayerCtrler {
+        private m_CurFloor:number;
         Speed: number;
         /**
          * 设置玩家
@@ -150,8 +151,6 @@ export module PlayerControler {
             if (this.player == null) {
                 return;
             }
-            //var vector = new Laya.Vector3(0,Controler.GameControler.StepLength,-1*Controler.GameControler.StepDistance/2);
-            // Laya.Vector3.scale(vector,this.Speed,vector);
             var vector: Laya.Vector3 = new Laya.Vector3(0, GameModule.VSpace, -GameModule.DSpace);
             Laya.Vector3.scale(vector,0.1,vector);
             this.player.Translate(vector);
