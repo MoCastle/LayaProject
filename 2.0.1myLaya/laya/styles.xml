@@ -1,0 +1,17 @@
+<res>
+   <item name="" type="" compress="0" pack="0" quality="80" props="" picType="0" scale="0"/>
+   <item name="comp/img_background_spr.png" type="Image" compress="0" pack="1" quality="80" props="" picType="0" scale="0"/>
+   <item name="comp/bg.jpg" type="Sprite" compress="0" pack="1" quality="80" props="" picType="0" scale="0"/>
+   <item name="entersceneui/res1/mainbg.jpg" type="Sprite" compress="0" pack="1" quality="80" props="" picType="0" scale="0"/>
+   <item name="entersceneui/res1/logo.png" type="Sprite" compress="0" pack="1" quality="80" props="" picType="0" scale="0"/>
+   <item name="entersceneui/res1/inputtextarea.png" type="Sprite" compress="0" pack="1" quality="80" props="" picType="0" scale="0"/>
+   <item name="entersceneui/res1/loadbgstart.png" type="Sprite" compress="0" pack="1" quality="80" props="" picType="0" scale="0"/>
+   <item name="entersceneui/res1/endgamedaizi.png" type="Sprite" compress="0" pack="1" quality="80" props="" picType="0" scale="0"/>
+   <item name="entersceneui/res1/infotiao.png" type="Sprite" compress="0" pack="1" quality="80" props="" picType="0" scale="0"/>
+   <item name="entersceneui/res2/endgamedaizi.png" type="Sprite" compress="0" pack="1" quality="80" props="" picType="0" scale="0"/>
+   <item name="entersceneui/res2/infotiao.png" type="Sprite" compress="0" pack="1" quality="80" props="" picType="0" scale="0"/>
+   <item name="entersceneui/res2/inputtextarea.png" type="Sprite" compress="0" pack="1" quality="80" props="" picType="0" scale="0"/>
+   <item name="entersceneui/res2/loadbgstart.png" type="Sprite" compress="0" pack="1" quality="80" props="" picType="0" scale="0"/>
+   <item name="entersceneui/res2/logo.png" type="Sprite" compress="0" pack="1" quality="80" props="" picType="0" scale="0"/>
+   <item name="entersceneui/res2/mainbg.jpg" type="Sprite" compress="0" pack="1" quality="80" props="" picType="0" scale="0"/>
+</res>
