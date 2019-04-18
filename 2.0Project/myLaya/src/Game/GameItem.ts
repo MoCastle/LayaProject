@@ -10,12 +10,14 @@ import { PlayerControler } from "./PlayerCtrler"
 import { Input } from "./Input";
 import Controler from "./../controler/GameControler"
 import { GameModule } from "./GameModule";
+import MountLine from "./MountLine";
+import Gamemap from "./GameMap";
 type AnimCoin = AnimObj.AnimCoin
 export module Item {
     //物品标识
     const ItemID: string = "Item";
     const ModelID: string = "Model"
-    
+
     export enum ModelType {
         Coin
     }
@@ -40,7 +42,7 @@ export module Item {
             this.Number = num;
         }
     }
-    export var BuffSlot:{[key:number]:number} ={};
+    export var BuffSlot: { [key: number]: number } = {};
     BuffSlot[ItemType.Collector] = 0;
     BuffSlot[ItemType.Protect] = 1;
     BuffSlot[ItemType.HolyProtect] = 1;
@@ -61,7 +63,7 @@ export module Item {
             this.RewardList.push(new LayItemMgr(10, 2, ItemType.Vine, 10));
             this.RewardList.push(new LayItemMgr(10, 1, ItemType.Coin));
 
-            //this.RewardList.push(new LayItemMgr(50, 100, ItemType.Fly, 20));
+            this.RewardList.push(new LayItemMgr(50, 10, ItemType.Fly, 20));
 
             this.RewardList.push(new LayItemMgr(50, 10, ItemType.Collector));
             this.RewardList.push(new LayItemMgr(50, 1, ItemType.Protect));
@@ -197,9 +199,9 @@ export module Item {
         return item;
     }
 
-    export function ItemBuffFactory(itemType: ItemType): BasePlayerBuff  {
+    export function ItemBuffFactory(itemType: ItemType): BasePlayerBuff {
         var buff: BasePlayerBuff = null;
-        switch (itemType)  {
+        switch (itemType) {
             case ItemType.Fly:
                 buff = new FlyBuff();
                 break;
@@ -275,10 +277,10 @@ export module Item {
             }
         }
 
-        public AddBuffToPlayer(player:Player,putBackItem:boolean = true): boolean  {
-            var Buff:BasePlayerBuff = ItemBuffFactory(this.ItemType);
-            var success:boolean = Buff.AddToPlayer(player);
-            if(success && putBackItem)
+        public AddBuffToPlayer(player: Player, putBackItem: boolean = true): boolean {
+            var Buff: BasePlayerBuff = ItemBuffFactory(this.ItemType);
+            var success: boolean = Buff.AddToPlayer(player);
+            if (success && putBackItem)
                 this.PutItem();
             return success;
         }
@@ -357,18 +359,15 @@ export module Item {
     }
 
     export abstract class BasePlayerBuff {
-        private m_Type:ItemType;
-        private m_Player:Player;
-        public get Type(): Item.ItemType
-        {
+        private m_Type: ItemType;
+        private m_Player: Player;
+        public get Type(): Item.ItemType {
             return this.m_Type;
         }
-        public get Slot(): number
-        {
+        public get Slot(): number {
             return BuffSlot[this.Type];
         }
-        public get player(): Player
-        {
+        public get player(): Player {
             return this.m_Player;
         }
         constructor(type: Item.ItemType) {
@@ -378,19 +377,18 @@ export module Item {
         }
 
         //向玩家添加BUFF
-        public AddToPlayer(player:Player):boolean
-        {
+        public AddToPlayer(player: Player): boolean {
             this.m_Player = player;
             player.AddBuff(this);
             return true;
         }
-        
+
         public abstract Start();
-        public RemoveSelf():void {
+        public RemoveSelf(): void {
             this.player.CompleteBuff(this.Slot);
         }
         public abstract Removed();
-        
+
     }
 
     class Rock extends StepItem {
@@ -443,7 +441,7 @@ export module Item {
         }
 
         TouchItem(player: Player) {
-            this.AddBuffToPlayer(player);  
+            this.AddBuffToPlayer(player);
         }
     }
     GameStruct.ItemDictType[ItemType.Protect] = Protect;
@@ -466,13 +464,11 @@ export module Item {
             }
         }
 
-        public Start()
-        {
+        public Start() {
 
         }
 
-        public Removed()
-        {
+        public Removed() {
         }
     }
     class HolyProtect extends StepItem {
@@ -555,8 +551,7 @@ export module Item {
         Start() {
             this.CountFloor = this.GameDir.GamePlay.PlayerFloor - 2;
         }
-        Removed()
-        {
+        Removed() {
 
         }
         Update() {
@@ -605,7 +600,8 @@ export module Item {
         Floor: number;
         private _FinalLocation: GameStruct.MLocation;
         private _FinalZ: number;
-        private m_FloorSwitch:number;
+        private m_FloorSwitch: number;
+
 
         constructor(speed: number = 0.15, floor: number = 10) {
             super(ItemType.Fly);
@@ -617,12 +613,14 @@ export module Item {
 
         Start() {
             var time: number = APP.TimeManager.GameTime;
-            var player:Player = this.player;
+            var player: Player = this.player;
             if (player.CurStep == null) {
                 this.RemoveSelf();
             }
+            var curLocation: GameStruct.MLocation = player.CurStep.Location
             this.m_FloorSwitch = player.CurStep.Floor.rightSwitch;
-            this._FinalLocation = player.CurStep.Location;
+            
+            this._FinalLocation = new GameStruct.MLocation(curLocation.X, curLocation.Y);
             this._FinalLocation.Y += this.Floor;
             this._FinalZ = player.Position.z - GameModule.DSpace * this.Floor;
 
@@ -633,13 +631,10 @@ export module Item {
             Controler.GameControler.GameDir.GamePlay.AddInputCtrler(new Input.DIYInput());
             Controler.GameControler.GameDir.GamePlay.SetSafePS(this._FinalLocation);
             player.FlyPrepare();
-            Controler.GameControler.GameDir.GamePlay.gameMap.SetNextFlpprDirSwitch(this.m_FloorSwitch);
         }
 
-        Removed()
-        {
-            var step: Step = Controler.GameControler.GameDir.GamePlay.GetStepByLocation(this._FinalLocation,this.m_FloorSwitch);
-            
+        Removed() {
+            var step: Step = Controler.GameControler.GameDir.GamePlay.GetStepByLocation(this._FinalLocation, this.m_FloorSwitch);
             this.player.LayStep(step);
             this.player.BaseCtrler.StartMove();
             this.player.PopCtrler();
@@ -658,7 +653,7 @@ export module Item {
 
     class Rope extends StepItem {
         TouchItem(player: Player) {
-            this.AddBuffToPlayer(player,false);
+            this.AddBuffToPlayer(player, false);
         }
         constructor(step: Step) {
             super(ItemType.Rope, step);
@@ -688,7 +683,7 @@ export module Item {
             }
         }
         Start() {
-            var player:Player = this.player;
+            var player: Player = this.player;
             this._FinalLocation = player.CurStep.Location;
             this._FinalLocation.Y += this.Floor;
             this._FinalZ = player.Position.z - GameModule.DSpace * this.Floor;
@@ -698,10 +693,12 @@ export module Item {
             player.AddCtrler(flyCtrl);
             Controler.GameControler.GameDir.GamePlay.AddInputCtrler(new Input.DIYInput(this, this._Input));
             Controler.GameControler.GameDir.GamePlay.SetSafePS(this._FinalLocation);
+            console.log(player.CurStep.Position);
         }
-        Removed()
-        {
+        Removed() {
             var step: Step = Controler.GameControler.GameDir.GamePlay.GetStepByLocation(this._FinalLocation);
+            console.log(step.Position);
+
             this.player.LayStep(step);
             this.player.BaseCtrler.StartMove();
             this.player.PopCtrler();
@@ -736,19 +733,17 @@ export module Item {
     }
 
     class Vine extends StepItem {
-        private m_BeTouched:boolean;
-        get Touched():boolean
-        {
+        private m_BeTouched: boolean;
+        get Touched(): boolean {
             return this.m_BeTouched;
         }
-        set Touched(value:boolean)
-        {
+        set Touched(value: boolean) {
             this.m_BeTouched = value
         }
         TouchItem(player: Player) {
-            if(this.Touched)
+            if (this.Touched)
                 return
-            this.AddBuffToPlayer(player,false);
+            this.AddBuffToPlayer(player, false);
             this.Touched = true;
         }
         constructor(step: Step) {

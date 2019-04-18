@@ -1,6 +1,5 @@
 import { Scene } from "./../../Scene/Scene"
 import SceneManager from "./../../FrameWork/SceneManager"
-import FW from "./../../FrameWork/FrameWork"
 import UIManager from "./../../FrameWork/UIManager"
 import EndGameUI from "./../../ui/EndGameUI"
 import { MessageMD } from "./../../FrameWork/MessageCenter"
@@ -194,7 +193,9 @@ export default class GameScenePlay extends Scene.BaseScenePlaye {
     GetStepByLocation(location: GameStruct.MLocation, rightSwitchNum: number = 0): Step {
         if (rightSwitchNum * rightSwitchNum > 0.001)  {
             var floor:MountLine = this.GetFloorByFloor(location.Y);
-            var getStep: Step = floor.GetStep(location.X + floor.rightSwitch - rightSwitchNum);
+            var distance: number =  Math.ceil(floor.rightSwitch/2) - Math.ceil(rightSwitchNum/2);
+            var floorIdx:number = location.X - distance;// - (1 + floor.OddSwitch);
+            var getStep: Step = floor.GetStep( floorIdx );
         }
         else
             var getStep: Step = this.GetFloorByFloor(location.Y).GetStep(location.X);
