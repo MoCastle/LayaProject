@@ -628,6 +628,7 @@ export module Item {
             Controler.GameControler.GameDir.GamePlay.AddInputCtrler(new Input.DIYInput());
             Controler.GameControler.GameDir.GamePlay.SetSafePS(this._FinalLocation);
             player.FlyPrepare();
+            Controler.GameControler.GameDir.GamePlay.gameMap.SetNextFlpprDirSwitch(this.m_FloorSwitch);
         }
 
         Removed() {
