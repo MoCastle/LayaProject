@@ -9,19 +9,22 @@ import { Character } from "./Character"
 import GameAPP from "./../controler/GameAPP"
 import CharacterManager from "../GameManager/CharacterMamager";
 import { GameModule } from "./GameModule";
+import CharactorAnimator from "./CharacterAnimator";
 var num: number = 0;
 //该脚本用于游戏玩家对象管理
 //玩家对象
 export default class Player extends Laya.Sprite3D {
     //私有属性
-    _LogicPosition: Laya.Vector3;
+    private m_Idx:number;
+    m_LogicPosition: Laya.Vector3;
     private _BuffNode: Laya.Sprite3D;
-    private _PlayerModel: Laya.Sprite3D;
+    private m_PlayerModel: Laya.Sprite3D;
     private _CurStep: Step;
     private _Ctrler: PlayerControler.BasePlayerCtrler;
     private m_Animator: Laya.Animator;
     private m_BuffModel: { [name: number]: Laya.Sprite3D }
     private m_StateMap: {}
+    private m_Parent:Laya.Sprite3D;
 
     BaseCtrler: PlayerControler.PlayerNormCtrler;
     BuffArr: Array<Item.BasePlayerBuff>;
@@ -36,36 +39,44 @@ export default class Player extends Laya.Sprite3D {
     }
     set Position(newPS: Laya.Vector3) {
         var newPS: Laya.Vector3 = newPS.clone();
-        this.transform.position = newPS;
+        this.m_Parent.transform.position = newPS;
     }
     get Position(): Laya.Vector3 {
-        return this.transform.position.clone();
+        return this.m_Parent.transform.position.clone();
     }
     get LogicPosition(): Laya.Vector3 {
-        return this._LogicPosition;
+        return this.m_LogicPosition;
     }
-
+    get playerModel(): Laya.Sprite3D  {
+        return this.m_PlayerModel;
+    }
     constructor() {
         super();
         this.m_BuffModel = {};
-        APP.SceneManager.CurScene.PutObj(this);
-
+        this.m_Parent = new Laya.Sprite3D();
+        this.m_Parent.name = "PlayerParent";
+        APP.SceneManager.CurScene.PutObj(this.m_Parent);
+        this.m_Parent.addChild(this);
+        this.transform.position = new Laya.Vector3();
+        this.transform.rotation = new Laya.Quaternion();
         //添加自定义模型
-        this.on(Laya.Event.REMOVED, this, () => { this.destroy() })
+        this.m_Parent.on(Laya.Event.REMOVED, this, () => { this.destroy() })
         var mgr: CharacterManager = GameAPP.CharacterMgr;
+        this.m_Idx = num;
+        ++num
     }
-    public Pause()  {
+    public Pause() {
         this.clearTimer(this, this._Update);
         this.m_Animator.speed = 0;
     }
-    public Continue()  {
+    public Continue() {
         this.frameLoop(1, this, this._Update);
         this.m_Animator.speed = 1;
     }
     private m_HeadNode: Laya.Sprite3D;
 
     private InitBUffModel(playerModel: Laya.Sprite3D) {
-        this._PlayerModel = playerModel;
+        this.m_PlayerModel = playerModel;
         this.m_HeadNode = new Laya.Sprite3D();
         var HeadNode: Laya.Sprite3D = playerModel.getChildByName("head") as Laya.Sprite3D;
         this.addChild(this.m_HeadNode);
@@ -95,18 +106,18 @@ export default class Player extends Laya.Sprite3D {
         this.m_BuffModel[itemType] = buffModel;
     }
 
-    public FaceModelTo(rotation: Laya.Quaternion)  {
-        this._PlayerModel.transform.rotation = rotation;
+    public FaceModelTo(rotation: Laya.Quaternion) {
+        this.m_PlayerModel.transform.rotation = rotation;
     }
-    public ModelRotateEular(vector:Laya.Vector3)
-    {
-        this._PlayerModel.transform.rotationEuler= vector;
+    public ModelRotateEular(vector: Laya.Vector3)  {
+        this.m_PlayerModel.transform.rotationEuler = vector;
     }
 
     public SetPlayerModel(model: Laya.Sprite3D) {
         this.addChild(model);
-        this.transform.rotate(new Laya.Vector3(0, 180, 0), false, false);
+        this.m_Parent.transform.rotate(new Laya.Vector3(0, 180, 0), false, false);
         this.m_Animator = model.getChildAt(0).getComponent(Laya.Animator);
+        //new CharactorAnimator(this.m_Animator);
         var layer: Laya.MapLayer = this.m_Animator.getControllerLayer()._statesMap;
         this.m_StateMap = {};
         for (var key in layer) {
@@ -124,7 +135,7 @@ export default class Player extends Laya.Sprite3D {
         this.BuffArr = new Array();
         this.BaseCtrler = new PlayerControler.PlayerNormCtrler(this);
         this._Ctrler = this.BaseCtrler;
-        this._LogicPosition = new Laya.Vector3(0, 0);
+        this.m_LogicPosition = new Laya.Vector3(0, 0);
         this.frameLoop(1, this, this._Update);
         var defaultAnimState: Laya.AnimatorState = this.m_Animator.getDefaultState();
         var stateName: string = defaultAnimState.name;
@@ -180,9 +191,10 @@ export default class Player extends Laya.Sprite3D {
         var newPS = putStep.Position.clone();
         newPS.y += Controler.GameControler.StepLength;
         this.Position = newPS;
-        this._LogicPosition = putStep.Position;
+        this.m_LogicPosition = putStep.Position;
         this.m_Animator.play(Character.PlayerAnimName(Character.AnimEnum.Stand));
         this.TouchGround();
+        this.CurStep.StandOnGround(this)
     }
 
     /**
@@ -191,7 +203,7 @@ export default class Player extends Laya.Sprite3D {
      */
     LayStep(step: Step): void {
         this.CurStep = step;
-        this._LogicPosition = step.Position;
+        this.m_LogicPosition = step.Position;
     }
 
     StartMove(): void {
@@ -219,7 +231,7 @@ export default class Player extends Laya.Sprite3D {
                 this.m_Animator.play(clipName);
             return;
         }
-        this.CurStep.StepItem.TouchItem(this);
+        this.CurStep.TouchGround(this);
     }
 
     /**
@@ -227,8 +239,8 @@ export default class Player extends Laya.Sprite3D {
      * @param {Laya.Vector3} vector 移动向量值
      */
     Translate(vector: Laya.Vector3): void {
-        this.transform.translate(vector, false);
-        Laya.Vector3.add(this._LogicPosition, vector, this._LogicPosition);
+        this.m_Parent.transform.translate(vector, false);
+        Laya.Vector3.add(this.m_LogicPosition, vector, this.m_LogicPosition);
     }
 
     /**
@@ -269,6 +281,12 @@ export default class Player extends Laya.Sprite3D {
 
     FlyPrepare() {
         this.CurStep = null;
+    }
+
+    ResetParenet()
+    {
+        this.m_Parent.addChild(this);
+        this.transform.position = this.m_Parent.transform.position.clone();
     }
 }
 

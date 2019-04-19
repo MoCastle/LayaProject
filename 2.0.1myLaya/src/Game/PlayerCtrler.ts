@@ -65,6 +65,7 @@ export module PlayerControler {
         }
 
         StartMove() {
+            this.player.ResetParenet();
             this.Time = APP.TimeManager.GameTime + Controler.GameControler.PlayerMoveTime;
             this.IsFalling = false;
             this.m_StartPS = this.player.Position;
@@ -80,7 +81,6 @@ export module PlayerControler {
             startPS.z = -startPS.z;
             Laya.Quaternion.lookAt(startPS, lookToPS, upDir, rotation);
             this.player.FaceModelTo(rotation)
-            
         }
 
         protected _Update(): void {
@@ -150,8 +150,6 @@ export module PlayerControler {
             if (this.player == null) {
                 return;
             }
-            //var vector = new Laya.Vector3(0,Controler.GameControler.StepLength,-1*Controler.GameControler.StepDistance/2);
-            // Laya.Vector3.scale(vector,this.Speed,vector);
             var vector: Laya.Vector3 = new Laya.Vector3(0, GameModule.VSpace, -GameModule.DSpace);
             Laya.Vector3.scale(vector,0.1,vector);
             this.player.Translate(vector);

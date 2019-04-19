@@ -44,7 +44,7 @@ export default class Gamemap extends Laya.Node {
      * @param column 列数
      */
     constructor(floorNum: number, column: number) {
-        //floorNum = 3;
+        //floorNum = 5;
         //column = 5;
         super();
         this.m_MountLines = [];
@@ -55,6 +55,7 @@ export default class Gamemap extends Laya.Node {
         this.m_CurLineBarriers = new Array<Item.LineItemInfo>();
         this.m_CurLineRewards = new Array<Item.LineItemInfo>();
         this.m_rightSwitchCount = 0;
+        this.m_SafeLocation = new GameStruct.MLocation(-1,-1);
         for (var idx = 0; idx < floorNum; ++idx) {
             var newMountain = new MountLine(idx, column, idx)
             this.m_MountLines[idx] = newMountain;
@@ -71,9 +72,9 @@ export default class Gamemap extends Laya.Node {
         for (var idx: number = 0; idx < lines.length; ++idx) {
             var line: MountLine = lines[idx];
             line.SetLine(idx, this.CountNextFloorDirSwith());
-            if (idx != startFloor && idx > 1)
+            if (idx > 1)
                 lines[idx - 1].SetNextFloor(line);
-            else {
+            if (idx == startFloor) {
                 var PlayerStep = line.GetStep(Math.floor(line.Length / 2));
                 PlayerStep.IsDeadRoad = false;
                 this.m_SafeLocation = PlayerStep.Location;
@@ -206,7 +207,7 @@ export default class Gamemap extends Laya.Node {
             } else {
                 safeStepList.push(getStep);
             }
-        } console.log(safeStepList);
+        } 
         //放陷阱
         var barriersList: Array<Item.LineItemInfo> = this.m_CurLineBarriers;
         this.OrginizePutItem(barriersList, randomPool, true);
@@ -262,6 +263,8 @@ export default class Gamemap extends Laya.Node {
 
         var roadNum: number = 0;
         var lastFloor: MountLine = this.GetFloorByFloor(floor - 1);
+        if(!lastFloor)
+            return safeMap;
         var safeIdx: string = "";
         if (floor == this.m_SafeLocation.Y) {
             this._ResetStepInfo(thisFloor);
@@ -321,10 +324,7 @@ export default class Gamemap extends Laya.Node {
                     step.IsDeadRoad = true;
                 }
             }
-            if (safeIdx == "")
-                console.log("Error");
         }
-
         return safeMap;
     }
 
@@ -363,7 +363,7 @@ export default class Gamemap extends Laya.Node {
         this.m_HeadFloorIdx = (this.m_HeadFloorIdx + 1) % this.MountLines.length;
         this.m_TailFLoorIdx = (this.m_TailFLoorIdx + 1) % this.MountLines.length;
         var Headfloor: number = preHead.FloorNum + 1;
-        this.m_rightSwitchCount += dir;
+        this.AddSwitch(dir);
         this.HeadFloor.SetLine(Headfloor, this.CountNextFloorDirSwith());
         preHead.SetNextFloor(this.HeadFloor);
         this.PutItemInLine(Headfloor);

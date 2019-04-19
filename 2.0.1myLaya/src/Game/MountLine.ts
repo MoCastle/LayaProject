@@ -4,7 +4,6 @@ import APP from "./../controler/APP"
 import Controler from "./../controler/GameControler"
 import { GameModule } from "./GameModule";
 type StepItem = Item.StepItem;
-var HSpace: number;
 var VSpace: number;
 var DSpace: number;
 /**作者:Mo
@@ -19,6 +18,7 @@ export default class MountLine extends Laya.Sprite3D {
     LineIdx: number;
     FloorNum: number;
     StepItem: StepItem;
+    OddSwitch: number;
     get rightSwitch(): number {
         return this.m_RightSwitch;
     }
@@ -34,10 +34,8 @@ export default class MountLine extends Laya.Sprite3D {
     }
 
     constructor(lineIdx: number, Columb: number, floor: number = 0) {
-        HSpace = GameModule.HSpace//hSpace;
         VSpace = GameModule.VSpace;
         DSpace = GameModule.DSpace;
-       
         var columns: number = Columb;
         super();
         this.m_RightSwitch = 0;
@@ -51,7 +49,7 @@ export default class MountLine extends Laya.Sprite3D {
             this.m_StepList[StartIdx] = newStep;
             var stepVector = newStep.Position;
             stepVector.x = startX;
-            startX += HSpace;
+            startX += GameModule.HSpace;
             newStep.transform.position = stepVector;
         }
         this.transform.position = new Laya.Vector3();
@@ -67,6 +65,7 @@ export default class MountLine extends Laya.Sprite3D {
     //设置每层
     SetLine(floor: number, rightSwitch: number): void {
         this.m_RightSwitch = rightSwitch;
+        this.OddSwitch = 0;
         this.LayOutDirty = false;
         this.active = true;
         this.FloorNum = floor;
@@ -87,36 +86,24 @@ export default class MountLine extends Laya.Sprite3D {
 
     //将每个节点链接到下一层
     SetNextFloor(lastFloor: MountLine): void {
-        var dir:number = lastFloor.rightSwitch - this.rightSwitch;
-        var switchDir: number = 0;
-        if (dir * dir > 0.01) {
-            switchDir = dir;
-            /*
-            if (dir > 0)
-                switchDir = 1;
-            else
-                switchDir = -1;
-                */
-        } else  {
-            if (this.JugIsOdd())  {
-                switchDir = -1;
-            } else  {
-                switchDir = 1;
-            }
-        }
+        var distance: number =  Math.ceil(lastFloor.rightSwitch/2) - Math.ceil(this.rightSwitch/2);
+        var oddSwitch: number = 0;
         var position: Laya.Vector3 = lastFloor.Position;
-        position.x = this.Position.x + switchDir * HSpace / 2;
+        
+        if (this.JugIsOdd()) {
+            oddSwitch = -1;
+        } else {
+            oddSwitch = 0;
+        }
+        position.x = Math.ceil(lastFloor.rightSwitch/2) * GameModule.HSpace + oddSwitch * GameModule.HSpace / 2 ;
+        lastFloor.OddSwitch = oddSwitch
         lastFloor.Position = position;
         //判断是否有两头端点
         for (var startIdx: number = 0; startIdx < this.m_StepList.length; ++startIdx) {
             var leftParent: Step = null;
             var rightParent: Step = null;
-            var leftParentIdx: number = startIdx;
-            if (switchDir > 0) {
-                leftParentIdx = leftParentIdx - switchDir;
-            } else {
-                leftParentIdx = leftParentIdx;
-            }
+            var leftParentIdx: number = startIdx - distance - (1 + oddSwitch);
+
             leftParent = lastFloor.GetStep(leftParentIdx);
             rightParent = lastFloor.GetStep(leftParentIdx + 1);
             var thiStep = this.GetStep(startIdx);

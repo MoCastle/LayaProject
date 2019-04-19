@@ -96,7 +96,7 @@ class GameCameraCtrler extends BaseGameCameraCtrler {
 
         this.Camera.DynamicPS =CameraPS;*/
         var CameraPS = this.Camera.DynamicPS;
-        var PlayerPS = this.Camera.Player._LogicPosition;
+        var PlayerPS = this.Camera.Player.m_LogicPosition;
         CameraPS.x = 0;
         var disNum = PlayerPS.y - CameraPS.y;
         var disZNum = PlayerPS.z - CameraPS.z;
