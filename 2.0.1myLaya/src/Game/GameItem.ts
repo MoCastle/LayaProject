@@ -62,7 +62,7 @@ export module Item {
             this.RewardList.push(new LayItemMgr(10, 2, ItemType.Vine, 10));
             this.RewardList.push(new LayItemMgr(10, 1, ItemType.Coin));
 
-            this.RewardList.push(new LayItemMgr(50, 1, ItemType.Fly, 20));
+            this.RewardList.push(new LayItemMgr(50, 50, ItemType.Fly, 20));
 
             this.RewardList.push(new LayItemMgr(50, 10, ItemType.Collector));
             this.RewardList.push(new LayItemMgr(50, 1, ItemType.Protect));
@@ -622,13 +622,11 @@ export module Item {
             this._FinalZ = player.Position.z - GameModule.DSpace * this.Floor;
 
             var flyCtrl = new PlayerControler.PlayerFly(this.Speed);
-            flyCtrl.SetPlayer(player)
             player.AddCtrler(flyCtrl);
             player.Fly();
             Controler.GameControler.GameDir.GamePlay.AddInputCtrler(new Input.DIYInput());
             Controler.GameControler.GameDir.GamePlay.SetSafePS(this._FinalLocation);
             player.FlyPrepare();
-            Controler.GameControler.GameDir.GamePlay.gameMap.SetNextFlpprDirSwitch(this.m_FloorSwitch);
         }
 
         Removed() {

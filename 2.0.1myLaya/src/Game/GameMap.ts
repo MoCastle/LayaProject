@@ -55,14 +55,14 @@ export default class Gamemap extends Laya.Node {
         this.m_CurLineBarriers = new Array<Item.LineItemInfo>();
         this.m_CurLineRewards = new Array<Item.LineItemInfo>();
         this.m_rightSwitchCount = 0;
-        this.m_SafeLocation = new GameStruct.MLocation(-1,-1);
+        this.m_SafeLocation = new GameStruct.MLocation(-1, -1);
         for (var idx = 0; idx < floorNum; ++idx) {
             var newMountain = new MountLine(idx, column, idx)
             this.m_MountLines[idx] = newMountain;
             this.addChild(newMountain);
         }
     }
-    
+
     public Init(startFloor: number) {
         var lines: MountLine[] = this.m_MountLines;
         startFloor = (!startFloor) && (startFloor < 0) && (startFloor >= lines.length) ? 0 : startFloor;
@@ -81,12 +81,15 @@ export default class Gamemap extends Laya.Node {
             }
             this.PutItemInLine(idx);
         }
+        for (var startFloorNum: number = 0; startFloorNum < startFloor; ++startFloorNum)  {
+            lines[startFloorNum].active = false;
+        }
     }
 
     public CountNextFloorDirSwith(): number {
         return this.m_rightSwitchCount;
     }
-    public SetNextFlpprDirSwitch(num: number)  {
+    public SetNextFlpprDirSwitch(num: number) {
         this.m_rightSwitchCount = num;
     }
 
@@ -207,7 +210,7 @@ export default class Gamemap extends Laya.Node {
             } else {
                 safeStepList.push(getStep);
             }
-        } 
+        }
         //放陷阱
         var barriersList: Array<Item.LineItemInfo> = this.m_CurLineBarriers;
         this.OrginizePutItem(barriersList, randomPool, true);
@@ -263,7 +266,7 @@ export default class Gamemap extends Laya.Node {
 
         var roadNum: number = 0;
         var lastFloor: MountLine = this.GetFloorByFloor(floor - 1);
-        if(!lastFloor)
+        if (!lastFloor)
             return safeMap;
         var safeIdx: string = "";
         if (floor == this.m_SafeLocation.Y) {
@@ -370,6 +373,7 @@ export default class Gamemap extends Laya.Node {
 
         return true;
     }
+
     public AddSwitch(dir: number = 0) {
         if (dir > 0.01)
             this.m_rightSwitchCount += 1;
@@ -377,6 +381,7 @@ export default class Gamemap extends Laya.Node {
             this.m_rightSwitchCount -= 1;
     }
 }
+
 class StepInfo {
     parentID: number;
 

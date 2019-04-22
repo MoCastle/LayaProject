@@ -25,16 +25,14 @@ import { GameModule } from "../../Game/GameModule";
 
 type LineItemInfo = Item.LineItemInfo;
 var ItemType = Item.ItemType;
-
 var FallTime: number = 2;
-
 var lineNum: number = 12;
 var column: number = 12;
+
 //游戏导演
 export default class GameScenePlay extends Scene.BaseScenePlaye {
     //内部功能
     private _CountFloorTime: number;
-    private m_BootomFloor: number;
     private _StartPosition: Laya.Vector3;
     private _GameUpdate: () => void;
     private _PanelUI: GameUI;
@@ -43,6 +41,8 @@ export default class GameScenePlay extends Scene.BaseScenePlaye {
     private _CurBG: BGUI;
     private _SafeLocation: GameStruct.MLocation;
     private m_GameMap: Gamemap;
+    private m_BootomFloor: number;
+    private m_StartFloor: number;
 
     Camera: GameCamera;
     Player: Player;
@@ -50,7 +50,7 @@ export default class GameScenePlay extends Scene.BaseScenePlaye {
     CurLineBarriers: Array<LineItemInfo>;
     name: number;
     FreshBGCount: number;
-    get gameMap(): Gamemap  {
+    get gameMap(): Gamemap {
         return this.m_GameMap;
     }
     get ColumsNum(): number {
@@ -86,9 +86,11 @@ export default class GameScenePlay extends Scene.BaseScenePlaye {
         return this.m_GoldNum;
     }
     get CountFloorTime(): number {
-        var between: number = this.Distance - this.m_BootomFloor;
-        between = between > 3 ? 3 : between;
-        return this._CountFloorTime - between / 3 * FallTime;
+        this.m_BootomFloor = this.m_BootomFloor < this.m_GameMap.TailFLoor.FloorNum ? this.m_GameMap.TailFLoor.FloorNum :this.m_BootomFloor;
+        var between: number = this.Distance + this.m_StartFloor - this.m_BootomFloor;//this.m_GameMap.TailFLoor;
+        var rangeNum: number = 2;
+        between = between > rangeNum ? rangeNum : between;
+        return this._CountFloorTime - between / rangeNum * FallTime;
     }
 
     constructor() {
@@ -98,12 +100,12 @@ export default class GameScenePlay extends Scene.BaseScenePlaye {
         this.InputCtrl = null;
         this.CurLineBarriers = null;
         this._CountFloorTime = 0;
-        this.m_BootomFloor = 0;
         this._StartPosition = new Laya.Vector3();
         this._PanelUI = null;
         this._CurBG = APP.SceneManager.BG as BGUI;
         this.FreshBGCount = 0;
         this.m_GameMap = new Gamemap(lineNum, column);
+        this.m_StartFloor = 3;
     }
 
     AddInputCtrler(value: Input.BaseGameInput) {
@@ -157,6 +159,8 @@ export default class GameScenePlay extends Scene.BaseScenePlaye {
 
     //左右移动
     MoveStep(isRight: boolean) {
+        if (this.Player.CurStep.locked)
+            return;
         //var buff = this.Buffer;
         //获取下一层的Step
         var step: Step = this.Player.CurStep;
@@ -192,11 +196,11 @@ export default class GameScenePlay extends Scene.BaseScenePlaye {
      * @param location 索引,层数
      */
     GetStepByLocation(location: GameStruct.MLocation, rightSwitchNum: number = 0): Step {
-        if (rightSwitchNum * rightSwitchNum > 0.001)  {
-            var floor:MountLine = this.GetFloorByFloor(location.Y);
-            var distance: number =  Math.ceil(floor.rightSwitch/2) - Math.ceil(rightSwitchNum/2);
-            var floorIdx:number = location.X - distance;// - (1 + floor.OddSwitch);
-            var getStep: Step = floor.GetStep( floorIdx );
+        if (rightSwitchNum * rightSwitchNum > 0.001) {
+            var floor: MountLine = this.GetFloorByFloor(location.Y);
+            var distance: number = Math.ceil(floor.rightSwitch / 2) - Math.ceil(rightSwitchNum / 2);
+            var floorIdx: number = location.X - distance;// - (1 + floor.OddSwitch);
+            var getStep: Step = floor.GetStep(floorIdx);
         }
         else
             var getStep: Step = this.GetFloorByFloor(location.Y).GetStep(location.X);
@@ -226,7 +230,6 @@ export default class GameScenePlay extends Scene.BaseScenePlaye {
 
     //进入游戏的设置放这里 重新开始走这里
     protected StartGame() {
-
         APP.SceneManager.CurScene.SceneObj.ambientColor = new Laya.Vector3(1, 1, 1)
         GameAgent.Agent.ResetGameItem();
         GameAgent.Agent.ResetSkillItem();
@@ -234,7 +237,8 @@ export default class GameScenePlay extends Scene.BaseScenePlaye {
         //创建输入控制器
         this.InputCtrl = new Input.NormGameInput(this);
         this.Player.Reset();
-        this.m_GameMap.Init(3);
+        var startFloor: number = this.m_StartFloor;
+        this.m_GameMap.Init(startFloor);
         this.Player.SetStep(this.m_GameMap.GetSafeStep());
         this._StartPosition = this.Player.Position;
         this.Camera.Reset(new Laya.Vector3(), new Laya.Vector3(0, Controler.GameControler.StepLength * 10.5, Controler.GameControler.StepLength * 9), this.Player);
@@ -246,9 +250,9 @@ export default class GameScenePlay extends Scene.BaseScenePlaye {
         this.PanelUI.RegistClickSkillItem(this, this.UseSkillItem);
         this.PanelUI.Gold = 0;
         this._CountFloorTime = this.GameTime + 4;
-        this.m_BootomFloor = 0;
         this._GameUpdate = this._StartCount;
         WechatOpen.getInstances().drawpass(0);
+        this.m_BootomFloor = startFloor;
     }
 
     public Update(): void {
@@ -281,11 +285,11 @@ export default class GameScenePlay extends Scene.BaseScenePlaye {
         if (distance > 3) {
             this._PushFLoor();
         }
-        //if (this._CountFloorTime < APP.TimeManager.GameTime) {
+
         if (this.CountFloorTime < APP.TimeManager.GameTime) {
             this._CountFloorTime = APP.TimeManager.GameTime + FallTime;
-            //this._DestroyLine(this.m_BootomFloor);
-            this.m_BootomFloor += 1;
+            this._DestroyLine(this.m_BootomFloor);
+            ++this.m_BootomFloor;
         }
         this.InputCtrl.Update();
     }

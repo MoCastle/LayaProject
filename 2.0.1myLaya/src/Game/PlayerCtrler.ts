@@ -55,12 +55,12 @@ export module PlayerControler {
             this.IsFalling = true;
         }
 
-        OnStart(): void  {
+        OnStart(): void {
             this.Time = APP.TimeManager.GameTime + Controler.GameControler.PlayerMoveTime;
             this.IsFalling = true;
         }
 
-        OnComplete(): void  {
+        OnComplete(): void {
 
         }
 
@@ -133,12 +133,14 @@ export module PlayerControler {
          */
         SetPlayer(player: Player) {
             super.SetPlayer(player);
-            player.Translate(new Laya.Vector3(0, GameModule.VSpace, 0));
+            var stepPS: Laya.Vector3 = player.CurStep.Position;
+            stepPS.y += GameModule.VSpace;
+            //player.Translate(new Laya.Vector3(0, GameModule.VSpace, 0));
+            player.Position = stepPS;
             player.transform.rotationEuler = new Laya.Vector3(0, 180, 0);
             player.ModelRotateEular(new Laya.Vector3(0, 180, 0));
         }
 
-        //
         private _FinalLocation: GameStruct.MLocation;
         private _FinalZ: number;
         constructor(speed: number) {
@@ -151,12 +153,12 @@ export module PlayerControler {
                 return;
             }
             var vector: Laya.Vector3 = new Laya.Vector3(0, GameModule.VSpace, -GameModule.DSpace);
-            Laya.Vector3.scale(vector,0.1,vector);
+            Laya.Vector3.scale(vector, 0.06, vector);
             this.player.Translate(vector);
         }
 
-        public OnComplete(): void  { }
-        public OnStart(): void  { 
+        public OnComplete(): void { }
+        public OnStart(): void {
         }
     }
 }

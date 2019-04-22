@@ -6,15 +6,17 @@ export module Character
         Fly,
         Fall,
         Jump,
-        Jumpdown
+        Jumpdown,
+        Die
     }
     var AnimType:{[name:number]:string};
     AnimType = {};
-    AnimType[AnimEnum.Stand] = "stand";
-    AnimType[AnimEnum.Jump] = "jumpup";
-    AnimType[AnimEnum.Jumpdown] = "jumpdown";
+    AnimType[AnimEnum.Stand] = "idle";
+    AnimType[AnimEnum.Jump] = "jumpUp";
+    AnimType[AnimEnum.Jumpdown] = "jumpDown";
     AnimType[AnimEnum.Fly] = "fly";
     AnimType[AnimEnum.Fall] = "fall";
+    AnimType[AnimEnum.Die] = "die";
     export function PlayerAnimName( nameEnum:AnimEnum ):string
     {
         return AnimType[nameEnum];
