@@ -5,6 +5,8 @@
 		"props":{
 			"name":"c001_child_01",
 			"active":true,
+			"isStatic":false,
+			"layer":0,
 			"position":[
 				0,
 				0,
@@ -22,11 +24,12 @@
 				1
 			]
 		},
+		"components":[],
 		"child":[
 			{
 				"type":"Sprite3D",
 				"props":{
-					"name":"c001_child_01_stand",
+					"name":"daiji",
 					"active":true,
 					"isStatic":false,
 					"layer":0,
@@ -51,7 +54,7 @@
 					{
 						"type":"Animator",
 						"avatar":{
-							"path":"Assets/c001_child_01_stand-c001_child_01_stand-c001_child_01_standAvatar.lav",
+							"path":"Assets/Resource/c001_child_01/daiji-daiji-daijiAvatar.lav",
 							"linkSprites":{}
 						},
 						"layers":[
@@ -61,24 +64,28 @@
 								"blendingMode":0,
 								"states":[
 									{
-										"name":"stand",
-										"clipPath":"Assets/c001_child_01_stand-stand.lani"
+										"name":"idle",
+										"clipPath":"Assets/Resource/c001_child_01/daiji-Take 001.lani"
 									},
 									{
 										"name":"fly",
-										"clipPath":"Assets/fly-fly.lani"
+										"clipPath":"Assets/Resource/c001_child_01/feixing-Take 001.lani"
+									},
+									{
+										"name":"die",
+										"clipPath":"Assets/Resource/c001_child_01/siwang-Take 001.lani"
+									},
+									{
+										"name":"jumpDown",
+										"clipPath":"Assets/Resource/c001_child_01/tiaoyue-JumpDown.lani"
+									},
+									{
+										"name":"jumpUp",
+										"clipPath":"Assets/Resource/c001_child_01/tiaoyue-JumpUp.lani"
 									},
 									{
 										"name":"fall",
-										"clipPath":"Assets/fall-fall.lani"
-									},
-									{
-										"name":"jumpdown",
-										"clipPath":"Assets/jump-jumpdown.lani"
-									},
-									{
-										"name":"jumpup",
-										"clipPath":"Assets/jump-jumpup.lani"
+										"clipPath":"Assets/Resource/c001_child_01/xiazui-Take 001.lani"
 									}
 								]
 							}
@@ -115,8 +122,8 @@
 							"boundBox":{
 								"min":[
 									-0.3555192,
-									-0.3523355,
-									-0.4429441
+									-0.3523354,
+									-0.4429442
 								],
 								"max":[
 									1.020714,
@@ -135,10 +142,10 @@
 							"materials":[
 								{
 									"type":"Laya.BlinnPhongMaterial",
-									"path":"Assets/Materials/c001_child_01.lmat"
+									"path":"Assets/Resource/c001_child_01/c001_child_01_mat.lmat"
 								}
 							],
-							"meshPath":"Assets/c001_child_01_stand-c001_child_01.lm"
+							"meshPath":"Assets/Resource/c001_child_01/daiji-c001_child_01.lm"
 						},
 						"components":[],
 						"child":[]
@@ -153,20 +160,20 @@
 					"isStatic":false,
 					"layer":0,
 					"position":[
-						-0.013426,
-						1.4272,
-						0.15733
+						-0.0649842,
+						1.647,
+						0.1716583
 					],
 					"rotation":[
 						0,
-						1,
 						0,
-						0
+						0,
+						-1
 					],
 					"scale":[
-						0.7558601,
-						0.75586,
-						0.75586
+						1,
+						1,
+						1
 					]
 				},
 				"components":[],
