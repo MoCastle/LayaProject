@@ -25,7 +25,7 @@ import { GameModule } from "../../Game/GameModule";
 
 type LineItemInfo = Item.LineItemInfo;
 var ItemType = Item.ItemType;
-var FallTime: number = 2;
+var FallTime: number = 3;
 var lineNum: number = 12;
 var column: number = 12;
 
@@ -88,7 +88,7 @@ export default class GameScenePlay extends Scene.BaseScenePlaye {
     get CountFloorTime(): number {
         this.m_BootomFloor = this.m_BootomFloor < this.m_GameMap.TailFLoor.FloorNum ? this.m_GameMap.TailFLoor.FloorNum :this.m_BootomFloor;
         var between: number = this.Distance + this.m_StartFloor - this.m_BootomFloor;//this.m_GameMap.TailFLoor;
-        var rangeNum: number = 2;
+        var rangeNum: number = 3;
         between = between > rangeNum ? rangeNum : between;
         return this._CountFloorTime - between / rangeNum * FallTime;
     }
@@ -322,7 +322,6 @@ export default class GameScenePlay extends Scene.BaseScenePlaye {
     _DestroyLine(floor: number) {
         if (this.m_GameMap.GetFloorByFloor(floor)) {
             this.m_GameMap.BreakLine(floor);
-            this.Player.TouchGround();
         }
     }
 

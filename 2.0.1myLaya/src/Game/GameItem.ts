@@ -276,7 +276,7 @@ export module Item {
 
             }
         }
-
+        
         public AddBuffToPlayer(player: Player, putBackItem: boolean = true): boolean {
             var Buff: BasePlayerBuff = ItemBuffFactory(this.ItemType);
             var success: boolean = Buff.AddToPlayer(player);
@@ -419,9 +419,9 @@ export module Item {
             if (this.BreakProtect(player))
                 this.PutItem();
             else {
-                APP.MessageManager.Fire(MessageMD.GameEvent.PlayerDeath);
-                var anim: Laya.Animator = this.Model.getChildAt(0).getComponent(Laya.Animator);
-                anim.play("touch");
+                //APP.MessageManager.Fire(MessageMD.GameEvent.PlayerDeath);
+                //var anim: Laya.Animator = this.Model.getChildAt(0).getComponent(Laya.Animator);
+                //anim.play("touch");
             }
         }
     }
@@ -489,19 +489,22 @@ export module Item {
     class Coin extends StepItem {
         //ToDo
         private m_touched: Boolean
+        
+        constructor(step: Step) {
+            super(ItemType.Coin, step);
+        }
+
         FlyToPlayer(player: Player) {
             var conin: AnimCoin = AnimObj.GenAnimObj<AnimCoin>(AnimObj.AnimCoin, this.Model);
             conin.SetTarget(player);
             Controler.GameControler.GameDir.GamePlay.AddGoldUnLogicGold(1);
             this.PutItem();
         }
+        
         TouchItem(player: Player) {
             Controler.GameControler.GameDir.GamePlay.AddGold(1);
 
             this.PutItem();
-        }
-        constructor(step: Step) {
-            super(ItemType.Coin, step);
         }
 
         //由父类统一管理模型生成
@@ -623,7 +626,6 @@ export module Item {
 
             var flyCtrl = new PlayerControler.PlayerFly(this.Speed);
             player.AddCtrler(flyCtrl);
-            player.Fly();
             Controler.GameControler.GameDir.GamePlay.AddInputCtrler(new Input.DIYInput());
             Controler.GameControler.GameDir.GamePlay.SetSafePS(this._FinalLocation);
             player.FlyPrepare();

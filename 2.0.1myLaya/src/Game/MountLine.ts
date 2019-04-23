@@ -42,7 +42,7 @@ export default class MountLine extends Laya.Sprite3D {
         this.LineIdx = lineIdx;
         this.FloorNum = floor;
         this.m_StepList = [];
-        var startX:number = 0;
+        var startX: number = 0;
         for (var StartIdx: number = 0; StartIdx < columns; ++StartIdx) {
             var newStep: Step = new Step(this, StartIdx);
             this.addChild(newStep);
@@ -86,16 +86,16 @@ export default class MountLine extends Laya.Sprite3D {
 
     //将每个节点链接到下一层
     SetNextFloor(lastFloor: MountLine): void {
-        var distance: number =  Math.ceil(lastFloor.rightSwitch/2) - Math.ceil(this.rightSwitch/2);
+        var distance: number = Math.ceil(lastFloor.rightSwitch / 2) - Math.ceil(this.rightSwitch / 2);
         var oddSwitch: number = 0;
         var position: Laya.Vector3 = lastFloor.Position;
-        
+
         if (this.JugIsOdd()) {
             oddSwitch = -1;
         } else {
             oddSwitch = 0;
         }
-        position.x = Math.ceil(lastFloor.rightSwitch/2) * GameModule.HSpace + oddSwitch * GameModule.HSpace / 2 ;
+        position.x = Math.ceil(lastFloor.rightSwitch / 2) * GameModule.HSpace + oddSwitch * GameModule.HSpace / 2;
         lastFloor.OddSwitch = oddSwitch
         lastFloor.Position = position;
         //判断是否有两头端点
@@ -116,7 +116,11 @@ export default class MountLine extends Laya.Sprite3D {
 
     //敲碎一层
     Break(): void {
-        this.active = false;
+        var stepList: Array<Step> = this.m_StepList;
+        for (var idx: number = 0; idx < stepList.length; ++idx)  {
+            var thisStep:Step = stepList[idx];
+            thisStep.Break();
+        }
     }
 
     public Continue() {

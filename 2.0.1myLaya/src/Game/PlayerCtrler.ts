@@ -103,6 +103,7 @@ export module PlayerControler {
                             this.IsFalling = true;
                             this.player.JumpDown();
                             this.player.TouchGround();
+                            return;
                         }
                         moveTimeRate = (rate - fallTimePoint) / (1 - fallTimePoint);
                         targetPS = this.m_TargetPS;
@@ -118,14 +119,15 @@ export module PlayerControler {
                     Laya.Vector3.lerp(startPS, targetPS, moveTimeRate, newPs);
                     this.player.Position = newPs;
                 }
-            } else {
-                this.player.TouchGround();
-            }
+            } 
         }
     }
 
     //玩家飞行
     export class PlayerFly extends BasePlayerCtrler {
+        private _FinalLocation: GameStruct.MLocation;
+        private _FinalZ: number;
+
         Speed: number;
         /**
          * 设置玩家
@@ -133,16 +135,15 @@ export module PlayerControler {
          */
         SetPlayer(player: Player) {
             super.SetPlayer(player);
-            var stepPS: Laya.Vector3 = player.CurStep.Position;
-            stepPS.y += GameModule.VSpace;
-            //player.Translate(new Laya.Vector3(0, GameModule.VSpace, 0));
+            player.ResetParenet();
+            player.Fly();
+            var stepPS: Laya.Vector3 = player.CurStep.standPoint.transform.position.clone();
+            stepPS.y += GameModule.VSpace ;
             player.Position = stepPS;
             player.transform.rotationEuler = new Laya.Vector3(0, 180, 0);
             player.ModelRotateEular(new Laya.Vector3(0, 180, 0));
         }
 
-        private _FinalLocation: GameStruct.MLocation;
-        private _FinalZ: number;
         constructor(speed: number) {
             super(null);
             this.Speed = speed;
