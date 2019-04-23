@@ -95,6 +95,7 @@ export default class Step extends Laya.Sprite3D {
     PutItem(itemEnume: Item.ItemType) {
         if (itemEnume == Item.ItemType.Empty) {
             this.active = false;
+            this.locked = true;
             return;
         } else {
             this.active = true;
@@ -114,7 +115,7 @@ export default class Step extends Laya.Sprite3D {
         this.RoadNum = 0;
         this.active = true;
         this.locked = false;
-        this.m_CharacterAnimator.Play("idle")
+        this.m_CharacterAnimator.play("idle")
         var position: Laya.Vector3 = this.transform.localPosition;
         position.y = 0;
         this.transform.localPosition = position;
@@ -128,13 +129,13 @@ export default class Step extends Laya.Sprite3D {
             var newSprite: Laya.Sprite3D = this.m_StandPoint;
             newSprite.addChild(player);
         }
-        this.m_CharacterAnimator.Play("fall")
+        this.m_CharacterAnimator.play("fall")
     }
     public PutInItem(sprite3D: Laya.Sprite3D) {
         this.m_StandPoint.addChild(sprite3D);
     }
     public Break() {
-        this.m_CharacterAnimator.Play("fallDown");
+        this.m_CharacterAnimator.play("fallDown");
     }
 }
 
@@ -149,7 +150,7 @@ class StepAnimator extends CharactorAnimator {
         var stepFallScript: Laya.AnimatorStateScript = stepFallState.addScript(Laya.AnimatorStateScript);
         var stepAnimator = this;
         stepFallScript.onStateExit = () => {
-            stepAnimator.Play("idle")
+            stepAnimator.play("idle")
         };
         var fallDownState: Laya.AnimatorState = this.GetState("fallDown");
         var fallDownScript: FallDownScript = fallDownState.addScript(FallDownScript) as FallDownScript;
@@ -165,6 +166,7 @@ class FallDownScript extends Laya.AnimatorStateScript {
     private m_CountinueTime: number;
     private m_Animator: Laya.Animator;
     private m_Player: Player;
+    private m_TimeOut;
     constructor() {
         super();
         this.m_Speed = 0;
@@ -185,15 +187,18 @@ class FallDownScript extends Laya.AnimatorStateScript {
     public onStateExit(): void {
         var stepPosition: Laya.Vector3 = this.m_Step.transform.localPosition;
         this.m_Step.transform.localPosition = stepPosition;
+        if( this.m_TimeOut)
+            clearTimeout(this.m_TimeOut);
     }
 
     public onStateUpdate(): void {
         if (!this.m_Player && this.m_Step.standPoint.numChildren > 0)  {
             this.m_Player = this.m_Step.standPoint.getChildByName("Player") as Player;
             if (this.m_Player)  {
-                if (!this.m_Player.FallDown)
-                    var a = 1;
-                this.m_Player.FallDown();
+                this.m_Player.ResetParenet();
+                this.m_TimeOut = setTimeout(() => {
+                    this.m_Player.FallDown();
+                }, 150);
             }
         }
         var lastFrameTime = this.m_TimeCount - APP.TimeManager.GameTime;

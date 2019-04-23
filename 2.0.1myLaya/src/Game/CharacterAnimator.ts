@@ -39,13 +39,12 @@ export default class CharactorAnimator
         return animatorState;
     }
     
-    public Play(name:string)
+    public play(name:string)
     {
         
         if(this.m_StateMap[name])
         {
             this.m_Aniamtor.play(name);
-            
         }
     }
     

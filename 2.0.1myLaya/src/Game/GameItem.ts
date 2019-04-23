@@ -62,7 +62,7 @@ export module Item {
             this.RewardList.push(new LayItemMgr(10, 2, ItemType.Vine, 10));
             this.RewardList.push(new LayItemMgr(10, 1, ItemType.Coin));
 
-            this.RewardList.push(new LayItemMgr(50, 50, ItemType.Fly, 20));
+            this.RewardList.push(new LayItemMgr(50, 1, ItemType.Fly, 20));
 
             this.RewardList.push(new LayItemMgr(50, 10, ItemType.Collector));
             this.RewardList.push(new LayItemMgr(50, 1, ItemType.Protect));
@@ -421,7 +421,8 @@ export module Item {
             else {
                 //APP.MessageManager.Fire(MessageMD.GameEvent.PlayerDeath);
                 //var anim: Laya.Animator = this.Model.getChildAt(0).getComponent(Laya.Animator);
-                //anim.play("touch");
+                //anim.play("die");
+                player.Die();
             }
         }
     }

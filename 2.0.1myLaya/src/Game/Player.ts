@@ -15,17 +15,17 @@ var num: number = 0;
 //玩家对象
 export default class Player extends Laya.Sprite3D {
     //私有属性
-    private m_Idx:number;
+    private m_Idx: number;
     m_LogicPosition: Laya.Vector3;
     private _BuffNode: Laya.Sprite3D;
     private m_PlayerModel: Laya.Sprite3D;
     private _CurStep: Step;
     private _Ctrler: PlayerControler.BasePlayerCtrler;
     private m_Animator: Laya.Animator;
-    private m_PlayerCharacter:PlayerAnimator;
+    private m_PlayerCharacter: PlayerAnimator;
     private m_BuffModel: { [name: number]: Laya.Sprite3D }
     private m_StateMap: {}
-    private m_Parent:Laya.Sprite3D;
+    private m_Parent: Laya.Sprite3D;
 
     public BaseCtrler: PlayerControler.PlayerNormCtrler;
     public BuffArr: Array<Item.BasePlayerBuff>;
@@ -48,7 +48,7 @@ export default class Player extends Laya.Sprite3D {
     get LogicPosition(): Laya.Vector3 {
         return this.m_LogicPosition;
     }
-    get playerModel(): Laya.Sprite3D  {
+    get playerModel(): Laya.Sprite3D {
         return this.m_PlayerModel;
     }
 
@@ -112,7 +112,7 @@ export default class Player extends Laya.Sprite3D {
     public FaceModelTo(rotation: Laya.Quaternion) {
         this.m_PlayerModel.transform.rotation = rotation;
     }
-    public ModelRotateEular(vector: Laya.Vector3)  {
+    public ModelRotateEular(vector: Laya.Vector3) {
         this.m_PlayerModel.transform.rotationEuler = vector;
     }
 
@@ -120,7 +120,7 @@ export default class Player extends Laya.Sprite3D {
         this.addChild(model);
         this.m_Parent.transform.rotate(new Laya.Vector3(0, 180, 0), false, false);
         this.m_Animator = model.getChildAt(0).getComponent(Laya.Animator);
-        this.m_PlayerCharacter = new PlayerAnimator(this.m_Animator,this);
+        this.m_PlayerCharacter = new PlayerAnimator(this.m_Animator, this);
         this.m_PlayerCharacter.Init();
 
         var layer: Laya.MapLayer = this.m_Animator.getControllerLayer()._statesMap;
@@ -198,6 +198,10 @@ export default class Player extends Laya.Sprite3D {
         this.Position = newPS;
         this.m_LogicPosition = putStep.Position;
         this.m_Animator.play(Character.PlayerAnimName(Character.AnimEnum.Stand));
+        if ((this.CurStep.StepItem.ItemType == Item.ItemType.None) && (this.CurStep.IsEmpty || (this.CurStep.LeftParent && this.CurStep.RightParent && this.CurStep.LeftParent.StepItem.IsForbiden && this.CurStep.RightParent.StepItem.IsForbiden))) {
+            this.FallDownImd();
+            return;
+        }
         this.CurStep.StandOnGround(this)
         this.TouchGround();
     }
@@ -223,22 +227,21 @@ export default class Player extends Laya.Sprite3D {
     Fly(): void {
         this.m_Animator.play(Character.PlayerAnimName(Character.AnimEnum.Fly));
     }
-
-    FallDown():void
+    Die():void
     {
+        this.m_Animator.play("die");
+    }
+    FallDown(): void  {
+        this.ResetParenet();
         this.m_Animator.play(Character.PlayerAnimName(Character.AnimEnum.Fall));
+    }
+    FallDownImd(): void  {
+        this.m_Animator.play("fallDownImd")
     }
 
     //触发台阶
     TouchGround(): void {
         if (this.PlayerDeath || !this.CurStep) {
-            return;
-        }
-        if ((this.CurStep.StepItem.ItemType == Item.ItemType.None) && (this.CurStep.IsEmpty || (this.CurStep.LeftParent && this.CurStep.RightParent && this.CurStep.LeftParent.StepItem.IsForbiden && this.CurStep.RightParent.StepItem.IsForbiden))) {
-            APP.MessageManager.Fire(MessageMD.GameEvent.PlayerDeath);
-            var clipName: string = Character.PlayerAnimName(Character.AnimEnum.Fall);
-            if (this.m_StateMap[clipName])
-                this.m_Animator.play(clipName);
             return;
         }
         this.CurStep.TouchGround(this);
@@ -293,8 +296,7 @@ export default class Player extends Laya.Sprite3D {
         this.CurStep = null;
     }
 
-    ResetParenet()
-    {
+    ResetParenet()  {
         this.m_Parent.addChild(this);
         this.transform.localPosition = new Laya.Vector3();
         //this.transform.position = this.m_Parent.transform.position.clone();
@@ -308,48 +310,51 @@ class StepData {
     }
 }
 
-class PlayerAnimator extends CharactorAnimator
-{
-    private m_Player:Player
+class PlayerAnimator extends CharactorAnimator {
+    private m_Player: Player
     constructor(animator: Laya.Animator, player: Player) {
         super(animator);
         this.m_Player = player;
     }
-    Init( )
-    {
-        var fallState:Laya.AnimatorState = this.GetState("fall");
-        var fallScript:FallStateScript = fallState.addScript(FallStateScript) as FallStateScript;
-        fallScript.Init(this.m_Player);
+    Init()  {
+        var fallState: Laya.AnimatorState = this.GetState("fallDown");
+        var fallScript: Laya.AnimatorStateScript = fallState.addScript(Laya.AnimatorStateScript);
+        fallScript.onStateExit = () => { APP.MessageManager.Fire(MessageMD.GameEvent.PlayerDeath); }
+
+        var fallDownImdState: Laya.AnimatorState = this.GetState("fallDownImd");
+        var fallDownImdScript: Laya.AnimatorStateScript = fallDownImdState.addScript(Laya.AnimatorStateScript);
+        fallDownImdScript.onStateExit = () => { APP.MessageManager.Fire(MessageMD.GameEvent.PlayerDeath); }
+
+        var dieState:Laya.AnimatorState = this.GetState("die");
+        var dieScript: Laya.AnimatorStateScript = dieState.addScript(Laya.AnimatorStateScript);
+        dieScript.onStateExit = () => { APP.MessageManager.Fire(MessageMD.GameEvent.PlayerDeath); }
+        //var fallScript:FallStateScript = fallState.addScript(FallStateScript) as FallStateScript;
+        //fallScript.Init(this.m_Player);
     }
 }
-class FallStateScript extends Laya.AnimatorStateScript
-{
-    private m_Player:Player;
-    private m_CountTime:number
-    private m_YieldTime:number;
+class FallStateScript extends Laya.AnimatorStateScript {
+    private m_Player: Player;
+    private m_CountTime: number
+    private m_YieldTime: number;
     private m_YieldCallBack;
-    constructor()
-    {
+    constructor()  {
         super();
     }
-    Init(player:Player)
-    {
+    Init(player: Player)  {
         this.m_Player = this.m_Player;
         this.m_CountTime = 0;
         this.m_YieldTime = 3;
     }
-    onStateEnter()
-    {
+    onStateEnter()  {
         //this.m_CountTime = APP.TimeManager.GameTime + this.m_YieldTime;
         this.m_YieldCallBack = setTimeout(() => {
             APP.MessageManager.Fire(MessageMD.GameEvent.PlayerDeath);
-        }, 300);
+        }, 3000);
 
     }
-    onStateExit()
-    {
-        if(this.m_YieldCallBack)
+    onStateExit()  {
+        if (this.m_YieldCallBack)
             clearTimeout(this.m_YieldCallBack);
     }
-    
+
 }

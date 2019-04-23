@@ -15,7 +15,7 @@ export module Character
     AnimType[AnimEnum.Jump] = "jumpUp";
     AnimType[AnimEnum.Jumpdown] = "jumpDown";
     AnimType[AnimEnum.Fly] = "fly";
-    AnimType[AnimEnum.Fall] = "fall";
+    AnimType[AnimEnum.Fall] = "fallDown";
     AnimType[AnimEnum.Die] = "die";
     export function PlayerAnimName( nameEnum:AnimEnum ):string
     {
