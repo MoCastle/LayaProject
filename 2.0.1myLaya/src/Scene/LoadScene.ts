@@ -70,6 +70,7 @@ class LoadScenePlaye extends Scene.BaseScenePlaye
         this.m_LoadFaile = "";
         var resource2DArr = [
             path.GetDepathUIJS("Enter"),
+            path.GetDepathUIJS("Game"),
             path.GetDepathUIJS("GameRank"),
             path.GetDepathUIJS("SetPanel"),
             path.GetDepathUIJS("ItemList"),
@@ -80,12 +81,16 @@ class LoadScenePlaye extends Scene.BaseScenePlaye
             path.GetAtlPath("entersceneui"),
             path.GetAtlPath("entersceneui/res1"),
             path.GetAtlPath("entersceneui/res2"),
+            path.GetAtlPath("entersceneui/res3"),
+            path.GetAtlPath("entersceneui/res4"),
+            path.GetAtlPath("entersceneui/res5"),
             path.GetAtlPath("entersceneui/gk"),
             path.GetAtlPath("comp"),
             path.GetJsonPath("CharacterInfo"),
             path.GetJsonPath("ItemInfo"),
             path.GetJsonPath("LevelInfo"),
-            path.GetJsonPath("ObstacleInfo")
+            path.GetJsonPath("ObstacleInfo"),
+            path.GetSoundpathUIJS("bg")
             ];
         
         Laya.loader.once(Laya.Event.ERROR,this,this.onError);

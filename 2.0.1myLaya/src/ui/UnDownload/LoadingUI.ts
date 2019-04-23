@@ -50,7 +50,18 @@ export default class LoadingUI extends BaseUI
             this._CallBack();
         });
         this.Layout();
-        this.addChild(new LoadUIScene());
+        var scene:Laya.Scene3D = Laya.loader.getRes("ui/Resource/LayaScene_MainScene/Conventional/MainScene.ls") as Laya.Scene3D;
+        scene.ambientColor = new Laya.Vector3(1, 1, 1);
+        var camera:Laya.Camera = scene.getChildByName("Camera") as Laya.Camera;
+        camera.active = false;
+        camera.clearFlag = Laya.BaseCamera.CLEARFLAG_SKY;
+        camera.clearColor=new Laya.Vector4(0,0,0,0);
+        var newCamera:Laya.Camera = new Laya.Camera();
+        newCamera.transform.position = camera.transform.position;
+        newCamera.transform.rotation = camera.transform.rotation;
+        scene.addChild(newCamera);
+        this._UI["bg"].addChild(scene);
+        //this._UI["bg"].addChild(new LoadUIScene());
     }
     
     Update()
@@ -83,6 +94,7 @@ export default class LoadingUI extends BaseUI
     {
 
         //callBack();
+        this._UI._Progress.visible = false;
         this._CallBack = callBack;
         this._UI._Enter.visible = true;
         this._UI._Enter.label = "";//this._Name[0];

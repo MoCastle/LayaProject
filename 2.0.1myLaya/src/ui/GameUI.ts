@@ -20,7 +20,8 @@ class ExtendsGameUI extends ui.GameUI {
         this.createView(Laya.loader.getRes(path.GetDepathUIJS("Game")));
     }
     SetCountTime(info: string = "") {
-        this._CountTime.text = info;
+        this._CountTime.value = info;
+        //this._CountTime.text = info;
     }
     constructor() {
         super();
@@ -50,7 +51,8 @@ export default class GameUI extends BaseUI {
         this.SetDirty();
     }
     private _ShowDistance() {
-        this._UI._TxtDistance.text = this.DistanceStr[0] + this.DistanceStr[1];
+        this._UI._TxtDistance.text = this.DistanceStr[0];
+        this._UI._TxtDistance1.value = this.DistanceStr[1];
     }
 
     private _ShowGoldNum() {

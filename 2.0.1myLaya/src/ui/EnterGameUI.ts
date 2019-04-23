@@ -8,6 +8,7 @@ import GameControler from "./../controler/GameControler"
 import { GameAgent } from "./../Agent/GameAgent"
 import PlayerGuestAgent from "../Agent/PlayerGuestAgent";
 import EndGameUI from "./EndGameUI";
+import APP from "./../controler/APP"
 
 class ExtendEnterGameUI extends ui.EnterUI {
     Panel: Laya.Panel;
@@ -45,6 +46,7 @@ class ExtendEnterGameUI extends ui.EnterUI {
         Laya.Tween.to(this._Start, {x:this._Start.y  + Laya.stage.width - this._Start.x}, 250, Laya.Ease.sineIn, Laya.Handler.create(GameControler.GameControler, GameControler.GameControler.EnterGame));
         Laya.Tween.to(this._Character, {y:this._Character.y  - Laya.stage.height}, 150, Laya.Ease.sineIn);
         Laya.Tween.to(this.adv, {y:this.adv.y  + Laya.stage.height - this._Character.y}, 150, Laya.Ease.sineIn);
+        APP.SceneManager.BG["upateBgTexture"]();
     }
 }
 
@@ -57,9 +59,11 @@ export default class EnterGameUI extends BaseUI {
     _gkContent:Laya.Sprite;
     _UI: ExtendEnterGameUI;
     lastX:number = 99999;
+    offestX:number = 0;
+    cntSelectIndex:number = 0;
     private config = {"img":
         [   
-            {key:"bg",textureName:"mainbg.jpg"}
+            {key:"bg",textureName:"loadbgstart.png"}
         ],
         "btn":
         [
@@ -83,17 +87,55 @@ export default class EnterGameUI extends BaseUI {
         this._gk = content;
         this._UI._Panel.mouseEnabled = true;
         this._gk.mouseEnabled = true;
-        
-        //this.initGK();
-        
+        this.cntSelectIndex = PlayerGuestAgent.GuestAgent.CurLevel - 1;
+        this._gk.x = -this.cntSelectIndex * 630;
         this.initGKListener();
+        this.updateButtonState();
+        laya.media.SoundManager.playMusic(path.GetSoundpathUIJS("bg"),0);
     }
 
     initGKListener() {
-        this._UI._Panel.on(Laya.Event.MOUSE_DOWN, this, this.downGKBox);
-        this._UI._Panel.on(Laya.Event.MOUSE_MOVE, this, this.moveGKBox);
-        this._UI._Panel.on(Laya.Event.MOUSE_UP, this, this.upGKBox);
-        this._UI._Panel.on(Laya.Event.MOUSE_OVER, this, this.upGKBox);
+        //this._UI._Panel.on(Laya.Event.MOUSE_DOWN, this, this.downGKBox);
+        //this._UI._Panel.on(Laya.Event.MOUSE_MOVE, this, this.moveGKBox);
+        //this._UI._Panel.on(Laya.Event.MOUSE_UP, this, this.upGKBox);
+        //this._UI._Panel.on(Laya.Event.MOUSE_OVER, this, this.upGKBox);
+        this._UI.lastBtn.on(Laya.Event.CLICK, this, this.lastPage);
+        this._UI.nextBtn.on(Laya.Event.CLICK, this, this.nextPage);
+    }
+
+    updateButtonState(): void {
+        this._UI.lastBtn.visible = true;
+        this._UI.nextBtn.visible = true;
+        if(this.cntSelectIndex == 0) {
+            this._UI.lastBtn.visible = false;
+        }
+        if(this.cntSelectIndex == 4) {
+            this._UI.nextBtn.visible = false;
+        }
+    }
+
+    nextPage(e:Laya.Event) {
+        if(this.cntSelectIndex < 4) {
+            Laya.Tween.clearTween(this._gk);
+            this._gk.x = -this.cntSelectIndex * 630;
+            this.cntSelectIndex ++;
+        }
+        Laya.Tween.to(this._gk,{x:-this.cntSelectIndex * 630},200, Laya.Ease.sineIn);
+        PlayerGuestAgent.GuestAgent.CurLevel = this.cntSelectIndex + 1;
+        this.updateSelfSceneUI();
+        this.updateButtonState();
+    }
+
+    lastPage(e:Laya.Event) {
+        if(this.cntSelectIndex > 0) {
+            Laya.Tween.clearTween(this._gk);
+            this._gk.x = -this.cntSelectIndex * 630;
+            this.cntSelectIndex --;
+        }
+        Laya.Tween.to(this._gk,{x:-this.cntSelectIndex * 630},200, Laya.Ease.sineIn);
+        PlayerGuestAgent.GuestAgent.CurLevel = this.cntSelectIndex + 1;
+        this.updateSelfSceneUI();
+        this.updateButtonState();
     }
 
     downGKBox(e:Laya.Event) {
@@ -101,17 +143,39 @@ export default class EnterGameUI extends BaseUI {
     }
 
     moveGKBox(e: Laya.Event) {
-        if(this.lastX == 99999) {
+        if(this.lastX == 99999 || this._gk.x > 0 || this._gk.x < -630 * 4) {
             return;
         }
-        
-        this._gk.x += (e.target.mouseX - this.lastX);
+        this.offestX = (e.target.mouseX - this.lastX);
+        this._gk.x += this.offestX;
+        if(this._gk.x > 0) {
+            this._gk.x = 0;
+        }
+        if(this._gk.x < -4 * 630) {
+            this._gk.x = -4 * 630; 
+        }
         this.lastX = e.target.mouseX;
     }
 
     upGKBox(e: Laya.Event) {
+        var nextX = 0;
+        if(Math.abs(this.offestX) <= 5) {
+            return;
+        }
         this.lastX = 99999;
-        
+        if(this.offestX > 0) {
+            if(this._gk.x < 0) {
+                nextX = Math.floor(this._gk.x / 630);
+            }
+        }
+        else if(this.offestX < 0) {
+            if(this._gk.x > -4 * 630) {
+
+            }
+        }
+        Laya.Tween.to(this._gk, {x:nextX}, Math.abs(this.offestX));
+        this.cntSelectIndex = -nextX / 630;
+        this.offestX = 0;
     }
 
     // initGK() {
@@ -126,8 +190,16 @@ export default class EnterGameUI extends BaseUI {
     updateSelfSceneUI() {
         for(var key in this.config) {
             var len = this.config[key].length;
-            for(var i = 0;i < len;i ++) {
-                this._UI[this.config[key][i].key].skin = (PlayerGuestAgent.GuestAgent.SkinDir + this.config[key][i].textureName);
+            if(key == "img") {
+                for(var i = 0;i < len;i ++) {
+                    this._UI[this.config[key][i].key].graphics.clear();
+                    this._UI[this.config[key][i].key].loadImage(PlayerGuestAgent.GuestAgent.SkinDir + this.config[key][i].textureName);
+                }
+            }
+            else if(key == "btn") {
+                for(var i = 0;i < len;i ++) {
+                    this._UI[this.config[key][i].key].skin = (PlayerGuestAgent.GuestAgent.SkinDir + this.config[key][i].textureName);
+                }
             }
         }
     }
@@ -155,6 +227,7 @@ export default class EnterGameUI extends BaseUI {
         this._UI.adv.y = Laya.stage.height - this._UI.adv.bottom - this._UI.adv.height;
         this._UI._Start.x = this._UI._Start["initX"];
         this._UI._Character.y = this._UI._Character["initY"];
+        this.updateSelfSceneUI();
     }
 
     Update() {

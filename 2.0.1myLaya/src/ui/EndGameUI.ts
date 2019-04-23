@@ -54,8 +54,16 @@ export default class EndGameUI extends BaseUI
     updateSelfSceneUI() {
         for(var key in this.config) {
             var len = this.config[key].length;
-            for(var i = 0;i < len;i ++) {
-                this.UI[this.config[key][i].key].skin = (PlayerGuestAgent.GuestAgent.SkinDir + this.config[key][i].textureName);
+            if(key == "img") {
+                for(var i = 0;i < len;i ++) {
+                    this.UI[this.config[key][i].key].graphics.clear();
+                    this.UI[this.config[key][i].key].loadImage(PlayerGuestAgent.GuestAgent.SkinDir + this.config[key][i].textureName);
+                }
+            }
+            else if(key == "btn") {
+                for(var i = 0;i < len;i ++) {
+                    this.UI[this.config[key][i].key].skin = (PlayerGuestAgent.GuestAgent.SkinDir + this.config[key][i].textureName);
+                }
             }
         }
     }
@@ -76,7 +84,9 @@ export default class EndGameUI extends BaseUI
     {
         
     }
-
+    Open() {
+        this.updateSelfSceneUI();
+    }
     Layout() {
         super.Layout();
         if(!this.UI || !this.UI.bg) {

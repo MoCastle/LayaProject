@@ -10,7 +10,15 @@ export default class PlayerGuestAgent extends BaseAgent {
     }
 
     public get SkinDir():String {
-        return "entersceneui/res2/";
+        return "entersceneui/res" + this.m_PlayerEntity.CurLevel + "/";
+    }
+
+    public get CurLevel() {
+        return this.m_PlayerEntity.CurLevel;
+    }
+
+    public set CurLevel(val:number) {
+        this.m_PlayerEntity.CurLevel = val;
     }
 
     public get Money(): number {

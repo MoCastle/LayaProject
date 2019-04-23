@@ -1,6 +1,7 @@
 import {path} from "./../Utility/Path"
 import {ui} from "./layaMaxUI"
 import{BaseFunc} from "./../Base/BaseFunc"
+import PlayerGuestAgent from "../Agent/PlayerGuestAgent";
 
 export default class BGUI extends ui.BGUI {
     
@@ -14,6 +15,7 @@ export default class BGUI extends ui.BGUI {
     private _ScaleEarth:number;
     private _EarthStartPS:number;
 
+    private bg: Laya.Image;
     constructor() {
         super();
         
@@ -26,26 +28,36 @@ export default class BGUI extends ui.BGUI {
         for(let startIdx = 0;startIdx<rate+1; ++startIdx )
         {
             var image:Laya.Image = new Laya.Image();
-            image.loadImage("comp/img_background_spr_sky.png");
+            //image.loadImage("comp/img_background_spr_sky.png");
+            image.loadImage(PlayerGuestAgent.GuestAgent.SkinDir + "mainbg.jpg");
             image.width = widh;
             image.height = widh+widh*0.01;
+            image.height = Laya.stage.height;
             this.addChild(image);
-            this._SkyQue.Push(image);
+            this.bg = image;
+            //this._SkyQue.Push(image);
         } 
         this.SetSky(0);
         var earth = new Laya.Image();
         earth.y = Laya.stage.height - Laya.stage.width;
         this._EarthStartPS = earth.y;
-        earth.loadImage("comp/img_background_spr.png");
+        //earth.loadImage("comp/img_background_spr.png");
+        earth.loadImage(PlayerGuestAgent.GuestAgent.SkinDir + "mainbg.jpg");
         this._Earth = earth;
         earth.width = widh;
         earth.height = widh;
-        this.addChild(earth);
+
+        //this.addChild(earth);
         
         this._ScaleSky = 0.001
         this._ScaleEarth = 0.01
         //this._EarthStartPS = this._Earth.y;
     }
+    
+    upateBgTexture(): void {
+        this.bg.loadImage(PlayerGuestAgent.GuestAgent.SkinDir + "mainbg.jpg")
+    }
+
     /*
     Init()
     {

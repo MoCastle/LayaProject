@@ -21,53 +21,9 @@
 		},
 		"child":[
 			{
-				"type":"Camera",
-				"props":{
-					"name":"Main Camera",
-					"active":true,
-					"isStatic":false,
-					"layer":0,
-					"position":[
-						0,
-						2.71,
-						-14.51
-					],
-					"rotation":[
-						0,
-						1,
-						0,
-						0
-					],
-					"scale":[
-						1,
-						1,
-						1
-					],
-					"clearFlag":1,
-					"orthographic":false,
-					"fieldOfView":60,
-					"nearPlane":0.3,
-					"farPlane":1000,
-					"viewport":[
-						0,
-						0,
-						1,
-						1
-					],
-					"clearColor":[
-						0.1921569,
-						0.3019608,
-						0.4745098,
-						0
-					]
-				},
-				"components":[],
-				"child":[]
-			},
-			{
 				"type":"Sprite3D",
 				"props":{
-					"name":"主界面_秋1_待机",
+					"name":"zhuyemian_qiu1_idle",
 					"active":true,
 					"isStatic":false,
 					"layer":0,
@@ -92,7 +48,7 @@
 					{
 						"type":"Animator",
 						"avatar":{
-							"path":"Assets/Resource/主界面_秋1/主界面_秋1_待机-主界面_秋1_待机-主界面_秋1_待机Avatar.lav",
+							"path":"Assets/Resource/主界面_秋1/zhuyemian_qiu1_idle-zhuyemian_qiu1_idle-zhuyemian_qiu1_idleAvatar.lav",
 							"linkSprites":{}
 						},
 						"layers":[
@@ -102,8 +58,8 @@
 								"blendingMode":0,
 								"states":[
 									{
-										"name":"Take 001",
-										"clipPath":"Assets/Resource/主界面_秋1/主界面_秋1_待机-Take 001.lani"
+										"name":"Take 001 (1)",
+										"clipPath":"Assets/Resource/主界面_秋1/zhuyemian_qiu1_idle-Take 001 (1).lani"
 									}
 								]
 							}
@@ -116,7 +72,7 @@
 					{
 						"type":"SkinnedMeshSprite3D",
 						"props":{
-							"name":"主界面-秋1_01",
+							"name":"zhuyemian_qiu1",
 							"active":true,
 							"isStatic":false,
 							"layer":0,
@@ -160,15 +116,86 @@
 							"materials":[
 								{
 									"type":"Laya.BlinnPhongMaterial",
-									"path":"Assets/Resource/主界面_秋1/主界面_秋1_待机.lmat"
+									"path":"Assets/Resource/主界面_秋1/material.lmat"
 								}
 							],
-							"meshPath":"Assets/Resource/主界面_秋1/主界面_秋1_待机-主界面-秋1_01.lm"
+							"meshPath":"Assets/Resource/主界面_秋1/zhuyemian_qiu1_idle-zhuyemian_qiu1.lm"
 						},
 						"components":[],
 						"child":[]
 					}
 				]
+			},
+			{
+				"type":"Sprite3D",
+				"props":{
+					"name":"GameObject",
+					"active":true,
+					"isStatic":false,
+					"layer":0,
+					"position":[
+						0,
+						0,
+						0
+					],
+					"rotation":[
+						0,
+						0,
+						0,
+						-1
+					],
+					"scale":[
+						1,
+						1,
+						1
+					]
+				},
+				"components":[],
+				"child":[]
+			},
+			{
+				"type":"Camera",
+				"props":{
+					"name":"Camera",
+					"active":true,
+					"isStatic":false,
+					"layer":0,
+					"position":[
+						-0.1,
+						5.79,
+						11.54
+					],
+					"rotation":[
+						-0.1869128,
+						0,
+						0,
+						0.9823765
+					],
+					"scale":[
+						1,
+						1,
+						1
+					],
+					"clearFlag":1,
+					"orthographic":false,
+					"fieldOfView":60,
+					"nearPlane":0.3,
+					"farPlane":1000,
+					"viewport":[
+						0,
+						0,
+						1,
+						1
+					],
+					"clearColor":[
+						0.1921569,
+						0.3019608,
+						0.4745098,
+						0
+					]
+				},
+				"components":[],
+				"child":[]
 			}
 		]
 	}
