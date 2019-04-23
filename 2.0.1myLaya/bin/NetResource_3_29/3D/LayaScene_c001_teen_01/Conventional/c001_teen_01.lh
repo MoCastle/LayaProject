@@ -3,7 +3,7 @@
 	"data":{
 		"type":"Sprite3D",
 		"props":{
-			"name":"c001_child_01",
+			"name":"c001_teen_01",
 			"active":true,
 			"isStatic":false,
 			"layer":0,
@@ -29,7 +29,7 @@
 			{
 				"type":"Sprite3D",
 				"props":{
-					"name":"model",
+					"name":"c001_teen_01_skin",
 					"active":true,
 					"isStatic":false,
 					"layer":0,
@@ -54,7 +54,7 @@
 					{
 						"type":"Animator",
 						"avatar":{
-							"path":"Assets/Resource/Character/c001_child_01/daiji-model-daijiAvatar.lav",
+							"path":"Assets/Resource/Character/c001_teen_01-完成/c001_teen_01_skin-c001_teen_01_skin-c001_teen_01_skinAvatar.lav",
 							"linkSprites":{}
 						},
 						"layers":[
@@ -102,7 +102,7 @@
 					{
 						"type":"SkinnedMeshSprite3D",
 						"props":{
-							"name":"c001_child_01",
+							"name":"c001_teen_01",
 							"active":true,
 							"isStatic":false,
 							"layer":0,
@@ -125,31 +125,31 @@
 							"rootBone":"Bip001 Pelvis",
 							"boundBox":{
 								"min":[
-									-0.3555192,
-									-0.3523354,
-									-0.4429442
+									-0.3948996,
+									-0.1612813,
+									-0.3626383
 								],
 								"max":[
-									1.020714,
-									0.6502662,
-									0.4771208
+									1.173282,
+									0.3196407,
+									0.362386
 								]
 							},
 							"boundSphere":{
 								"center":[
-									0.3325974,
-									0.1489654,
-									0.01708832
+									0.3891913,
+									0.07917967,
+									-0.0001261234
 								],
-								"radius":0.9676967
+								"radius":0.89668
 							},
 							"materials":[
 								{
 									"type":"Laya.BlinnPhongMaterial",
-									"path":"Assets/Resource/Character/c001_child_01/c001_child_01_mat.lmat"
+									"path":"Assets/Resource/Character/c001_teen_01-完成/c001_teen_01_mat.lmat"
 								}
 							],
-							"meshPath":"Assets/Resource/Character/c001_child_01/daiji-c001_child_01.lm"
+							"meshPath":"Assets/Resource/Character/c001_teen_01-完成/c001_teen_01_skin-c001_teen_01.lm"
 						},
 						"components":[],
 						"child":[]
@@ -164,9 +164,9 @@
 					"isStatic":false,
 					"layer":0,
 					"position":[
-						-0.0649842,
-						1.647,
-						0.1716583
+						-1.056666,
+						0.9624761,
+						1.129731
 					],
 					"rotation":[
 						0,

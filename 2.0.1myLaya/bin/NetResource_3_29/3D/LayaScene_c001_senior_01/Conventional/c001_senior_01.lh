@@ -3,7 +3,7 @@
 	"data":{
 		"type":"Sprite3D",
 		"props":{
-			"name":"c001_child_01",
+			"name":"c001_senior_01",
 			"active":true,
 			"isStatic":false,
 			"layer":0,
@@ -29,7 +29,7 @@
 			{
 				"type":"Sprite3D",
 				"props":{
-					"name":"model",
+					"name":"c001_senior_01_skin",
 					"active":true,
 					"isStatic":false,
 					"layer":0,
@@ -54,7 +54,7 @@
 					{
 						"type":"Animator",
 						"avatar":{
-							"path":"Assets/Resource/Character/c001_child_01/daiji-model-daijiAvatar.lav",
+							"path":"Assets/Resource/Character/c001_senior_01-完成/c001_senior_01_skin-c001_senior_01_skin-c001_senior_01_skinAvatar.lav",
 							"linkSprites":{}
 						},
 						"layers":[
@@ -102,7 +102,7 @@
 					{
 						"type":"SkinnedMeshSprite3D",
 						"props":{
-							"name":"c001_child_01",
+							"name":"c001_senior_01",
 							"active":true,
 							"isStatic":false,
 							"layer":0,
@@ -125,31 +125,31 @@
 							"rootBone":"Bip001 Pelvis",
 							"boundBox":{
 								"min":[
-									-0.3555192,
-									-0.3523354,
-									-0.4429442
+									-0.3962948,
+									-0.3412203,
+									-0.3308596
 								],
 								"max":[
-									1.020714,
-									0.6502662,
-									0.4771208
+									1.179283,
+									0.3376092,
+									0.330861
 								]
 							},
 							"boundSphere":{
 								"center":[
-									0.3325974,
-									0.1489654,
-									0.01708832
+									0.3914943,
+									-0.001805574,
+									7.152557E-07
 								],
-								"radius":0.9676967
+								"radius":0.9193925
 							},
 							"materials":[
 								{
 									"type":"Laya.BlinnPhongMaterial",
-									"path":"Assets/Resource/Character/c001_child_01/c001_child_01_mat.lmat"
+									"path":"Assets/Resource/Character/c001_senior_01-完成/c001_senior_01_mat.lmat"
 								}
 							],
-							"meshPath":"Assets/Resource/Character/c001_child_01/daiji-c001_child_01.lm"
+							"meshPath":"Assets/Resource/Character/c001_senior_01-完成/c001_senior_01_skin-c001_senior_01.lm"
 						},
 						"components":[],
 						"child":[]

@@ -3,7 +3,7 @@
 	"data":{
 		"type":"Sprite3D",
 		"props":{
-			"name":"c001_child_01",
+			"name":"c002_baby_01",
 			"active":true,
 			"isStatic":false,
 			"layer":0,
@@ -29,7 +29,7 @@
 			{
 				"type":"Sprite3D",
 				"props":{
-					"name":"model",
+					"name":"c002_baby_01_skin",
 					"active":true,
 					"isStatic":false,
 					"layer":0,
@@ -54,46 +54,10 @@
 					{
 						"type":"Animator",
 						"avatar":{
-							"path":"Assets/Resource/Character/c001_child_01/daiji-model-daijiAvatar.lav",
+							"path":"Assets/Resource/Character/c002_baby_01-完成/c002_baby_01_skin-c002_baby_01_skin-c002_baby_01_skinAvatar.lav",
 							"linkSprites":{}
 						},
-						"layers":[
-							{
-								"name":"Base Layer",
-								"weight":0,
-								"blendingMode":0,
-								"states":[
-									{
-										"name":"idle",
-										"clipPath":"Assets/Resource/Character/c001_child_01/daiji-Take 001.lani"
-									},
-									{
-										"name":"fly",
-										"clipPath":"Assets/Resource/Character/c001_child_01/feixing-Take 001.lani"
-									},
-									{
-										"name":"die",
-										"clipPath":"Assets/Resource/Character/c001_child_01/siwang-Take 001.lani"
-									},
-									{
-										"name":"jumpDown",
-										"clipPath":"Assets/Resource/Character/c001_child_01/tiaoyue-JumpDown.lani"
-									},
-									{
-										"name":"jumpUp",
-										"clipPath":"Assets/Resource/Character/c001_child_01/tiaoyue-JumpUp.lani"
-									},
-									{
-										"name":"fallDown",
-										"clipPath":"Assets/Resource/Character/c001_child_01/xiazui-Take 001.lani"
-									},
-									{
-										"name":"fallDownImd",
-										"clipPath":"Assets/Resource/Character/c001_child_01/xiazui 1-Take 001.lani"
-									}
-								]
-							}
-						],
+						"layers":[],
 						"cullingMode":0,
 						"playOnWake":true
 					}
@@ -102,7 +66,7 @@
 					{
 						"type":"SkinnedMeshSprite3D",
 						"props":{
-							"name":"c001_child_01",
+							"name":"c002_baby_01",
 							"active":true,
 							"isStatic":false,
 							"layer":0,
@@ -125,31 +89,31 @@
 							"rootBone":"Bip001 Pelvis",
 							"boundBox":{
 								"min":[
-									-0.3555192,
-									-0.3523354,
-									-0.4429442
+									-0.2439329,
+									-0.2821536,
+									-0.3815259
 								],
 								"max":[
-									1.020714,
-									0.6502662,
-									0.4771208
+									1.031462,
+									0.3676799,
+									0.3815264
 								]
 							},
 							"boundSphere":{
 								"center":[
-									0.3325974,
-									0.1489654,
-									0.01708832
+									0.3937646,
+									0.04276317,
+									2.682209E-07
 								],
-								"radius":0.9676967
+								"radius":0.8110433
 							},
 							"materials":[
 								{
 									"type":"Laya.BlinnPhongMaterial",
-									"path":"Assets/Resource/Character/c001_child_01/c001_child_01_mat.lmat"
+									"path":"Assets/Resource/Character/c002_baby_01-完成/c002_baby_01_mat.lmat"
 								}
 							],
-							"meshPath":"Assets/Resource/Character/c001_child_01/daiji-c001_child_01.lm"
+							"meshPath":"Assets/Resource/Character/c002_baby_01-完成/c002_baby_01_skin-c002_baby_01.lm"
 						},
 						"components":[],
 						"child":[]

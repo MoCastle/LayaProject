@@ -3,7 +3,7 @@
 	"data":{
 		"type":"Sprite3D",
 		"props":{
-			"name":"c001_child_01",
+			"name":"c001_baby_01",
 			"active":true,
 			"isStatic":false,
 			"layer":0,
@@ -29,7 +29,7 @@
 			{
 				"type":"Sprite3D",
 				"props":{
-					"name":"model",
+					"name":"c001_baby_01-skin",
 					"active":true,
 					"isStatic":false,
 					"layer":0,
@@ -54,7 +54,7 @@
 					{
 						"type":"Animator",
 						"avatar":{
-							"path":"Assets/Resource/Character/c001_child_01/daiji-model-daijiAvatar.lav",
+							"path":"Assets/Resource/Character/c001_baby_01-完成/c001_baby_01-skin-c001_baby_01-skin-c001_baby_01-skinAvatar.lav",
 							"linkSprites":{}
 						},
 						"layers":[
@@ -102,54 +102,54 @@
 					{
 						"type":"SkinnedMeshSprite3D",
 						"props":{
-							"name":"c001_child_01",
+							"name":"c001_baby_01",
 							"active":true,
 							"isStatic":false,
 							"layer":0,
 							"position":[
+								-3.382862E-07,
 								0,
-								0,
-								0
+								-3.198685E-07
 							],
 							"rotation":[
-								0.7071068,
-								0,
-								0,
-								-0.7071067
+								0.7012209,
+								2.000742E-07,
+								1.494189E-07,
+								-0.7129441
 							],
 							"scale":[
-								1,
+								0.9999999,
 								1,
 								1
 							],
 							"rootBone":"Bip001 Pelvis",
 							"boundBox":{
 								"min":[
-									-0.3555192,
-									-0.3523354,
-									-0.4429442
+									-0.2695863,
+									-0.2890268,
+									-0.3793247
 								],
 								"max":[
-									1.020714,
-									0.6502662,
-									0.4771208
+									0.8808345,
+									0.3858273,
+									0.379324
 								]
 							},
 							"boundSphere":{
 								"center":[
-									0.3325974,
-									0.1489654,
-									0.01708832
+									0.3056241,
+									0.04840028,
+									-3.874302E-07
 								],
-								"radius":0.9676967
+								"radius":0.7672098
 							},
 							"materials":[
 								{
 									"type":"Laya.BlinnPhongMaterial",
-									"path":"Assets/Resource/Character/c001_child_01/c001_child_01_mat.lmat"
+									"path":"Assets/Resource/Character/c001_baby_01-完成/c001_baby_01-skin.lmat"
 								}
 							],
-							"meshPath":"Assets/Resource/Character/c001_child_01/daiji-c001_child_01.lm"
+							"meshPath":"Assets/Resource/Character/c001_baby_01-完成/c001_baby_01-skin-c001_baby_01.lm"
 						},
 						"components":[],
 						"child":[]

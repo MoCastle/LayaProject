@@ -3,7 +3,7 @@
 	"data":{
 		"type":"Sprite3D",
 		"props":{
-			"name":"c001_child_01",
+			"name":"c002_child_01",
 			"active":true,
 			"isStatic":false,
 			"layer":0,
@@ -29,7 +29,7 @@
 			{
 				"type":"Sprite3D",
 				"props":{
-					"name":"model",
+					"name":"daiji",
 					"active":true,
 					"isStatic":false,
 					"layer":0,
@@ -54,7 +54,7 @@
 					{
 						"type":"Animator",
 						"avatar":{
-							"path":"Assets/Resource/Character/c001_child_01/daiji-model-daijiAvatar.lav",
+							"path":"Assets/Resource/Character/c002_child_01-完成/daiji-daiji-daijiAvatar.lav",
 							"linkSprites":{}
 						},
 						"layers":[
@@ -102,7 +102,7 @@
 					{
 						"type":"SkinnedMeshSprite3D",
 						"props":{
-							"name":"c001_child_01",
+							"name":"c002_child_01",
 							"active":true,
 							"isStatic":false,
 							"layer":0,
@@ -125,31 +125,31 @@
 							"rootBone":"Bip001 Pelvis",
 							"boundBox":{
 								"min":[
-									-0.3555192,
-									-0.3523354,
-									-0.4429442
+									-0.3564088,
+									-0.4154669,
+									-0.6333178
 								],
 								"max":[
-									1.020714,
-									0.6502662,
-									0.4771208
+									1.109028,
+									0.4059081,
+									0.4474898
 								]
 							},
 							"boundSphere":{
 								"center":[
-									0.3325974,
-									0.1489654,
-									0.01708832
+									0.3763096,
+									-0.004779369,
+									-0.09291399
 								],
-								"radius":0.9676967
+								"radius":0.9987877
 							},
 							"materials":[
 								{
 									"type":"Laya.BlinnPhongMaterial",
-									"path":"Assets/Resource/Character/c001_child_01/c001_child_01_mat.lmat"
+									"path":"Assets/Resource/Character/c002_child_01-完成/c002_child_01_mat.lmat"
 								}
 							],
-							"meshPath":"Assets/Resource/Character/c001_child_01/daiji-c001_child_01.lm"
+							"meshPath":"Assets/Resource/Character/c002_child_01-完成/daiji-c002_child_01.lm"
 						},
 						"components":[],
 						"child":[]

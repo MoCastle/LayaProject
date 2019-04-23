@@ -2,7 +2,7 @@
 	"version":"LAYAAVATAR:01",
 	"rootNode":{
 		"props":{
-			"name":"daiji",
+			"name":"model",
 			"translate":[
 				0,
 				0,
