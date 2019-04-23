@@ -327,11 +327,12 @@ class PlayerAnimator extends CharactorAnimator {
 
         var dieState:Laya.AnimatorState = this.GetState("die");
         var dieScript: Laya.AnimatorStateScript = dieState.addScript(Laya.AnimatorStateScript);
-        dieScript.onStateExit = () => { APP.MessageManager.Fire(MessageMD.GameEvent.PlayerDeath); }
-        //var fallScript:FallStateScript = fallState.addScript(FallStateScript) as FallStateScript;
-        //fallScript.Init(this.m_Player);
+        dieScript.onStateExit = () => { setTimeout(() => {
+            APP.MessageManager.Fire(MessageMD.GameEvent.PlayerDeath);
+        }, 1000) }
     }
 }
+
 class FallStateScript extends Laya.AnimatorStateScript {
     private m_Player: Player;
     private m_CountTime: number
