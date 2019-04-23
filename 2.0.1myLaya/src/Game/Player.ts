@@ -22,13 +22,14 @@ export default class Player extends Laya.Sprite3D {
     private _CurStep: Step;
     private _Ctrler: PlayerControler.BasePlayerCtrler;
     private m_Animator: Laya.Animator;
+    private m_PlayerCharacter:PlayerAnimator;
     private m_BuffModel: { [name: number]: Laya.Sprite3D }
     private m_StateMap: {}
     private m_Parent:Laya.Sprite3D;
 
-    BaseCtrler: PlayerControler.PlayerNormCtrler;
-    BuffArr: Array<Item.BasePlayerBuff>;
-    IdNumber: number;
+    public BaseCtrler: PlayerControler.PlayerNormCtrler;
+    public BuffArr: Array<Item.BasePlayerBuff>;
+    public IdNumber: number;
     public PlayerDeath: boolean;
 
     set CurStep(step: Step) {
@@ -50,8 +51,10 @@ export default class Player extends Laya.Sprite3D {
     get playerModel(): Laya.Sprite3D  {
         return this.m_PlayerModel;
     }
+
     constructor() {
         super();
+        this.name = "Player";
         this.m_BuffModel = {};
         this.m_Parent = new Laya.Sprite3D();
         this.m_Parent.name = "PlayerParent";
@@ -117,7 +120,9 @@ export default class Player extends Laya.Sprite3D {
         this.addChild(model);
         this.m_Parent.transform.rotate(new Laya.Vector3(0, 180, 0), false, false);
         this.m_Animator = model.getChildAt(0).getComponent(Laya.Animator);
-        //new CharactorAnimator(this.m_Animator);
+        this.m_PlayerCharacter = new PlayerAnimator(this.m_Animator,this);
+        this.m_PlayerCharacter.Init();
+
         var layer: Laya.MapLayer = this.m_Animator.getControllerLayer()._statesMap;
         this.m_StateMap = {};
         for (var key in layer) {
@@ -193,8 +198,8 @@ export default class Player extends Laya.Sprite3D {
         this.Position = newPS;
         this.m_LogicPosition = putStep.Position;
         this.m_Animator.play(Character.PlayerAnimName(Character.AnimEnum.Stand));
-        this.TouchGround();
         this.CurStep.StandOnGround(this)
+        this.TouchGround();
     }
 
     /**
@@ -217,6 +222,11 @@ export default class Player extends Laya.Sprite3D {
 
     Fly(): void {
         this.m_Animator.play(Character.PlayerAnimName(Character.AnimEnum.Fly));
+    }
+
+    FallDown():void
+    {
+        this.m_Animator.play(Character.PlayerAnimName(Character.AnimEnum.Fall));
     }
 
     //触发台阶
@@ -286,7 +296,8 @@ export default class Player extends Laya.Sprite3D {
     ResetParenet()
     {
         this.m_Parent.addChild(this);
-        this.transform.position = this.m_Parent.transform.position.clone();
+        this.transform.localPosition = new Laya.Vector3();
+        //this.transform.position = this.m_Parent.transform.position.clone();
     }
 }
 
@@ -295,4 +306,50 @@ class StepData {
     GetData(step: Step) {
 
     }
+}
+
+class PlayerAnimator extends CharactorAnimator
+{
+    private m_Player:Player
+    constructor(animator: Laya.Animator, player: Player) {
+        super(animator);
+        this.m_Player = player;
+    }
+    Init( )
+    {
+        var fallState:Laya.AnimatorState = this.GetState("fall");
+        var fallScript:FallStateScript = fallState.addScript(FallStateScript) as FallStateScript;
+        fallScript.Init(this.m_Player);
+    }
+}
+class FallStateScript extends Laya.AnimatorStateScript
+{
+    private m_Player:Player;
+    private m_CountTime:number
+    private m_YieldTime:number;
+    private m_YieldCallBack;
+    constructor()
+    {
+        super();
+    }
+    Init(player:Player)
+    {
+        this.m_Player = this.m_Player;
+        this.m_CountTime = 0;
+        this.m_YieldTime = 3;
+    }
+    onStateEnter()
+    {
+        //this.m_CountTime = APP.TimeManager.GameTime + this.m_YieldTime;
+        this.m_YieldCallBack = setTimeout(() => {
+            APP.MessageManager.Fire(MessageMD.GameEvent.PlayerDeath);
+        }, 300);
+
+    }
+    onStateExit()
+    {
+        if(this.m_YieldCallBack)
+            clearTimeout(this.m_YieldCallBack);
+    }
+    
 }

@@ -24,6 +24,8 @@ export default class CharactorAnimator
 
     public GetState(name:string):Laya.AnimatorState
     {
+        if(name == "fall")
+            var a = 1;
         var animatorState = this.m_StateMap[name];
         if(!animatorState)
         {
@@ -32,14 +34,19 @@ export default class CharactorAnimator
             animatorState.name = name;
             animatorState.clip = idleState.clip;
             this.m_Aniamtor.addState(animatorState);
+            this.m_StateMap[name] = animatorState;
         }
         return animatorState;
     }
     
     public Play(name:string)
     {
+        
         if(this.m_StateMap[name])
+        {
             this.m_Aniamtor.play(name);
+            
+        }
     }
     
     public linkSprite3DToAvatarNode(nodeName: string, sprite3D: Laya.Sprite3D):void

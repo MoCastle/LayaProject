@@ -12,7 +12,7 @@ type MLocation = GameStruct.MLocation;
 export default class Step extends Laya.Sprite3D {
     private m_CharacterAnimator: StepAnimator;
     //模型个数
-    public static stepModelNum: number = 3;
+    public static stepModelNum: number = 2;
     private m_StandPoint: Laya.Sprite3D;
     private _IsDeadRoad: boolean;
     private m_StepModel: Laya.Sprite3D;
@@ -26,7 +26,7 @@ export default class Step extends Laya.Sprite3D {
     Mark: any;
     Floor: MountLine;
     Idx: number;
-    locked:Boolean;
+    locked: Boolean;
     //公有接口
     set Position(newPS: Laya.Vector3) {
         this.transform.position = newPS.clone();
@@ -49,20 +49,22 @@ export default class Step extends Laya.Sprite3D {
     get IsEmpty(): boolean {
         return !(this.active && this.Floor.active);
     }
-    
+    get standPoint(): Laya.Sprite3D {
+        return this.m_StandPoint;
+    }
     constructor(floor: MountLine, idx: number) {
-        //super(new Laya.BoxMesh(1,1,1) );
         super();
         if (this.Idx != 0) {
-            var Idx = Math.floor(1 + Math.random() * Step.stepModelNum);
-            //var name: string = path.GetLH("L01_spr_plat_0" + Idx)
-            var name: string = path.GetLH("L01_spr_plat_01")
+            //var Idx =  Math.floor(1 + Math.random() * Step.stepModelNum);
+            var Idx =  Math.random() * Step.stepModelNum;
+            Idx = Idx > 0.5 ? 2:1;
+            var name: string = path.GetLH("dizuo_qiu0" + Idx)
+            //var name: string = path.GetLH("dizuo_qiu01")
             var model = Laya.loader.getRes(name);
         }
-
         //model = new Laya.MeshSprite3D( Laya.PrimitiveMesh.createBox(0.5, 0.5, 0.5)) ;//loader.getRes(name);
         var cloneModel: Laya.Sprite3D = model.clone();
-        this.m_CharacterAnimator = new StepAnimator(cloneModel.getComponent(Laya.Animator), this);
+        this.m_CharacterAnimator = new StepAnimator(cloneModel.getChildAt(0).getComponent(Laya.Animator), this);
         this.m_CharacterAnimator.Init();
         cloneModel.transform.position = new Laya.Vector3();
         this.m_StepModel = cloneModel;
@@ -112,7 +114,10 @@ export default class Step extends Laya.Sprite3D {
         this.RoadNum = 0;
         this.active = true;
         this.locked = false;
-        this.m_CharacterAnimator.Play("idel")
+        this.m_CharacterAnimator.Play("idle")
+        var position: Laya.Vector3 = this.transform.localPosition;
+        position.y = 0;
+        this.transform.localPosition = position;
     }
 
     public TouchGround(player: Player) {
@@ -123,14 +128,12 @@ export default class Step extends Laya.Sprite3D {
             var newSprite: Laya.Sprite3D = this.m_StandPoint;
             newSprite.addChild(player);
         }
-        this.m_CharacterAnimator.Play("idel")
         this.m_CharacterAnimator.Play("fall")
     }
     public PutInItem(sprite3D: Laya.Sprite3D) {
         this.m_StandPoint.addChild(sprite3D);
     }
-    public Break()
-    {
+    public Break() {
         this.m_CharacterAnimator.Play("fallDown");
     }
 }
@@ -142,52 +145,65 @@ class StepAnimator extends CharactorAnimator {
         this.m_Step = step;
     }
     Init() {
-        var state: Laya.AnimatorState = this.GetState("fall")
-        var script: Laya.AnimatorStateScript = state.addScript(Laya.AnimatorStateScript);
+        var stepFallState: Laya.AnimatorState = this.GetState("fall")
+        var stepFallScript: Laya.AnimatorStateScript = stepFallState.addScript(Laya.AnimatorStateScript);
         var stepAnimator = this;
-        script.onStateExit = () => { stepAnimator.Play("idle") };
-
+        stepFallScript.onStateExit = () => {
+            stepAnimator.Play("idle")
+        };
         var fallDownState: Laya.AnimatorState = this.GetState("fallDown");
-        
-        var fallDownScript:FallDownScript = fallDownState.addScript(FallDownScript) as FallDownScript;
-        fallDownScript.Init(this.m_Step,this.m_Aniamtor);
+        var fallDownScript: FallDownScript = fallDownState.addScript(FallDownScript) as FallDownScript;
+        fallDownScript.Init(this.m_Step, this.m_Aniamtor);
         return;
     }
 }
 
 class FallDownScript extends Laya.AnimatorStateScript {
-    m_Step: Step;
-    m_Speed: number;
-    m_TimeCount:number;
-    m_CountinueTime:number;
-    m_Animator:Laya.Animator;
+    private m_Step: Step;
+    private m_Speed: number;
+    private m_TimeCount: number;
+    private m_CountinueTime: number;
+    private m_Animator: Laya.Animator;
+    private m_Player: Player;
     constructor() {
         super();
         this.m_Speed = 0;
         this.m_CountinueTime = 1;
     }
 
-    public Init(step: Step,animator:Laya.Animator) {
+    public Init(step: Step, animator: Laya.Animator) {
         this.m_Step = step;
         this.m_Speed = 0;
-        this.m_TimeCount = APP.TimeManager.GameTime;
         this.m_Animator = animator;
     }
 
     public onStateEnter(): void {
         this.m_Step.locked = true;
+        this.m_TimeCount = APP.TimeManager.GameTime + this.m_CountinueTime;
     }
 
     public onStateExit(): void {
-
+        var stepPosition: Laya.Vector3 = this.m_Step.transform.localPosition;
+        this.m_Step.transform.localPosition = stepPosition;
     }
 
     public onStateUpdate(): void {
-        var lastFrameTime = this.m_CountinueTime - APP.TimeManager.GameTime;
-        if(lastFrameTime<0)
-        {
-            this.m_Animator.play("idle");
+        if (!this.m_Player && this.m_Step.standPoint.numChildren > 0)  {
+            this.m_Player = this.m_Step.standPoint.getChildByName("Player") as Player;
+            if (this.m_Player)  {
+                if (!this.m_Player.FallDown)
+                    var a = 1;
+                this.m_Player.FallDown();
+            }
+        }
+        var lastFrameTime = this.m_TimeCount - APP.TimeManager.GameTime;
+        if (lastFrameTime < 0) {
             return;
         }
+        if (this.m_Speed < 1)
+            this.m_Speed += (this.m_CountinueTime - lastFrameTime) * 0.5;
+        var position: Laya.Vector3 = this.m_Step.Position;
+        position.y -= this.m_Speed;
+        this.m_Step.Position = position;
     }
 }
