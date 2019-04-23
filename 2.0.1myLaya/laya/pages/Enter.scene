@@ -2,7 +2,7 @@
     "x":0,
     "type":"View",
     "selectedBox":1,
-    "selecteID":54,
+    "selecteID":31,
     "searchKey":"View",
     "props":{"width":750,"top":0,"sceneColor":"#000000","right":0,"left":0,"height":1334,"bottom":0},
     "nodeParent":-1,
@@ -18,7 +18,7 @@
             "x":15,
             "type":"Sprite",
             "searchKey":"Sprite,bg,bg",
-            "props":{"y":0,"x":0,"width":750,"var":"bg","texture":"entersceneui/res1/loadbgstart.png","name":"bg","height":1334},
+            "props":{"y":0,"x":0,"width":750,"var":"bg","name":"bg","height":1334},
             "nodeParent":1,
             "label":"bg",
             "isDirectory":false,
@@ -76,13 +76,14 @@
                     "props":{"y":0,"x":0,"var":"content","name":"content"},
                     "nodeParent":17,
                     "label":"content",
-                    "isOpen":null,
+                    "isOpen":true,
                     "isDirectory":true,
                     "isAniNode":true,
                     "hasChild":true,
                     "compId":56,
                     "child":[
                         {
+                            "x":45,
                             "type":"Image",
                             "searchKey":"Image,Btn1,Btn1",
                             "props":{"x":0,"var":"Btn1","skin":"entersceneui/gk/gk1.png","name":"Btn1"},
@@ -97,6 +98,7 @@
                                 ]
                         },
                         {
+                            "x":45,
                             "type":"Image",
                             "searchKey":"Image,Btn3",
                             "props":{"x":1260,"skin":"entersceneui/gk/gk3.png","name":"Btn3"},
@@ -111,6 +113,7 @@
                                 ]
                         },
                         {
+                            "x":45,
                             "type":"Image",
                             "searchKey":"Image,Btn2,Btn2",
                             "props":{"y":0,"x":630,"var":"Btn2","skin":"entersceneui/gk/gk2.png","name":"Btn2"},
@@ -125,6 +128,7 @@
                                 ]
                         },
                         {
+                            "x":45,
                             "type":"Image",
                             "searchKey":"Image,Btn4,Btn4",
                             "props":{"x":1890,"var":"Btn4","skin":"entersceneui/gk/gk4.png","name":"Btn4"},
@@ -139,9 +143,10 @@
                                 ]
                         },
                         {
+                            "x":45,
                             "type":"Image",
                             "searchKey":"Image,Btn5,Btn5",
-                            "props":{"x":2520,"var":"Btn5","skin":"entersceneui/gk/gk4.png","name":"Btn5"},
+                            "props":{"x":2520,"var":"Btn5","skin":"entersceneui/gk/gk5.png","name":"Btn5"},
                             "nodeParent":56,
                             "label":"Btn5",
                             "isOpen":true,

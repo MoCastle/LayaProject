@@ -65,7 +65,7 @@ export module Player {
             this.m_MessageMgr.Fire(Event.OnCurCharacterIDChange);
         }
         public get CurLevel(): number {
-            return this.m_CurLevel ? this.m_CurLevel : this.m_HistoryMaxLevel;
+            return this.m_CurLevel;// ? this.m_CurLevel : this.m_HistoryMaxLevel;
         }
         public set CurLevel(value: number) {
             if (value == this.CurLevel) {
@@ -119,6 +119,7 @@ export module Player {
         constructor() {
             var interestinglife = (Laya.LocalStorage.getItem("Interestinglife") != null ? JSON.parse(Laya.LocalStorage.getItem("Interestinglife")) : {});
             this.m_Money = interestinglife.m_Money || 0;
+            this.m_CurLevel = interestinglife.m_CurLevel || 1;
             this.m_CurCharacterID = interestinglife.m_CurCharacterID|| 0;
             this.m_CharacterList = interestinglife.m_CharacterList || [1,0,0,0,0];
             this.m_HistoryMaxLevel = interestinglife.m_HistoryMaxLevel || 0;
@@ -132,6 +133,7 @@ export module Player {
         public saveDataToLocal(): void {
             var localData:any = {};
             localData.m_Money = this.m_Money;
+            localData.m_CurLevel = this.m_CurLevel;
             localData.m_CurCharacterID = this.m_CurCharacterID;
             localData.m_CharacterList = this.m_CharacterList;
             localData.m_HistoryMaxLevel = this.m_HistoryMaxLevel;

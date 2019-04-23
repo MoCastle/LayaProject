@@ -38,18 +38,19 @@ export default class CharacterUI extends BaseUI {
 
     private config = {"img":
         [   
-            {key:"bg",textureName:"mainbg.jpg"},
-            {key:"characterrole0bg",textureName:"rolebgcircle.png"},
-            {key:"characterrole1bg",textureName:"rolebgcircle.png"},
-            {key:"characterrole2bg",textureName:"rolebgcircle.png"},
-            {key:"characterrole3bg",textureName:"rolebgcircle.png"},
-            {key:"characterrole4bg",textureName:"rolebgcircle.png"}
+            {key:"bg",textureName:"mainbg.jpg"}
+
         ],
         "btn":
         [
             {key:"backBtn",textureName:"back.png"},
             {key:"buyBtn",textureName:"buy.png"},
-            {key:"startGame",textureName:"start.png"}
+            {key:"startGame",textureName:"start.png"},
+            {key:"characterrole0bg",textureName:"rolebgcircle.png"},
+            {key:"characterrole1bg",textureName:"rolebgcircle.png"},
+            {key:"characterrole2bg",textureName:"rolebgcircle.png"},
+            {key:"characterrole3bg",textureName:"rolebgcircle.png"},
+            {key:"characterrole4bg",textureName:"rolebgcircle.png"}
         ]
     };
 
@@ -92,8 +93,16 @@ export default class CharacterUI extends BaseUI {
     updateSelfSceneUI() {
         for(var key in this.config) {
             var len = this.config[key].length;
-            for(var i = 0;i < len;i ++) {
-                this._UI[this.config[key][i].key].skin = (PlayerGuestAgent.GuestAgent.SkinDir + this.config[key][i].textureName);
+            if(key == "img") {
+                for(var i = 0;i < len;i ++) {
+                    this._UI[this.config[key][i].key].graphics.clear();
+                    this._UI[this.config[key][i].key].loadImage(PlayerGuestAgent.GuestAgent.SkinDir + this.config[key][i].textureName);
+                }
+            }
+            else if(key == "btn") {
+                for(var i = 0;i < len;i ++) {
+                    this._UI[this.config[key][i].key].skin = (PlayerGuestAgent.GuestAgent.SkinDir + this.config[key][i].textureName);
+                }
             }
         }
     }
@@ -238,8 +247,9 @@ export default class CharacterUI extends BaseUI {
         setTimeout(function(){
             this.characterUIScene.visible = true;
             this.InitPosition();
-        }.bind(this), 500);
+        }.bind(this), 510);
         this.Layout();
+        this.updateSelfSceneUI();
     }
 
     Close()  {

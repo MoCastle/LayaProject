@@ -5,6 +5,7 @@ import { path } from "./../Utility/Path"
 import {GameStruct} from "./../Game/GameStruct"
 import GuiderManager from "../Scene/GuiderManager";
 import Controler from "./../controler/GameControler"
+import PlayerGuestAgent from "./../Agent/PlayerGuestAgent"
 
 class ExtendsSetPanelUI extends ui.SetPanelUI {
     createChildren(): void {
@@ -49,10 +50,29 @@ export default class SetPanelUI extends BaseUI {
         this.selectedIndex = 1;
         this.SetPanel();
     }
-
+    Open() {
+        this.updateSelfSceneUI();
+    }
     VoiceClose() {
         this.selectedIndex = 0;
         this.SetPanel();
+    }
+
+    updateSelfSceneUI() {
+        for(var key in this.config) {
+            var len = this.config[key].length;
+            if(key == "img") {
+                for(var i = 0;i < len;i ++) {
+                    this._UI[this.config[key][i].key].graphics.clear();
+                    this._UI[this.config[key][i].key].loadImage(PlayerGuestAgent.GuestAgent.SkinDir + this.config[key][i].textureName);
+                }
+            }
+            else if(key == "btn") {
+                for(var i = 0;i < len;i ++) {
+                    this._UI[this.config[key][i].key].skin = (PlayerGuestAgent.GuestAgent.SkinDir + this.config[key][i].textureName);
+                }
+            }
+        }
     }
 
     SetPanel() {

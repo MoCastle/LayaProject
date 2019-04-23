@@ -16,6 +16,14 @@ export module path {
     }
 
     /**
+     * 获取声音路径
+     * @param fileName 文件名
+     */
+    export function GetSoundpathUIJS(fileName: string): string {
+        return  ResourcePath + "sound/" + fileName + ".mp3" + (IsEditor ? "" : version);
+    }
+
+    /**
      * 获取UIJson路径
      * @param fileName 文件名
      */
