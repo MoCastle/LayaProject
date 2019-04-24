@@ -108,7 +108,10 @@ export default class Gamemap extends Laya.Node {
         var breakFloor: MountLine = this.GetFloorByFloor(floor);
         for (var countFloor: number = tailFloor.FloorNum; countFloor <= floor; ++countFloor) {
             var targetFloor: MountLine = this.GetFloorByFloor(countFloor);
-            targetFloor.Break();
+            if(!targetFloor.breaked)
+            {
+                targetFloor.Break();
+            }
         }
 
     }

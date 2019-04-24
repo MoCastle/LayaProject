@@ -25,7 +25,7 @@ import { GameModule } from "../../Game/GameModule";
 
 type LineItemInfo = Item.LineItemInfo;
 var ItemType = Item.ItemType;
-var FallTime: number = 3;
+var FallTime: number = 1;
 var lineNum: number = 12;
 var column: number = 12;
 
@@ -161,7 +161,6 @@ export default class GameScenePlay extends Scene.BaseScenePlaye {
     MoveStep(isRight: boolean) {
         if (this.Player.CurStep.locked)
             return;
-        //var buff = this.Buffer;
         //获取下一层的Step
         var step: Step = this.Player.CurStep;
         if (step == null) {
@@ -176,7 +175,8 @@ export default class GameScenePlay extends Scene.BaseScenePlaye {
         if (step == null || step.StepItem.IsForbiden) {
             return;
         }
-        this.Player.CurStep.StandOnGround();
+        if(this.Player.BaseCtrler.Time > 0)     
+            this.Player.CurStep.StandOnGround();
         this.Player.LayStep(step);
         this.Player.StartMove();
         var nextFloorDir = isRight ? 1 : -1;

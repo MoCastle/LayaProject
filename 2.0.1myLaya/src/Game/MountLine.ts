@@ -19,6 +19,7 @@ export default class MountLine extends Laya.Sprite3D {
     FloorNum: number;
     StepItem: StepItem;
     OddSwitch: number;
+    breaked:boolean;
     get rightSwitch(): number {
         return this.m_RightSwitch;
     }
@@ -47,7 +48,7 @@ export default class MountLine extends Laya.Sprite3D {
             var newStep: Step = new Step(this, StartIdx);
             this.addChild(newStep);
             this.m_StepList[StartIdx] = newStep;
-            var stepVector = newStep.Position;
+            var stepVector = newStep.position;
             stepVector.x = startX;
             startX += GameModule.HSpace;
             newStep.transform.position = stepVector;
@@ -64,6 +65,7 @@ export default class MountLine extends Laya.Sprite3D {
 
     //设置每层
     SetLine(floor: number, rightSwitch: number): void {
+        this.breaked = false;
         this.m_RightSwitch = rightSwitch;
         this.OddSwitch = 0;
         this.LayOutDirty = false;
@@ -116,6 +118,7 @@ export default class MountLine extends Laya.Sprite3D {
 
     //敲碎一层
     Break(): void {
+        this.breaked = true;
         var stepList: Array<Step> = this.m_StepList;
         for (var idx: number = 0; idx < stepList.length; ++idx)  {
             var thisStep:Step = stepList[idx];

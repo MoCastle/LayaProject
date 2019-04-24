@@ -193,10 +193,10 @@ export default class Player extends Laya.Sprite3D {
     //摆放角色
     SetStep(putStep: Step): void {
         this.CurStep = putStep;
-        var newPS = putStep.Position.clone();
+        var newPS = putStep.position.clone();
         newPS.y += Controler.GameControler.StepLength;
         this.Position = newPS;
-        this.m_LogicPosition = putStep.Position;
+        this.m_LogicPosition = putStep.position;
         this.m_Animator.play(Character.PlayerAnimName(Character.AnimEnum.Stand));
         if ((this.CurStep.StepItem.ItemType == Item.ItemType.None) && (this.CurStep.IsEmpty || (this.CurStep.LeftParent && this.CurStep.RightParent && this.CurStep.LeftParent.StepItem.IsForbiden && this.CurStep.RightParent.StepItem.IsForbiden))) {
             this.FallDownImd();
@@ -212,7 +212,7 @@ export default class Player extends Laya.Sprite3D {
      */
     LayStep(step: Step): void {
         this.CurStep = step;
-        this.m_LogicPosition = step.Position;
+        this.m_LogicPosition = step.position;
     }
 
     StartMove(): void {

@@ -2,6 +2,7 @@ export default class CharactorAnimator
 {
     protected m_Aniamtor:Laya.Animator;
     private m_StateMap: {[name:string]:Laya.AnimatorState};
+    private m_CurStateName:string;
     public get speed():number
     {
         return this.m_Aniamtor.speed;
@@ -9,6 +10,10 @@ export default class CharactorAnimator
     public set speed(value:number)
     {
         this.m_Aniamtor.speed = value;
+    }
+    public get curStateName():string
+    {
+        return this.m_CurStateName;
     }
     constructor( animator:Laya.Animator )
     {
@@ -20,6 +25,7 @@ export default class CharactorAnimator
         for (var key in layer) {
             this.m_StateMap[key] = layer[key];
         }
+        this.m_CurStateName = this.m_Aniamtor.getDefaultState().name;
     }
 
     public GetState(name:string):Laya.AnimatorState
@@ -36,6 +42,7 @@ export default class CharactorAnimator
             this.m_Aniamtor.addState(animatorState);
             this.m_StateMap[name] = animatorState;
         }
+
         return animatorState;
     }
     
@@ -45,6 +52,10 @@ export default class CharactorAnimator
         if(this.m_StateMap[name])
         {
             this.m_Aniamtor.play(name);
+            this.m_CurStateName = name;
+        }else
+        {
+            console.log("anim Is Not Exist" + name);
         }
     }
     

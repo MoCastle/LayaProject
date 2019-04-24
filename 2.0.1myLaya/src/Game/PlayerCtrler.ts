@@ -69,7 +69,7 @@ export module PlayerControler {
             this.Time = APP.TimeManager.GameTime + Controler.GameControler.PlayerMoveTime;
             this.IsFalling = false;
             this.m_StartPS = this.player.Position;
-            this.m_TargetPS = this.player.CurStep.Position;
+            this.m_TargetPS = this.player.CurStep.position;
             this.m_TargetPS.y += Controler.GameControler.StepLength;
             var rotation: Laya.Quaternion = new Laya.Quaternion();
             var lookToPS = this.m_TargetPS.clone();

@@ -16,6 +16,7 @@ export default class Step extends Laya.Sprite3D {
     private m_StandPoint: Laya.Sprite3D;
     private _IsDeadRoad: boolean;
     private m_StepModel: Laya.Sprite3D;
+    private m_YieldFunc;
 
     LeftParent: Step;
     RightParent: Step;
@@ -28,10 +29,10 @@ export default class Step extends Laya.Sprite3D {
     Idx: number;
     locked: Boolean;
     //公有接口
-    set Position(newPS: Laya.Vector3) {
+    set position(newPS: Laya.Vector3) {
         this.transform.position = newPS.clone();
     }
-    get Position() {
+    get position() {
         return this.transform.position.clone();
     }
     get Location(): MLocation {
@@ -55,14 +56,11 @@ export default class Step extends Laya.Sprite3D {
     constructor(floor: MountLine, idx: number) {
         super();
         if (this.Idx != 0) {
-            //var Idx =  Math.floor(1 + Math.random() * Step.stepModelNum);
-            var Idx =  Math.random() * Step.stepModelNum;
-            Idx = Idx > 0.5 ? 2:1;
+            var Idx = Math.random() * Step.stepModelNum;
+            Idx = Idx > 0.5 ? 2 : 1;
             var name: string = path.GetLH("dizuo_qiu0" + Idx)
-            //var name: string = path.GetLH("dizuo_qiu01")
             var model = Laya.loader.getRes(name);
         }
-        //model = new Laya.MeshSprite3D( Laya.PrimitiveMesh.createBox(0.5, 0.5, 0.5)) ;//loader.getRes(name);
         var cloneModel: Laya.Sprite3D = model.clone();
         this.m_CharacterAnimator = new StepAnimator(cloneModel.getChildAt(0).getComponent(Laya.Animator), this);
         this.m_CharacterAnimator.Init();
@@ -104,7 +102,7 @@ export default class Step extends Laya.Sprite3D {
     }
     ResetStep(newPs: Laya.Vector3 = null) {
         if (newPs)
-            this.Position = newPs;
+            this.position = newPs;
         this.StepItem.PutItem(Item.ItemType.None);
 
         this.LeftParent = null;
@@ -119,11 +117,16 @@ export default class Step extends Laya.Sprite3D {
         var position: Laya.Vector3 = this.transform.localPosition;
         position.y = 0;
         this.transform.localPosition = position;
+        if(this.m_YieldFunc)
+        {
+            clearTimeout(this.m_YieldFunc);
+        }
     }
 
     public TouchGround(player: Player) {
         this.StepItem.TouchItem(player);
     }
+
     public StandOnGround(player = null) {
         if (player) {
             var newSprite: Laya.Sprite3D = this.m_StandPoint;
@@ -131,16 +134,27 @@ export default class Step extends Laya.Sprite3D {
         }
         this.m_CharacterAnimator.play("fall")
     }
+
     public PutInItem(sprite3D: Laya.Sprite3D) {
         this.m_StandPoint.addChild(sprite3D);
     }
+    
     public Break() {
-        this.m_CharacterAnimator.play("fallDown");
+        var randomTime = 1000 * Math.random();
+        var step:Step = this;
+        this.m_YieldFunc = setTimeout(() => {
+            step.YieldBreak();
+        }, randomTime);
+    }
+    private YieldBreak()
+    {
+        this.m_CharacterAnimator.play("warning");
+        this.m_YieldFunc = null;
     }
 }
 
 class StepAnimator extends CharactorAnimator {
-    m_Step: Step;
+    private m_Step: Step;
     constructor(animator: Laya.Animator, step: Step) {
         super(animator);
         this.m_Step = step;
@@ -149,13 +163,28 @@ class StepAnimator extends CharactorAnimator {
         var stepFallState: Laya.AnimatorState = this.GetState("fall")
         var stepFallScript: Laya.AnimatorStateScript = stepFallState.addScript(Laya.AnimatorStateScript);
         var stepAnimator = this;
-        stepFallScript.onStateExit = () => {
-            stepAnimator.play("idle")
-        };
         var fallDownState: Laya.AnimatorState = this.GetState("fallDown");
         var fallDownScript: FallDownScript = fallDownState.addScript(FallDownScript) as FallDownScript;
-        fallDownScript.Init(this.m_Step, this.m_Aniamtor);
-        return;
+        fallDownScript.Init(this.m_Step, this);
+
+        var warningState: Laya.AnimatorState = this.GetState("warning");
+        var warningScript: WarningScript = warningState.addScript(WarningScript) as WarningScript;
+        warningScript.Init(this.m_Step, this);
+    }
+    play(name: string)  {
+        var animatorStateName: string = this.curStateName;
+        switch (name)  {
+            case "fallDown":
+            case "warning":
+            case "idle":
+                super.play(name);
+                break;
+            default:
+                if (animatorStateName != "fallDown" && animatorStateName != "warning")  {
+                    super.play(name);
+                }
+                break;
+        }
     }
 }
 
@@ -164,7 +193,7 @@ class FallDownScript extends Laya.AnimatorStateScript {
     private m_Speed: number;
     private m_TimeCount: number;
     private m_CountinueTime: number;
-    private m_Animator: Laya.Animator;
+    private m_Animator: CharactorAnimator;
     private m_Player: Player;
     private m_TimeOut;
     constructor() {
@@ -173,7 +202,7 @@ class FallDownScript extends Laya.AnimatorStateScript {
         this.m_CountinueTime = 1;
     }
 
-    public Init(step: Step, animator: Laya.Animator) {
+    public Init(step: Step, animator: CharactorAnimator) {
         this.m_Step = step;
         this.m_Speed = 0;
         this.m_Animator = animator;
@@ -187,14 +216,14 @@ class FallDownScript extends Laya.AnimatorStateScript {
     public onStateExit(): void {
         var stepPosition: Laya.Vector3 = this.m_Step.transform.localPosition;
         this.m_Step.transform.localPosition = stepPosition;
-        if( this.m_TimeOut)
+        if (this.m_TimeOut)
             clearTimeout(this.m_TimeOut);
     }
 
     public onStateUpdate(): void {
-        if (!this.m_Player && this.m_Step.standPoint.numChildren > 0)  {
+        if (!this.m_Player && this.m_Step.standPoint.numChildren > 0) {
             this.m_Player = this.m_Step.standPoint.getChildByName("Player") as Player;
-            if (this.m_Player)  {
+            if (this.m_Player) {
                 this.m_Player.ResetParenet();
                 this.m_TimeOut = setTimeout(() => {
                     this.m_Player.FallDown();
@@ -207,8 +236,66 @@ class FallDownScript extends Laya.AnimatorStateScript {
         }
         if (this.m_Speed < 1)
             this.m_Speed += (this.m_CountinueTime - lastFrameTime) * 0.5;
-        var position: Laya.Vector3 = this.m_Step.Position;
+        var position: Laya.Vector3 = this.m_Step.position;
         position.y -= this.m_Speed;
-        this.m_Step.Position = position;
+        this.m_Step.position = position;
+    }
+}
+
+class WarningScript extends Laya.AnimatorStateScript {
+    private m_Step: Step;
+    private m_Animator: CharactorAnimator;
+    private m_TimeCount: number;
+    private m_CountinueTime: number;
+    private m_StartXPositin: number;
+    private m_SwitchNum: number;
+    private m_ShakeTimeCount: number;
+
+    get EndTimePoint(): number {
+        return this.m_TimeCount + this.m_CountinueTime;
+    }
+
+    constructor() {
+        super();
+        this.m_CountinueTime = 1;
+    }
+
+    public Init(step: Step, animator: CharactorAnimator) {
+        this.m_Step = step;
+        this.m_Animator = animator;
+        this.m_ShakeTimeCount = 0;
+    }
+
+    public onStateEnter(): void {
+        this.m_TimeCount = APP.TimeManager.GameTime;
+        this.m_CountinueTime = 1;
+        this.m_StartXPositin = this.m_Step.transform.position.x;
+        this.m_SwitchNum = 0.06;
+    }
+
+    public onStateExit(): void {
+        var stepPosition: Laya.Vector3 = this.m_Step.transform.localPosition;
+        this.m_Step.transform.localPosition = stepPosition;
+    }
+
+    public onStateUpdate(): void {
+        var curGameTime: number = APP.TimeManager.GameTime;
+        if (curGameTime < this.EndTimePoint) {
+            if (this.m_ShakeTimeCount > 2) {
+                this.m_SwitchNum *= -1;
+                var newXPosition = this.m_SwitchNum + this.m_StartXPositin;
+                var stepPosition: Laya.Vector3 = this.m_Step.position;
+                stepPosition.x = newXPosition;
+                this.m_Step.position = stepPosition;
+                this.m_ShakeTimeCount;
+                this.m_ShakeTimeCount = 0;
+            }
+            else  {
+                ++this.m_ShakeTimeCount;
+            }
+
+        } else {
+            this.m_Animator.play("fallDown");
+        }
     }
 }
