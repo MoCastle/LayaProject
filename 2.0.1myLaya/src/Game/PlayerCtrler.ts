@@ -138,7 +138,7 @@ export module PlayerControler {
             player.ResetParenet();
             player.Fly();
             var stepPS: Laya.Vector3 = player.CurStep.standPoint.transform.position.clone();
-            stepPS.y += GameModule.VSpace ;
+            stepPS.y += GameModule.VSpace*0.6 ;
             player.Position = stepPS;
             player.transform.rotationEuler = new Laya.Vector3(0, 180, 0);
             player.ModelRotateEular(new Laya.Vector3(0, 180, 0));

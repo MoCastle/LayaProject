@@ -203,17 +203,31 @@ export module BaseFunc {
             return this._NodeQueue.Count;
         }
     }
-    export class SmoothDampVector3 {
+
+    export class SmoothDamp {
         private m_CurrentVelocity: number;
         private m_SmoothTime: number;
         private m_MaxSpeed: number;
         private m_MaxMoveNum:number;
+        
+        /**
+         * 
+         * @param smoothTime 平滑时长
+         * @param maxSpeed 最大速度
+         */
         constructor(smoothTime: number, maxSpeed: number = 10) {
             this.m_CurrentVelocity = 0;
             this.m_SmoothTime = smoothTime;
             this.m_MaxSpeed = maxSpeed;
             this.m_MaxMoveNum = this.m_MaxSpeed * this.m_SmoothTime;
         }
+
+        /**
+         * 
+         * @param current 当前值
+         * @param target 目标值
+         * @param deltaTime 帧率
+         */
         public SmoothDamp(current:number,target:number,deltaTime:number = 1/60):number
         {
             var num:number = 2/this.m_SmoothTime;

@@ -31,6 +31,7 @@ export default class Player extends Laya.Sprite3D {
     public BuffArr: Array<Item.BasePlayerBuff>;
     public IdNumber: number;
     public PlayerDeath: boolean;
+    public Locked:boolean;
 
     set CurStep(step: Step) {
         this._CurStep = step;
@@ -145,6 +146,7 @@ export default class Player extends Laya.Sprite3D {
         var defaultAnimState: Laya.AnimatorState = this.m_Animator.getDefaultState();
         var stateName: string = defaultAnimState.name;
         this.m_Animator.play(stateName);
+        this.Locked = false;
     }
 
     /**
@@ -229,13 +231,16 @@ export default class Player extends Laya.Sprite3D {
     }
     Die():void
     {
+        this.Locked = true;
         this.m_Animator.play("die");
     }
     FallDown(): void  {
+        this.Locked = true;
         this.ResetParenet();
         this.m_Animator.play(Character.PlayerAnimName(Character.AnimEnum.Fall));
     }
     FallDownImd(): void  {
+        this.Locked = true;
         this.m_Animator.play("fallDownImd")
     }
 
@@ -323,6 +328,7 @@ class PlayerAnimator extends CharactorAnimator {
 
         var fallDownImdState: Laya.AnimatorState = this.GetState("fallDownImd");
         var fallDownImdScript: Laya.AnimatorStateScript = fallDownImdState.addScript(Laya.AnimatorStateScript);
+        var player:Player = this.m_Player;
         fallDownImdScript.onStateExit = () => { APP.MessageManager.Fire(MessageMD.GameEvent.PlayerDeath); }
 
         var dieState:Laya.AnimatorState = this.GetState("die");
@@ -347,6 +353,7 @@ class FallStateScript extends Laya.AnimatorStateScript {
         this.m_YieldTime = 3;
     }
     onStateEnter()  {
+        this.m_Player.Locked = true;
         //this.m_CountTime = APP.TimeManager.GameTime + this.m_YieldTime;
         this.m_YieldCallBack = setTimeout(() => {
             APP.MessageManager.Fire(MessageMD.GameEvent.PlayerDeath);

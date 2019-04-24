@@ -25,7 +25,7 @@ import { GameModule } from "../../Game/GameModule";
 
 type LineItemInfo = Item.LineItemInfo;
 var ItemType = Item.ItemType;
-var FallTime: number = 1;
+var FallTime: number = 2;
 var lineNum: number = 12;
 var column: number = 12;
 
@@ -159,7 +159,7 @@ export default class GameScenePlay extends Scene.BaseScenePlaye {
 
     //左右移动
     MoveStep(isRight: boolean) {
-        if (this.Player.CurStep.locked)
+        if (this.Player.CurStep.locked || this.Player.Locked)
             return;
         //获取下一层的Step
         var step: Step = this.Player.CurStep;
@@ -221,6 +221,7 @@ export default class GameScenePlay extends Scene.BaseScenePlaye {
         var playerModel = GameAPP.CharacterMgr.GetCharacterModel(gameAgent.CurCharacterID);
         player.SetPlayerModel(playerModel);
         APP.SceneManager.CurScene.PutObj(this.Player);
+        
         APP.SceneManager.CurScene.PutObj(this.m_GameMap);
         //准备玩家死亡事件
         APP.MessageManager.Regist(MessageMD.GameEvent.PlayerDeath, this.Death, this);
@@ -240,8 +241,12 @@ export default class GameScenePlay extends Scene.BaseScenePlaye {
         var startFloor: number = this.m_StartFloor;
         this.m_GameMap.Init(startFloor);
         this.Player.SetStep(this.m_GameMap.GetSafeStep());
+        var cameraPs:Laya.Vector3 = this.Player.Position.clone();
+        cameraPs.y += 0.2;
+        this.Camera.transform.position = cameraPs;
+        this.Camera.Init();
         this._StartPosition = this.Player.Position;
-        this.Camera.Reset(new Laya.Vector3(), new Laya.Vector3(0, Controler.GameControler.StepLength * 10.5, Controler.GameControler.StepLength * 9), this.Player);
+        this.Camera.Reset(new Laya.Vector3(), new Laya.Vector3(0, GameModule.HSpace * 3.2, GameModule.HSpace * 3.2), this.Player);
         this.m_GoldNum = 0;
         this._LogicGoldNum = 0;
 
@@ -328,6 +333,8 @@ export default class GameScenePlay extends Scene.BaseScenePlaye {
     public UseSkillItem() {
         if (GameAgent.Agent.SkillItemNum < 1)
             return;
+        if(this.Player.CurStep.locked)
+            return;
         GameAgent.Agent.UseSkillItem();
         var characterID: number = GameAgent.Agent.CurCharacterID;
         var ItemID: number = GameAPP.CharacterMgr.GetItemID(characterID);
@@ -339,6 +346,8 @@ export default class GameScenePlay extends Scene.BaseScenePlaye {
 
     public UsePlayerItem() {
         if (GameAgent.Agent.GameItemNum < 1)
+            return;
+        if(this.Player.CurStep.locked)
             return;
         GameAgent.Agent.UseGameItem();
         var ItemID: number = GameAgent.Agent.CurItem;

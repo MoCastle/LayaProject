@@ -10,6 +10,8 @@ import { PlayerControler } from "./PlayerCtrler"
 import { Input } from "./Input";
 import Controler from "./../controler/GameControler"
 import { GameModule } from "./GameModule";
+import CharactorAnimator from "./CharacterAnimator";
+import { BaseFunc } from "../Base/BaseFunc";
 
 type AnimCoin = AnimObj.AnimCoin
 export module Item {
@@ -64,7 +66,7 @@ export module Item {
 
             this.RewardList.push(new LayItemMgr(50, 1, ItemType.Fly, 20));
 
-            this.RewardList.push(new LayItemMgr(50, 10, ItemType.Collector));
+            this.RewardList.push(new LayItemMgr(50, 1, ItemType.Collector));
             this.RewardList.push(new LayItemMgr(50, 1, ItemType.Protect));
             this.RewardList.push(new LayItemMgr(50, 1, ItemType.HolyProtect));
 
@@ -106,10 +108,13 @@ export module Item {
         //已获取层标记
         TouchedFloor: number;
         ItemList: Array<number>;
-        //range区间范围
-        //num 区间范围数量
-        //itemType 生产的道具类型
-        //startFloor 从哪一行开始投掷
+        /**
+         * 
+         * @param range 区间范围
+         * @param num 区间范围数量
+         * @param itemType 生产的道具类型
+         * @param startFloor 从哪一行开始投掷
+         */
         constructor(range: number, num: number, itemType: ItemType, startFloor: number = 1) {
             if (num == undefined)
                 num = 1;
@@ -224,10 +229,10 @@ export module Item {
     }
 
     export class StepItem {
+        protected m_CharactorAnimator: CharactorAnimator;
         Step: Step;
         ItemType: ItemType;
         Model: Laya.Sprite3D;
-        private m_Animator: Laya.Animator;
         get IsDifficulty(): boolean {
             return this.ItemType > 0 && this.ItemType < 10 && this.ItemType != ItemType.Vine;
         }
@@ -276,7 +281,7 @@ export module Item {
 
             }
         }
-        
+
         public AddBuffToPlayer(player: Player, putBackItem: boolean = true): boolean {
             var Buff: BasePlayerBuff = ItemBuffFactory(this.ItemType);
             var success: boolean = Buff.AddToPlayer(player);
@@ -284,6 +289,7 @@ export module Item {
                 this.PutItem();
             return success;
         }
+
         /**
          * 突破保护
          * @returns 是否被突破
@@ -308,9 +314,12 @@ export module Item {
             this.ItemType = itemType;
             this.Model = null;
             this._InitItemModel();
-            this.m_Animator = null;
         }
-
+        protected SetIdleWave() {
+            var idelState: Laya.AnimatorState = this.m_CharactorAnimator.GetState("idle");
+            var waveState: WaveStateScript = idelState.addScript(WaveStateScript) as WaveStateScript;
+            waveState.Init(this.Model);
+        }
         _AddBuffToPlayer(player: Player, buff: BasePlayerBuff) {
             if (player.AddBuff(buff)) {
                 this.PutItem();
@@ -323,7 +332,10 @@ export module Item {
 
             this._GenItemModel();
             if (this.Model) {
-                this.m_Animator = this.Model.getComponent(Laya.Animator);
+                var animModel = this.Model.getChildAt(0);
+                var animator: Laya.Animator = animModel ? animModel.getComponent(Laya.Animator) : null;
+                if (animator)
+                    this.m_CharactorAnimator = new CharactorAnimator(animator);
             }
             return this.Model;
         }
@@ -386,11 +398,10 @@ export module Item {
             this.player.CompleteBuff(this.Slot);
         }
         public abstract Removed();
-
     }
 
     class Rock extends StepItem {
-        public static ModelNum = 3;
+        public static ModelNum = 4;
         constructor(Step: Step) {
             super(ItemType.Rock, Step);
         }
@@ -422,6 +433,7 @@ export module Item {
                 //APP.MessageManager.Fire(MessageMD.GameEvent.PlayerDeath);
                 //var anim: Laya.Animator = this.Model.getChildAt(0).getComponent(Laya.Animator);
                 //anim.play("die");
+                this.m_CharactorAnimator.play("trigger");
                 player.Die();
             }
         }
@@ -431,6 +443,7 @@ export module Item {
     class Protect extends StepItem {
         constructor(step: Step) {
             super(ItemType.Protect, step);
+            this.SetIdleWave();
         }
         //由父类统一管理模型生成
         protected _GenItemModel() {
@@ -473,6 +486,7 @@ export module Item {
     class HolyProtect extends StepItem {
         constructor(step: Step) {
             super(ItemType.HolyProtect, step);
+            this.SetIdleWave();
         }
         //由父类统一管理模型生成
         protected _GenItemModel() {
@@ -488,11 +502,19 @@ export module Item {
     GameStruct.ItemDictType[ItemType.HolyProtect] = HolyProtect;
 
     class Coin extends StepItem {
-        //ToDo
         private m_touched: Boolean
-        
+
         constructor(step: Step) {
             super(ItemType.Coin, step);
+            /*
+            var idelState: Laya.AnimatorState = this.m_CharactorAnimator.GetState("idle");
+            var waveState: WaveStateScript = idelState.addScript(WaveStateScript) as WaveStateScript;
+            waveState.Init(this.Model);
+            */
+            this.SetIdleWave();
+            var triggerState: Laya.AnimatorState = this.m_CharactorAnimator.GetState("trigger");
+            var triggerStateScript: GoldJumpUp = triggerState.addScript(GoldJumpUp) as GoldJumpUp;
+            triggerStateScript.Init(this.Model, this);
         }
 
         FlyToPlayer(player: Player) {
@@ -501,11 +523,11 @@ export module Item {
             Controler.GameControler.GameDir.GamePlay.AddGoldUnLogicGold(1);
             this.PutItem();
         }
-        
+
         TouchItem(player: Player) {
             Controler.GameControler.GameDir.GamePlay.AddGold(1);
-
-            this.PutItem();
+            this.m_CharactorAnimator.play("trigger")
+            //this.PutItem();
         }
 
         //由父类统一管理模型生成
@@ -524,6 +546,7 @@ export module Item {
         }
         constructor(step: Step) {
             super(ItemType.Collector, step);
+            this.SetIdleWave();
         }
         //由父类统一管理模型生成
         protected _GenItemModel() {
@@ -583,6 +606,7 @@ export module Item {
 
         constructor(step: Step) {
             super(ItemType.Fly, step);
+            this.SetIdleWave();
         }
         //由父类统一管理模型生成
         protected _GenItemModel() {
@@ -741,6 +765,10 @@ export module Item {
             if (this.Touched)
                 return
             this.AddBuffToPlayer(player, false);
+            if (this.m_CharactorAnimator)
+                this.m_CharactorAnimator.play("trigger");
+            else
+                console.log(this.Model.name);
             this.Touched = true;
         }
         constructor(step: Step) {
@@ -801,4 +829,89 @@ export module Item {
         }
     }
 
+    class GoldJumpUp extends Laya.AnimatorStateScript {
+        private m_Model: Laya.Sprite3D;
+        private m_FlyUpTime;
+        private m_CountPS: BaseFunc.SmoothDamp;
+        private m_YSwitch: number;
+        private m_OriginalY: number;
+        private m_StepItem: StepItem;
+        constructor() {
+            super();
+        }
+        Init(model: Laya.Sprite3D, stepItem: StepItem) {
+            this.m_Model = model;
+            this.m_StepItem = stepItem;
+        }
+
+        private SetYPosition() {
+            var localPosition: Laya.Vector3 = this.m_Model.transform.localPosition;
+            localPosition.y = this.m_OriginalY + this.m_YSwitch;
+            this.m_Model.transform.localPosition = localPosition;
+        }
+
+        onStateEnter() {
+            this.m_YSwitch = 0.5;
+            this.m_OriginalY = this.m_Model.transform.localPosition.y;
+            this.SetYPosition();
+        }
+        onStateExit() {
+            this.m_StepItem.PutItem();
+            this.m_YSwitch = 0;
+            this.SetYPosition();
+        }
+        onStateUpdate() {
+
+        }
+
+    }
+
+    class WaveStateScript extends Laya.AnimatorStateScript {
+        private m_Model: Laya.Sprite3D;
+        private m_OriginalY: number;
+        private m_RoundTime: number;
+        private m_Distance: number;
+        private m_CountTime: number;
+
+        private m_MoveDistanceCount: number;
+
+        get CountRound(): number {
+            return (APP.TimeManager.GameTime - this.m_CountTime) / this.m_RoundTime;
+        }
+        get TimeRoundRate(): number {
+            var timeScale = (APP.TimeManager.GameTime - this.m_CountTime) % this.m_RoundTime;
+            timeScale = (timeScale / this.m_RoundTime) * Math.PI;
+            return timeScale;
+        }
+        constructor() {
+            super();
+            this.m_RoundTime = 3;
+            this.m_Distance = 0.5
+        }
+
+        Init(model: Laya.Sprite3D) {
+            this.m_Model = model;
+            this.m_OriginalY = this.m_Model.transform.position.y;
+            this.m_MoveDistanceCount = 0;
+        }
+
+        private SetYPosition() {
+            var localPosition: Laya.Vector3 = this.m_Model.transform.localPosition;
+            localPosition.y = this.m_OriginalY + this.m_MoveDistanceCount;
+            this.m_Model.transform.localPosition = localPosition;
+        }
+
+        onStateEnter() {
+            this.m_CountTime = APP.TimeManager.GameTime;
+        }
+
+        onStateExit() {
+        }
+
+        onStateUpdate() {
+            this.m_MoveDistanceCount = Math.sin(this.TimeRoundRate) * this.m_Distance;
+            this.SetYPosition();
+        }
+    }
 }
+

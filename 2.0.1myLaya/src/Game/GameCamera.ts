@@ -7,7 +7,7 @@ export default class GameCamera extends Laya.Camera {
     BasePS: Laya.Vector3;
     DynamicPS: Laya.Vector3;
     Player: Player;
-    private m_CountPS: BaseFunc.SmoothDampVector3;
+    private m_CountPS: BaseFunc.SmoothDamp;
 
     set Position(ps: Laya.Vector3)  {
         this.transform.position = ps.clone();
@@ -19,16 +19,17 @@ export default class GameCamera extends Laya.Camera {
     constructor()  {
         super();
         this.Ctrler = new GameCameraCtrler(this);
-        this.DynamicPS = this.transform.position.clone();
-        this.BasePS = new Laya.Vector3();
         this.Player = null;
         //this.timerLoop(1,this.Ctrler,this.Ctrler.Update);
         this.frameLoop(1, this, this._Update);
         this.clearFlag = Laya.BaseCamera.CLEARFLAG_SKY;
-        this.m_CountPS = new BaseFunc.SmoothDampVector3(2)
-        //Camera.skyRenderer = skyBox._render;
-        //this.sk = skyBox;
-        //path
+        this.m_CountPS = new BaseFunc.SmoothDamp(2)
+    }
+    
+    Init()
+    {
+        this.DynamicPS = this.transform.position.clone();
+        this.BasePS = new Laya.Vector3();
     }
 
     SetPlaer(player: Player)  {
