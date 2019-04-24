@@ -5,10 +5,12 @@
 		"props":{
 			"name":"item_coin_01",
 			"active":true,
+			"isStatic":false,
+			"layer":0,
 			"position":[
-				0,
-				0,
-				0
+				-0.002384305,
+				0.2694512,
+				0.01047323
 			],
 			"rotation":[
 				0,
@@ -22,18 +24,19 @@
 				1
 			]
 		},
+		"components":[],
 		"child":[
 			{
 				"type":"Sprite3D",
 				"props":{
-					"name":"item_coin_01",
+					"name":"item_coin",
 					"active":true,
 					"isStatic":false,
 					"layer":0,
 					"position":[
-						0,
-						0,
-						0
+						0.002384305,
+						-0.2694512,
+						-0.01047323
 					],
 					"rotation":[
 						0,
@@ -51,7 +54,7 @@
 					{
 						"type":"Animator",
 						"avatar":{
-							"path":"Assets/item_coin_01-item_coin_01-item_coin_01Avatar.lav",
+							"path":"Assets/Resource/Item/item_coin_01/item_coin_01-item_coin-item_coin_01Avatar.lav",
 							"linkSprites":{}
 						},
 						"layers":[
@@ -61,8 +64,16 @@
 								"blendingMode":0,
 								"states":[
 									{
-										"name":"action",
-										"clipPath":"Assets/item_coin_01-action.lani"
+										"name":"idle",
+										"clipPath":"Assets/Resource/Item/item_coin_01/idle-idle.lani"
+									},
+									{
+										"name":"trigger",
+										"clipPath":"Assets/Resource/Item/item_coin_01/item_coin_01-trigger.lani"
+									},
+									{
+										"name":"idle 0",
+										"clipPath":"Assets/Resource/Item/item_coin_01/idle-idle.lani"
 									}
 								]
 							}
@@ -119,10 +130,10 @@
 							"materials":[
 								{
 									"type":"Laya.BlinnPhongMaterial",
-									"path":"Assets/Materials/item_coin_01.lmat"
+									"path":"Assets/Resource/Item/item_coin_01/item_coin_01_mat.lmat"
 								}
 							],
-							"meshPath":"Assets/item_coin_01-item_coin_01.lm"
+							"meshPath":"Assets/Resource/Item/item_coin_01/item_coin_01-item_coin_01.lm"
 						},
 						"components":[],
 						"child":[]

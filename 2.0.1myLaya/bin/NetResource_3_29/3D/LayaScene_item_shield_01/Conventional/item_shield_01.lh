@@ -5,6 +5,8 @@
 		"props":{
 			"name":"item_shield_01",
 			"active":true,
+			"isStatic":false,
+			"layer":0,
 			"position":[
 				0,
 				0,
@@ -22,11 +24,12 @@
 				1
 			]
 		},
+		"components":[],
 		"child":[
 			{
 				"type":"MeshSprite3D",
 				"props":{
-					"name":"item_flyer_01",
+					"name":"item_shield",
 					"active":true,
 					"isStatic":false,
 					"layer":0,
@@ -46,45 +49,35 @@
 						1,
 						1
 					],
-					"enableRender":true,
-					"materials":[]
-				},
-				"components":[],
-				"child":[]
-			},
-			{
-				"type":"MeshSprite3D",
-				"props":{
-					"name":"item_shield_01",
-					"active":true,
-					"isStatic":false,
-					"layer":0,
-					"position":[
-						0,
-						0,
-						0
-					],
-					"rotation":[
-						0.7071068,
-						0,
-						0,
-						-0.7071068
-					],
-					"scale":[
-						1,
-						1,
-						1
-					],
-					"meshPath":"Assets/item_shield_01-item_shield_01.lm",
+					"meshPath":"Assets/Resource/Item/item_shield_01/item_shield_01-item_shield_01.lm",
 					"enableRender":true,
 					"materials":[
 						{
 							"type":"Laya.BlinnPhongMaterial",
-							"path":"Assets/Materials/item_shield_01.lmat"
+							"path":"Assets/Resource/Item/item_shield_01/item_shield_01_mat.lmat"
 						}
 					]
 				},
-				"components":[],
+				"components":[
+					{
+						"type":"Animator",
+						"layers":[
+							{
+								"name":"Base Layer",
+								"weight":0,
+								"blendingMode":0,
+								"states":[
+									{
+										"name":"idle",
+										"clipPath":"Assets/Animation/idle-idle.lani"
+									}
+								]
+							}
+						],
+						"cullingMode":0,
+						"playOnWake":true
+					}
+				],
 				"child":[]
 			}
 		]

@@ -5,6 +5,8 @@
 		"props":{
 			"name":"trap_sting_01",
 			"active":true,
+			"isStatic":false,
+			"layer":0,
 			"position":[
 				0,
 				0,
@@ -22,11 +24,12 @@
 				1
 			]
 		},
+		"components":[],
 		"child":[
 			{
 				"type":"Sprite3D",
 				"props":{
-					"name":"trap_sting_01 (1)",
+					"name":"trap_sting",
 					"active":true,
 					"isStatic":false,
 					"layer":0,
@@ -51,7 +54,7 @@
 					{
 						"type":"Animator",
 						"avatar":{
-							"path":"Assets/trap_sting_01-trap_sting_01 (1)-trap_sting_01Avatar.lav",
+							"path":"Assets/Resource/Item/trap_sting_01/trap_sting_01-trap_sting-trap_sting_01Avatar.lav",
 							"linkSprites":{}
 						},
 						"layers":[
@@ -61,11 +64,12 @@
 								"blendingMode":0,
 								"states":[
 									{
-										"name":"action"
+										"name":"idle",
+										"clipPath":"Assets/Resource/Item/trap_sting_01/trap_sting_01-idle.lani"
 									},
 									{
-										"name":"touch",
-										"clipPath":"Assets/trap_sting_01-action.lani"
+										"name":"trigger",
+										"clipPath":"Assets/Resource/Item/trap_sting_01/trap_sting_01-trigger.lani"
 									}
 								]
 							}
@@ -122,10 +126,10 @@
 							"materials":[
 								{
 									"type":"Laya.BlinnPhongMaterial",
-									"path":"Assets/Materials/trap_sting_01.lmat"
+									"path":"Assets/Resource/Item/trap_sting_01/trap_sting_01_mat.lmat"
 								}
 							],
-							"meshPath":"Assets/trap_sting_01-trap_sting_01.lm"
+							"meshPath":"Assets/Resource/Item/trap_sting_01/trap_sting_01-trap_sting_01.lm"
 						},
 						"components":[],
 						"child":[]

@@ -5,6 +5,8 @@
 		"props":{
 			"name":"item_flyer_01",
 			"active":true,
+			"isStatic":false,
+			"layer":0,
 			"position":[
 				0,
 				0,
@@ -22,11 +24,12 @@
 				1
 			]
 		},
+		"components":[],
 		"child":[
 			{
 				"type":"Sprite3D",
 				"props":{
-					"name":"item_flyer_01 (2)",
+					"name":"item_flyer",
 					"active":true,
 					"isStatic":false,
 					"layer":0,
@@ -51,7 +54,7 @@
 					{
 						"type":"Animator",
 						"avatar":{
-							"path":"Assets/item_flyer_01-item_flyer_01 (2)-item_flyer_01Avatar.lav",
+							"path":"Assets/Resource/Item/item_flyer_01/item_flyer_01-item_flyer-item_flyer_01Avatar.lav",
 							"linkSprites":{}
 						},
 						"layers":[
@@ -61,8 +64,8 @@
 								"blendingMode":0,
 								"states":[
 									{
-										"name":"action",
-										"clipPath":"Assets/item_flyer_01-action.lani"
+										"name":"idle",
+										"clipPath":"Assets/Resource/Item/item_flyer_01/item_flyer_01-idle.lani"
 									}
 								]
 							}
@@ -119,10 +122,10 @@
 							"materials":[
 								{
 									"type":"Laya.BlinnPhongMaterial",
-									"path":"Assets/Materials/item_flyer_01.lmat"
+									"path":"Assets/Resource/Item/item_flyer_01/item_flyer_01_mat.lmat"
 								}
 							],
-							"meshPath":"Assets/item_flyer_01-item_flyer_01.lm"
+							"meshPath":"Assets/Resource/Item/item_flyer_01/item_flyer_01-item_flyer_01.lm"
 						},
 						"components":[],
 						"child":[]
