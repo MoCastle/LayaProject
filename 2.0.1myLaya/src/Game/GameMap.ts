@@ -2,6 +2,8 @@ import MountLine from "./MountLine";
 import { GameStruct } from "./GameStruct";
 import { Item } from "./GameItem";
 import Step from "./Step";
+import Player from "./Player";
+import { GameModule } from "./GameModule";
 
 var Mounts: number = 2;
 var LineSpace: number = 2;
@@ -16,6 +18,8 @@ export default class Gamemap extends Laya.Node {
     private m_CurLineBarriers: Array<Item.LineItemInfo>;
     private m_CurLineRewards: Array<Item.LineItemInfo>;
     private m_ItemLayout: Item.ItemLayout;
+    private m_Player: Player;
+    private m_StartPosition: Laya.Vector3;
 
     private m_rightSwitchCount: number;
 
@@ -76,19 +80,35 @@ export default class Gamemap extends Laya.Node {
                 lines[idx - 1].SetNextFloor(line);
             if (idx == startFloor) {
                 var PlayerStep = line.GetStep(Math.floor(line.Length / 2));
+                this.m_StartPosition = PlayerStep.position;
                 PlayerStep.IsDeadRoad = false;
                 this.m_SafeLocation = PlayerStep.Location;
             }
             this.PutItemInLine(idx);
         }
-        for (var startFloorNum: number = 0; startFloorNum < startFloor; ++startFloorNum)  {
+        for (var startFloorNum: number = 0; startFloorNum < startFloor; ++startFloorNum) {
             lines[startFloorNum].active = false;
         }
     }
+    
+    public SetPlayer(player: Player) {
+        this.m_Player = player;
+    }
 
     public CountNextFloorDirSwith(): number {
-        return this.m_rightSwitchCount;
+        var switchCount: number = 0;
+        if (this.m_Player) {
+            var position: Laya.Vector3;
+            if (this.m_Player.CurStep && this.m_Player.CurStep.position) {
+                position = this.m_Player.CurStep.position;
+            } else  {
+                position = this.m_Player.Position;
+            }
+            switchCount = (position.x - this.m_StartPosition.x) / (GameModule.HSpace / 2);
+        }
+        return switchCount;
     }
+
     public SetNextFlpprDirSwitch(num: number) {
         this.m_rightSwitchCount = num;
     }
@@ -108,8 +128,7 @@ export default class Gamemap extends Laya.Node {
         var breakFloor: MountLine = this.GetFloorByFloor(floor);
         for (var countFloor: number = tailFloor.FloorNum; countFloor <= floor; ++countFloor) {
             var targetFloor: MountLine = this.GetFloorByFloor(countFloor);
-            if(!targetFloor.breaked)
-            {
+            if (!targetFloor.breaked) {
                 targetFloor.Break();
             }
         }

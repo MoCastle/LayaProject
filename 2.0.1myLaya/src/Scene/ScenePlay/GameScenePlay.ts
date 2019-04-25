@@ -87,7 +87,7 @@ export default class GameScenePlay extends Scene.BaseScenePlaye {
     }
     get CountFloorTime(): number {
         this.m_BootomFloor = this.m_BootomFloor < this.m_GameMap.TailFLoor.FloorNum ? this.m_GameMap.TailFLoor.FloorNum :this.m_BootomFloor;
-        var between: number = this.Distance + this.m_StartFloor - this.m_BootomFloor;//this.m_GameMap.TailFLoor;
+        var between: number = this.Distance + this.m_StartFloor - this.m_BootomFloor;
         var rangeNum: number = 3;
         between = between > rangeNum ? rangeNum : between;
         return this._CountFloorTime - between / rangeNum * FallTime;
@@ -241,6 +241,7 @@ export default class GameScenePlay extends Scene.BaseScenePlaye {
         var startFloor: number = this.m_StartFloor;
         this.m_GameMap.Init(startFloor);
         this.Player.SetStep(this.m_GameMap.GetSafeStep());
+        this.m_GameMap.SetPlayer(this.Player);
         var cameraPs:Laya.Vector3 = this.Player.Position.clone();
         cameraPs.y += 0.2;
         this.Camera.transform.position = cameraPs;
