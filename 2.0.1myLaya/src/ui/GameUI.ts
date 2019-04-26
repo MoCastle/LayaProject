@@ -96,6 +96,7 @@ export default class GameUI extends BaseUI {
 
     SetLeftTouch(owner: any, Listener: () => void): void {
         this._UI._LeftTouch.on(Laya.Event.MOUSE_DOWN, owner, Listener); 
+        
     }
 
     SetRightTouch(owner: any, Listener: () => void): void {

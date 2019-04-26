@@ -2,6 +2,7 @@
 import View=Laya.View;
 import Dialog=Laya.Dialog;
 import Scene=Laya.Scene;
+var REG: Function = Laya.ClassUtils.regClass;
 export module ui {
     export class BGUI extends Laya.View {
 		public _Earth:Laya.Image;
@@ -11,6 +12,7 @@ export module ui {
             this.loadScene("BG");
         }
     }
+    REG("ui.BGUI",BGUI);
     export class CharacterUI extends Laya.View {
 		public bg:Laya.Image;
 		public layoutbg:Laya.Box;
@@ -28,12 +30,15 @@ export module ui {
 		public _Gold:Laya.Label;
 		public backBtn:Laya.Button;
 		public _List:Laya.List;
+		public nanBtn:Laya.Button;
+		public nvBtn:Laya.Button;
         constructor(){ super()}
         createChildren():void {
             super.createChildren();
             this.loadScene("Character");
         }
     }
+    REG("ui.CharacterUI",CharacterUI);
     export class EndGameUI extends Laya.View {
 		public bg:Laya.Sprite;
 		public endgamebgicon:Laya.Image;
@@ -52,6 +57,7 @@ export module ui {
             this.loadScene("EndGame");
         }
     }
+    REG("ui.EndGameUI",EndGameUI);
     export class EnterUI extends Laya.View {
 		public bg:Laya.Sprite;
 		public _Start:Laya.Button;
@@ -61,7 +67,7 @@ export module ui {
 		public Btn1:Laya.Image;
 		public Btn2:Laya.Image;
 		public Btn4:Laya.Image;
-		public Btn5:Laya.Image;                                           
+		public Btn5:Laya.Image;
 		public _SetPanel:Laya.Button;
 		public _CharacterList:Laya.Button;
 		public adv:Laya.Button;
@@ -74,6 +80,7 @@ export module ui {
             this.loadScene("Enter");
         }
     }
+    REG("ui.EnterUI",EnterUI);
     export class GameUI extends Laya.View {
 		public _CountDownUI:Laya.Box;
 		public _ItemListBtn:Laya.Button;
@@ -82,18 +89,19 @@ export module ui {
 		public _GameInfo:Laya.Label;
 		public _GamePanel:Laya.Box;
 		public _TxtDistance:Laya.Label;
-		public _TxtDistance1:Laya.FontClip;
 		public _TxtGold:Laya.Label;
 		public _LeftTouch:Laya.Button;
 		public _RightTouch:Laya.Button;
 		public _SkillItem:Laya.Button;
 		public _PlayerItem:Laya.Button;
+		public _TxtDistance1:Laya.FontClip;
         constructor(){ super()}
         createChildren():void {
             super.createChildren();
             this.loadScene("Game");
         }
     }
+    REG("ui.GameUI",GameUI);
     export class GameRankUI extends Laya.View {
 		public closeBtn:Laya.Button;
 		public gameRankUi:laya.ui.WXOpenDataViewer;
@@ -103,6 +111,7 @@ export module ui {
             this.loadScene("GameRank");
         }
     }
+    REG("ui.GameRankUI",GameRankUI);
     export class ItemListUI extends Laya.View {
 		public _BG:Laya.Image;
 		public bg:Laya.Sprite;
@@ -121,6 +130,7 @@ export module ui {
             this.loadScene("ItemList");
         }
     }
+    REG("ui.ItemListUI",ItemListUI);
     export class PlayerListUI extends Laya.View {
 		public _PlayerList:Laya.List;
 		public _ReturnMain:Laya.Button;
@@ -130,6 +140,7 @@ export module ui {
             this.loadScene("PlayerList");
         }
     }
+    REG("ui.PlayerListUI",PlayerListUI);
     export class SetPanelUI extends Laya.View {
 		public bg:Laya.Image;
 		public _Text:Laya.TextArea;
@@ -142,6 +153,7 @@ export module ui {
             this.loadScene("SetPanel");
         }
     }
+    REG("ui.SetPanelUI",SetPanelUI);
     export class toolItemUI extends Laya.View {
 		public toolicon:Laya.Sprite;
 		public toolname:Laya.Label;
@@ -151,4 +163,5 @@ export module ui {
             this.loadScene("toolItem");
         }
     }
-}
+    REG("ui.toolItemUI",toolItemUI);
+}

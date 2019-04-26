@@ -22,6 +22,7 @@ import { WechatOpen } from "../../platform/WechatOpen";
 import PlayerGuestAgent from "../../Agent/PlayerGuestAgent";
 import Gamemap from "../../Game/GameMap";
 import { GameModule } from "../../Game/GameModule";
+import { ModelFunc } from "../../Utility/ModelFunc";
 
 type LineItemInfo = Item.LineItemInfo;
 var ItemType = Item.ItemType;
@@ -63,8 +64,8 @@ export default class GameScenePlay extends Scene.BaseScenePlaye {
         return this._PanelUI;
     }
     set PanelUI(value: GameUI) {
-        value.SetLeftTouch(this, () => { this.InputCtrl.Input(false); })
-        value.SetRightTouch(this, () => { this.InputCtrl.Input(true); });
+        value.SetLeftTouch(this, () => { ModelFunc.vibrate(25);this.InputCtrl.Input(false); })
+        value.SetRightTouch(this, () => { ModelFunc.vibrate(25);this.InputCtrl.Input(true); });
         this._PanelUI = value;
     }
     get PlayerFloor(): number {
@@ -211,6 +212,8 @@ export default class GameScenePlay extends Scene.BaseScenePlaye {
     //创建相关放这 这里重新开始不会走
     public Start(): void {
         this.Camera = new GameCamera();
+        this.Camera.orthographic = true;
+        this.Camera.orthographicVerticalSize = 40;
         this.Camera.transform.localRotationEuler = new Laya.Vector3(-30, 0, 0);
         APP.SceneManager.CurScene.PutObj(this.Camera);
         //创建UI

@@ -91,13 +91,19 @@ class LoadScenePlaye extends Scene.BaseScenePlaye
             path.GetJsonPath("LevelInfo"),
             path.GetJsonPath("ObstacleInfo"),
             path.GetSoundpathUIJS("bg")
-            ];
+        ];
         
         Laya.loader.once(Laya.Event.ERROR,this,this.onError);
         Laya.loader.once(Laya.Event.COMPLETE,this,this.onComplete);
         var resource3DArr = [ 
-            path.GetLH("c001_child_01") ,
-            path.GetLH("c001_adult_01") ,
+            path.GetLH("c001_child_01"),
+            path.GetLH("c001_baby_01"),
+            path.GetLH("c001_adult_01"),
+            path.GetLH("c001_senior_01"),
+            path.GetLH("c001_teen_01"),
+            path.GetLH("c002_child_01"),
+            path.GetLH("c002_baby_01"),
+            path.GetLH("c002_teen_01"),
             path.GetLH("L01_spr_barrier_01"),
             path.GetLH("L01_spr_barrier_02"),
             path.GetLH("L01_spr_barrier_03"),

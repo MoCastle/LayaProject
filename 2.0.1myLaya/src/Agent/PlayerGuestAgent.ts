@@ -42,10 +42,11 @@ export default class PlayerGuestAgent extends BaseAgent {
     public BuyCharacter(id: number)  {
         var price = GameAPP.CharacterMgr.GetPrice(id);
         if (id < 0|| price <0 || price > this.m_PlayerEntity.Money)  {
-            return;
+            return false;
         }
         this.m_PlayerEntity.Money -= price;
         this.m_PlayerEntity.AddCharacter(id);
+        return true;
     }
 
     public BuyItem(id: number)  {

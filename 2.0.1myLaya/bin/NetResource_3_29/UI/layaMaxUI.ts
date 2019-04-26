@@ -29,12 +29,15 @@ export module NetResource_3_29.UI {
 		public _Gold:Laya.Label;
 		public backBtn:Laya.Button;
 		public _List:Laya.List;
+		public nanBtn:Laya.Button;
+		public nvBtn:Laya.Button;
         constructor(){ super()}
         createChildren():void {
             super.createChildren();
             this.loadScene("Character");
         }
     }
+    REG("NetResource_3_29.UI.CharacterUI",CharacterUI);
     export class EndGameUI extends Laya.View {
 		public bg:Laya.Sprite;
 		public endgamebgicon:Laya.Image;

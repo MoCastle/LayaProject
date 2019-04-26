@@ -16,6 +16,7 @@ import CharacterUIScene from "../Scene/CharacterUIScene";
 import EndGameUI from "./EndGameUI";
 import CharacterManager from "../GameManager/CharacterMamager";
 import { GameManager } from "../GameManager/GameManager";
+import UIButtonTouchEvent from "../Utility/UIButtonTouchEvent";
 
 class ExtendCharactersUI extends ui.CharacterUI {
     createChildren(): void {
@@ -35,6 +36,7 @@ export default class CharacterUI extends BaseUI {
     private characterUIScene:CharacterUIScene;
     private cntCharacterId:number;
     private _UI: ExtendCharactersUI;
+    private cntSelectSex:number = 1;
 
     private config = {"img":
         [   
@@ -68,14 +70,18 @@ export default class CharacterUI extends BaseUI {
         this._UI._Gold.strokeColor = "0xff0000";
 
         this._UI.backBtn.on(Laya.Event.CLICK, this, this.BackGameBtn);
-        
         this._UI._List.visible = false;
+
+        this._UI.nanBtn.on(Laya.Event.CLICK, this, this.nanBtnEvent);
+        this._UI.nvBtn.on(Laya.Event.CLICK, this, this.nvBtnEvent);
 
         this.spriteBgArr.push(this._UI.characterrole0bg);
         this.spriteBgArr.push(this._UI.characterrole1bg);
         this.spriteBgArr.push(this._UI.characterrole2bg);
         this.spriteBgArr.push(this._UI.characterrole3bg);
         this.spriteBgArr.push(this._UI.characterrole4bg);
+
+        this.updateNanNvBtnState();
 
         var len = this.spriteBgArr.length;
         for(var i = 0; i < len;i ++) {
@@ -88,6 +94,41 @@ export default class CharacterUI extends BaseUI {
         this._UI.startGame.on(Laya.Event.CLICK, this, this.startEvent);
         this._UI.buyBtn.on(Laya.Event.CLICK, this, this.OnClickImg);
         this.updateSelfSceneUI();
+
+        this._UI.nanBtn.anchorX = this._UI.nanBtn.anchorY =  this._UI.nvBtn.anchorX = this._UI.nvBtn.anchorY = 0.5;
+
+        UIButtonTouchEvent.addButtonTouchEvent(this._UI.nanBtn);
+        UIButtonTouchEvent.addButtonTouchEvent(this._UI.nvBtn);
+    }
+
+    updateNanNvBtnState(): void {
+        if(this.cntSelectSex == 0) {
+            this._UI.nanBtn.gray = false;
+            this._UI.nvBtn.gray = true;
+        }
+        else 
+        {
+            this._UI.nanBtn.gray = true;
+            this._UI.nvBtn.gray = false;
+        }
+    }
+
+    nvBtnEvent(e: Laya.Event): void {
+        if(this.cntSelectSex == 1) {
+            return;
+        }
+        this.cntSelectSex = 1;
+        this.updateNanNvBtnState();
+        this.characterUIScene && this.characterUIScene.updateSelectSex(this.cntSelectSex);
+    }
+
+    nanBtnEvent(e: Laya.Event): void {
+        if(this.cntSelectSex == 0) {
+            return;
+        }
+        this.cntSelectSex = 0;
+        this.updateNanNvBtnState();
+        this.characterUIScene && this.characterUIScene.updateSelectSex(this.cntSelectSex);
     }
 
     updateSelfSceneUI() {
@@ -108,6 +149,9 @@ export default class CharacterUI extends BaseUI {
     }
 
     startEvent(): void {
+        if(this.cntSelectSex == 1) {
+            this.characterUIScene.cntSelectIndex +=5;
+        }
         GameControler.GameControler.SetPlayerID(this.characterUIScene.cntSelectIndex);
         APP.UIManager.Close(this);
         GameControler.GameControler.EnterGame();
@@ -167,7 +211,7 @@ export default class CharacterUI extends BaseUI {
             return;
         }
         var num = this.characterUIScene.arrayDis.length;
-        for(var i = 0;i < num;i ++) {
+        for(var i = 0;i < 5;i ++) {
             var _outPos:Laya.Vector3 = new Laya.Vector3();
             this.characterUIScene.camera.viewport.project(this.characterUIScene.arrayDis[i].transform.position, this.characterUIScene.camera.projectionViewMatrix, _outPos);
             var _outPos1 = new Laya.Point(_outPos.x, _outPos.y);
@@ -238,6 +282,7 @@ export default class CharacterUI extends BaseUI {
         APP.MessageManager.Regist(Player.Event.OnMoneyChange, this.OnMoneyChange, this);
         APP.MessageManager.Regist(Player.Event.OnCharacterListChange, this.OnChangeList, this);
         this.characterUIScene = new CharacterUIScene(this.cntCharacterId , this.InitPosition.bind(this));
+        this.characterUIScene.updateSelectSex(this.cntSelectSex);
         this._UI.addChild(this.characterUIScene);
         this.characterUIScene.visible = false;
         var len = this.spriteBgArr.length;

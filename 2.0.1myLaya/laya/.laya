@@ -1,10 +1,10 @@
 <project version="2.0">
-   <asynRes>img,temp,sound                                                                                    </asynRes>
-   <unDealRes>embed                                                                                    </unDealRes>
+   <asynRes>img,temp,sound                                                                                       </asynRes>
+   <unDealRes>embed                                                                                       </unDealRes>
    <resTypes>png,jpg   </resTypes>
    <resExportPath>bin/NetResource_3_29/UI   </resExportPath>
    <asynResExportPath>bin/NetResource_3_29/UI   </asynResExportPath>
-   <codeExportPath>bin/NetResource_3_29/UI   </codeExportPath>
+   <codeExportPath>src/ui   </codeExportPath>
    <codeImports><![CDATA[import laya.ui.*;]]>   </codeImports>
    <codeImportsJS><![CDATA[var View=laya.ui.View;
 var Dialog=laya.ui.Dialog;]]>   </codeImportsJS>
@@ -15,7 +15,7 @@ var Dialog=laya.ui.Dialog;]]>   </codeImportsJS>
    <shareResPath/>
    <codeType>1   </codeType>
    <resCanCompress/>
-   <resPublishQuality>80                                                                                    </resPublishQuality>
+   <resPublishQuality>80                                                                                       </resPublishQuality>
    <langPath/>
    <defaultFont/>
    <codeImportsTS><![CDATA[import View=Laya.View;
@@ -49,5 +49,5 @@ import Scene=Laya.Scene;]]>   </codeImportsTS>
    <physicsDebug>false   </physicsDebug>
    <toJsonScene>true   </toJsonScene>
    <libProjectPath/>
-   <compressTexture>false                  </compressTexture>
+   <compressTexture>false   </compressTexture>
 </project>

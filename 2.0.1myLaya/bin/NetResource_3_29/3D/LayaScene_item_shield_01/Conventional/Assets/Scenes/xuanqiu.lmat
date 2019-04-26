@@ -2,7 +2,7 @@
 	"version":"LAYAMATERIAL:02",
 	"props":{
 		"type":"Laya.BlinnPhongMaterial",
-		"name":"dizuo_qiu03",
+		"name":"xuanqiu",
 		"renderStates":[
 			{
 				"cull":2,
@@ -17,7 +17,7 @@
 		"alphaTestValue":0.5,
 		"renderQueue":2000,
 		"metallic":0,
-		"smoothness":0,
+		"smoothness":0.5,
 		"smoothnessTextureScale":1,
 		"smoothnessSource":0,
 		"normalTextureScale":1,
@@ -26,11 +26,11 @@
 		"textures":[
 			{
 				"name":"albedoTexture",
-				"path":"dizuo_qiu03.png",
+				"path":"item_shield_01.jpg",
 				"constructParams":[
-					512,
-					512,
-					1,
+					256,
+					256,
+					0,
 					true
 				],
 				"propertyParams":{
@@ -54,9 +54,9 @@
 			{
 				"name":"albedoColor",
 				"value":[
-					0.588,
-					0.588,
-					0.588,
+					1,
+					1,
+					1,
 					1
 				]
 			},
@@ -66,7 +66,7 @@
 					0,
 					0,
 					0,
-					0
+					1
 				]
 			}
 		],

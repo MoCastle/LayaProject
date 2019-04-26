@@ -9,6 +9,8 @@ import { GameAgent } from "./../Agent/GameAgent"
 import PlayerGuestAgent from "../Agent/PlayerGuestAgent";
 import EndGameUI from "./EndGameUI";
 import APP from "./../controler/APP"
+import { ModelFunc } from "../Utility/ModelFunc";
+import LoadUIScene from "./UnDownload/LoadUIScene";
 
 class ExtendEnterGameUI extends ui.EnterUI {
     Panel: Laya.Panel;
@@ -91,7 +93,7 @@ export default class EnterGameUI extends BaseUI {
         this._gk.x = -this.cntSelectIndex * 630;
         this.initGKListener();
         this.updateButtonState();
-        laya.media.SoundManager.playMusic(path.GetSoundpathUIJS("bg"),0);
+        laya.media.SoundManager.playMusic(path.GetSoundpathUIJS("bg"),0);   
     }
 
     initGKListener() {
