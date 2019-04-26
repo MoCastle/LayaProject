@@ -54,7 +54,7 @@
 					{
 						"type":"Animator",
 						"avatar":{
-							"path":"Assets/Resource/Character/c002_child_01-完成/daiji-daiji-daijiAvatar.lav",
+							"path":"Assets/Resource/Character/c002_child_01/daiji-daiji-daijiAvatar.lav",
 							"linkSprites":{}
 						},
 						"layers":[
@@ -146,10 +146,10 @@
 							"materials":[
 								{
 									"type":"Laya.BlinnPhongMaterial",
-									"path":"Assets/Resource/Character/c002_child_01-完成/c002_child_01_mat.lmat"
+									"path":"Assets/Resource/Character/c002_child_01/c002_child_01_mat.lmat"
 								}
 							],
-							"meshPath":"Assets/Resource/Character/c002_child_01-完成/daiji-c002_child_01.lm"
+							"meshPath":"Assets/Resource/Character/c002_child_01/daiji-c002_child_01.lm"
 						},
 						"components":[],
 						"child":[]

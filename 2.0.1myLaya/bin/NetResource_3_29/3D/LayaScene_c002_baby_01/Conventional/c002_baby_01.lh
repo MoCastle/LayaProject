@@ -54,10 +54,46 @@
 					{
 						"type":"Animator",
 						"avatar":{
-							"path":"Assets/Resource/Character/c002_baby_01-完成/c002_baby_01_skin-c002_baby_01_skin-c002_baby_01_skinAvatar.lav",
+							"path":"Assets/Resource/Character/c002_baby_01/c002_baby_01_skin-c002_baby_01_skin-c002_baby_01_skinAvatar.lav",
 							"linkSprites":{}
 						},
-						"layers":[],
+						"layers":[
+							{
+								"name":"Base Layer",
+								"weight":0,
+								"blendingMode":0,
+								"states":[
+									{
+										"name":"idle",
+										"clipPath":"Assets/Resource/Character/c001_child_01/daiji-Take 001.lani"
+									},
+									{
+										"name":"fly",
+										"clipPath":"Assets/Resource/Character/c001_child_01/feixing-Take 001.lani"
+									},
+									{
+										"name":"die",
+										"clipPath":"Assets/Resource/Character/c001_child_01/siwang-Take 001.lani"
+									},
+									{
+										"name":"jumpDown",
+										"clipPath":"Assets/Resource/Character/c001_child_01/tiaoyue-JumpDown.lani"
+									},
+									{
+										"name":"jumpUp",
+										"clipPath":"Assets/Resource/Character/c001_child_01/tiaoyue-JumpUp.lani"
+									},
+									{
+										"name":"fallDown",
+										"clipPath":"Assets/Resource/Character/c001_child_01/xiazui-Take 001.lani"
+									},
+									{
+										"name":"fallDownImd",
+										"clipPath":"Assets/Resource/Character/c001_child_01/xiazui 1-Take 001.lani"
+									}
+								]
+							}
+						],
 						"cullingMode":0,
 						"playOnWake":true
 					}
@@ -110,10 +146,10 @@
 							"materials":[
 								{
 									"type":"Laya.BlinnPhongMaterial",
-									"path":"Assets/Resource/Character/c002_baby_01-完成/c002_baby_01_mat.lmat"
+									"path":"Assets/Resource/Character/c002_baby_01/c002_baby_01_mat.lmat"
 								}
 							],
-							"meshPath":"Assets/Resource/Character/c002_baby_01-完成/c002_baby_01_skin-c002_baby_01.lm"
+							"meshPath":"Assets/Resource/Character/c002_baby_01/c002_baby_01_skin-c002_baby_01.lm"
 						},
 						"components":[],
 						"child":[]
