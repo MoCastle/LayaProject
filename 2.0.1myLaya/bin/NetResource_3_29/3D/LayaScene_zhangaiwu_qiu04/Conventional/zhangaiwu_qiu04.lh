@@ -13,10 +13,10 @@
 				0
 			],
 			"rotation":[
-				0.7071068,
 				0,
 				0,
-				-0.7071068
+				0,
+				-1
 			],
 			"scale":[
 				1,
@@ -39,10 +39,10 @@
 						0
 					],
 					"rotation":[
+						0.7071068,
 						0,
 						0,
-						0,
-						-1
+						-0.7071068
 					],
 					"scale":[
 						1,
@@ -58,18 +58,7 @@
 						}
 					]
 				},
-				"components":[
-					{
-						"type":"Animator",
-						"avatar":{
-							"path":"Assets/Resource/Item/zhangaiwu_qiu04/zhangaiwu_qiu04-zhangaiwu_qiu-zhangaiwu_qiu04Avatar.lav",
-							"linkSprites":{}
-						},
-						"layers":[],
-						"cullingMode":0,
-						"playOnWake":true
-					}
-				],
+				"components":[],
 				"child":[]
 			}
 		]

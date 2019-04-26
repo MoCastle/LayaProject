@@ -50,19 +50,35 @@
 						1
 					]
 				},
-				"components":[
-					{
-						"type":"Animator",
-						"avatar":{
-							"path":"Assets/Resource/Item/zhangaiwu_qiu03/zhangaiwu_qiu03-zhangaiwu_qiu-zhangaiwu_qiu03Avatar.lav",
-							"linkSprites":{}
-						},
-						"layers":[],
-						"cullingMode":0,
-						"playOnWake":true
-					}
-				],
+				"components":[],
 				"child":[
+					{
+						"type":"Sprite3D",
+						"props":{
+							"name":"??×y×?",
+							"active":true,
+							"isStatic":false,
+							"layer":0,
+							"position":[
+								0,
+								0,
+								0
+							],
+							"rotation":[
+								0.7071068,
+								0,
+								0,
+								-0.7071068
+							],
+							"scale":[
+								1,
+								1,
+								1
+							]
+						},
+						"components":[],
+						"child":[]
+					},
 					{
 						"type":"MeshSprite3D",
 						"props":{
@@ -79,7 +95,7 @@
 								0.7071068,
 								0,
 								0,
-								-0.7071067
+								-0.7071068
 							],
 							"scale":[
 								1,
@@ -93,6 +109,33 @@
 									"type":"Laya.BlinnPhongMaterial",
 									"path":"Assets/Resource/Item/zhangaiwu_qiu03/zhangaiwu_qiu03_mat.lmat"
 								}
+							]
+						},
+						"components":[],
+						"child":[]
+					},
+					{
+						"type":"Sprite3D",
+						"props":{
+							"name":"×t×ü",
+							"active":true,
+							"isStatic":false,
+							"layer":0,
+							"position":[
+								0,
+								0,
+								0
+							],
+							"rotation":[
+								0.7071068,
+								0,
+								0,
+								-0.7071068
+							],
+							"scale":[
+								1,
+								1,
+								1
 							]
 						},
 						"components":[],

@@ -58,18 +58,7 @@
 						}
 					]
 				},
-				"components":[
-					{
-						"type":"Animator",
-						"avatar":{
-							"path":"Assets/Resource/Item/zhangaiwu_qiu01/zhangaiwu_qiu01-zhangaiwu_qiu-zhangaiwu_qiu01Avatar.lav",
-							"linkSprites":{}
-						},
-						"layers":[],
-						"cullingMode":0,
-						"playOnWake":true
-					}
-				],
+				"components":[],
 				"child":[]
 			}
 		]
