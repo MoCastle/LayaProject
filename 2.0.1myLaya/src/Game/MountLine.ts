@@ -4,7 +4,7 @@ import APP from "./../controler/APP"
 import Controler from "./../controler/GameControler"
 import { GameModule } from "./GameModule";
 type StepItem = Item.StepItem;
-var VSpace: number;
+var Space: number;
 var DSpace: number;
 /**作者:Mo
 *场景内对象 
@@ -35,8 +35,6 @@ export default class MountLine extends Laya.Sprite3D {
     }
 
     constructor(lineIdx: number, Columb: number, floor: number = 0) {
-        VSpace = GameModule.VSpace;
-        DSpace = GameModule.DSpace;
         var columns: number = Columb;
         super();
         this.m_RightSwitch = 0;
@@ -72,8 +70,8 @@ export default class MountLine extends Laya.Sprite3D {
         this.active = true;
         this.FloorNum = floor;
         var newPS = this.transform.position;
-        newPS.y = VSpace * floor;
-        newPS.z = -DSpace * floor;
+        newPS.y = GameModule.VSpace * floor;
+        newPS.z = -GameModule.DSpace * floor;
         this.transform.position = newPS;
         for (var startIdx: number = 0; startIdx < this.m_StepList.length; ++startIdx) {
             var thiStep = this.GetStep(startIdx);

@@ -123,7 +123,9 @@ export module Item {
                 startFloor = 1;
             this.ItemType = itemType;
             this.CurFloor = 0;
-            this.ItemNum = num;
+            //this.ItemNum = num;
+            this.ItemNum = num *3;
+            
             //分布图 物品idx:层数
             this.ItemList = new Array<number>(range);
             this.TouchedFloor = 0;
@@ -407,11 +409,15 @@ export module Item {
         }
         protected _GenItemModel() {
             var model: Laya.MeshSprite3D = null;
+
             var idx = 1 + Math.floor(Math.random() * Rock.ModelNum);
-            var Name: string = path.GetLH("L01_spr_barrier_0" + idx)
+            var Name: string = path.GetLH("zhangaiwu_qiu0" + idx)
             model = Laya.loader.getRes(Name)
             model = model.clone();
             this.Model = model;
+            var scale:Laya.Vector3 = this.Model.transform.scale.clone();
+            Laya.Vector3.scale(scale,1.5,scale);
+            this.Model.transform.scale = scale;
         }
     }
     GameStruct.ItemDictType[ItemType.Rock] = Rock;
@@ -782,6 +788,9 @@ export module Item {
 
             var model: Laya.Sprite3D = Laya.loader.getRes(name).clone();
             this.Model = model;
+            var scale:Laya.Vector3 = this.Model.transform.scale.clone();
+            Laya.Vector3.scale(scale,1.2,scale);
+            this.Model.transform.scale = scale;
         }
         //消除 把自己存入内存池
         DesPawn() {

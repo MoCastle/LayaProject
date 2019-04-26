@@ -18,12 +18,13 @@ export default class GameCamera extends Laya.Camera {
 
     constructor()  {
         super();
+        this.orthographic = true;
         this.Ctrler = new GameCameraCtrler(this);
         this.Player = null;
         //this.timerLoop(1,this.Ctrler,this.Ctrler.Update);
         this.frameLoop(1, this, this._Update);
         this.clearFlag = Laya.BaseCamera.CLEARFLAG_SKY;
-        this.m_CountPS = new BaseFunc.SmoothDamp(2)
+        this.m_CountPS = new BaseFunc.SmoothDamp(1,1000)
     }
     
     Init()
@@ -95,7 +96,8 @@ class GameCameraCtrler extends BaseGameCameraCtrler {
             CameraPS.z += disZNum*0.1;
         }
 
-        this.Camera.DynamicPS =CameraPS;*/
+        this.Camera.DynamicPS =CameraPS;
+        */
         var CameraPS = this.Camera.DynamicPS;
         var PlayerPS = this.Camera.Player.m_LogicPosition;
         CameraPS.x = 0;
