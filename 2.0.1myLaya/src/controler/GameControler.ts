@@ -71,7 +71,7 @@ class GameControler {
     get PlayerMoveTime(): number {
         if(!this._PlayerMoveTime)
         {
-            this._PlayerMoveTime = 0.2;
+            this._PlayerMoveTime = 0.3;
         }
         return this._PlayerMoveTime;
     }

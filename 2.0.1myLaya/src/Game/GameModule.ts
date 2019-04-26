@@ -8,5 +8,8 @@ export module GameModule
     }
     export var HSpace:number = 3;
     export var VSpace:number = 2.5;
-    export var DSpace:number = 0.75;
+    export var DSpace:number = 0.6;
+
+    //export var DesighnV:number = 2.5;
+    //export var DesighnD:number = 0.6;
 }

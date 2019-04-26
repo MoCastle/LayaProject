@@ -2,6 +2,8 @@ import MountLine from "./MountLine";
 import { GameStruct } from "./GameStruct";
 import { Item } from "./GameItem";
 import Step from "./Step";
+import Player from "./Player";
+import { GameModule } from "./GameModule";
 
 var Mounts: number = 2;
 var LineSpace: number = 2;
@@ -16,8 +18,12 @@ export default class Gamemap extends Laya.Node {
     private m_CurLineBarriers: Array<Item.LineItemInfo>;
     private m_CurLineRewards: Array<Item.LineItemInfo>;
     private m_ItemLayout: Item.ItemLayout;
+    private m_Player: Player;
+    private m_StartPosition: Laya.Vector3;
 
     private m_rightSwitchCount: number;
+    private m_ShowSteps: number;
+    private m_ViewColums: number;
 
     private get CurLineRewards(): Array<Item.LineItemInfo> {
         return this.m_CurLineRewards;
@@ -39,14 +45,15 @@ export default class Gamemap extends Laya.Node {
     }
 
     /**
-     * 地图
+     * 
      * @param floorNum 层数
      * @param column 列数
+     * @param camera 相机
+     * @param distance 距离
      */
     constructor(floorNum: number, column: number) {
-        floorNum = 7;
-        column = 7;
         super();
+        this.m_ViewColums = column;
         this.m_MountLines = [];
         this.m_CurIdx = 0;
         this.m_HeadFloorIdx = 0;
@@ -56,16 +63,36 @@ export default class Gamemap extends Laya.Node {
         this.m_CurLineRewards = new Array<Item.LineItemInfo>();
         this.m_rightSwitchCount = 0;
         this.m_SafeLocation = new GameStruct.MLocation(-1, -1);
+        var floorColumNum: number = floorNum * 2 + 4;
         for (var idx = 0; idx < floorNum; ++idx) {
-            var newMountain = new MountLine(idx, column, idx)
+            var newMountain = new MountLine(idx, floorColumNum, idx)
             this.m_MountLines[idx] = newMountain;
             this.addChild(newMountain);
         }
     }
-
-    public Init(startFloor: number) {
-        var lines: MountLine[] = this.m_MountLines;
+    /**
+     * 
+     * @param startFloor 起始层
+     * @param camera 相机
+     * @param viewHeight 相机垂直视野
+     */
+    public Init(startFloor: number, camera: Laya.Camera, viewHeight: number): Laya.Vector3 {
+        //var lineNormalVector: Laya.Vector3 = new Laya.Vector3(0, GameModule.VSpace, GameModule.DSpace);
         startFloor = (!startFloor) && (startFloor < 0) && (startFloor >= lines.length) ? 0 : startFloor;
+        //var cameraPS: Laya.Vector3 = new Laya.Vector3(0,15,20);
+        var cameraPS: Laya.Vector3 = new Laya.Vector3(0,15,20);
+        
+        var cmeraViewHeight: number = viewHeight / (this.m_MountLines.length);
+        GameModule.VSpace = cmeraViewHeight;
+        camera.orthographicVerticalSize = viewHeight - 2.5*cmeraViewHeight;
+        var screenWidht: number = Laya.stage.width;
+        var widtthSpace: number = screenWidht / this.m_ViewColums;
+        var spacePS: Laya.Vector3 = new Laya.Vector3(widtthSpace, 0, 0);
+        camera.convertScreenCoordToOrthographicCoord(spacePS, spacePS);
+        GameModule.HSpace = 3;//spacePS.x;
+        Laya.Vector3.add(cameraPS,new Laya.Vector3(0,GameModule.VSpace*(startFloor),0),cameraPS)
+       
+        var lines: MountLine[] = this.m_MountLines;
         this.m_HeadFloorIdx = lines.length - 1;
         this.m_TailFLoorIdx = 0;
         this.m_rightSwitchCount = 0;
@@ -76,19 +103,103 @@ export default class Gamemap extends Laya.Node {
                 lines[idx - 1].SetNextFloor(line);
             if (idx == startFloor) {
                 var PlayerStep = line.GetStep(Math.floor(line.Length / 2));
+                this.m_StartPosition = PlayerStep.position;
                 PlayerStep.IsDeadRoad = false;
                 this.m_SafeLocation = PlayerStep.Location;
             }
             this.PutItemInLine(idx);
         }
-        for (var startFloorNum: number = 0; startFloorNum < startFloor; ++startFloorNum)  {
+        for (var startFloorNum: number = 0; startFloorNum < startFloor; ++startFloorNum) {
             lines[startFloorNum].active = false;
         }
+        return cameraPS;
+    }
+    /**
+     * 
+     * @param startFloor 
+     * @param camera 
+     * @param distance 
+     * @returns 相机位置
+     
+    public Init(startFloor: number, camera: Laya.Camera, distance: number): Laya.Vector3 {
+        //var lineNormalVector: Laya.Vector3 = new Laya.Vector3(0, GameModule.VSpace, GameModule.DSpace);
+        startFloor = (!startFloor) && (startFloor < 0) && (startFloor >= lines.length) ? 0 : startFloor;
+        var lineNormalVector: Laya.Vector3 = new Laya.Vector3(0, GameModule.DesighnV, GameModule.DesighnD);
+        Laya.Vector3.normalize(lineNormalVector, lineNormalVector);
+        var cameraPS: Laya.Vector3 = new Laya.Vector3();
+        var cameraMidelNormalVector: Laya.Vector3 = camera.transform.forward;
+        var xRotateAngle: number = (Math.PI / 180) * (camera.fieldOfView / 2);
+
+        var xRotateQuaternion: Laya.Quaternion = new Laya.Quaternion();
+        Laya.Quaternion.createFromAxisAngle(new Laya.Vector3(1, 0, 0), -xRotateAngle, xRotateQuaternion)
+        var cameraBottomNormalVector: Laya.Vector3 = new Laya.Vector3();
+        Laya.Vector3.transformQuat(cameraMidelNormalVector, xRotateQuaternion, cameraBottomNormalVector);
+
+        var bottomAngelCos: number = 0;
+
+        var bottomPointToCameraNormal:Laya.Vector3 = new Laya.Vector3();
+        Laya.Vector3.scale(cameraBottomNormalVector,-1,bottomPointToCameraNormal);
+        bottomAngelCos = Laya.Vector3.dot(lineNormalVector, bottomPointToCameraNormal);
+        var bottomAngelSin = Math.sqrt(1 - Math.pow(bottomAngelCos, 2));
+
+        var bottomLength: number = distance / bottomAngelSin;
+        var cameraBottomVector: Laya.Vector3 = cameraBottomNormalVector.clone();
+        Laya.Vector3.scale(cameraBottomNormalVector, -1 * bottomLength, cameraBottomVector);
+
+        cameraPS = new Laya.Vector3();
+        Laya.Vector3.add(cameraPS, cameraBottomVector, cameraPS);
+        var bottomAngel:number =Math.acos(bottomAngelCos);
+        var topAngle: number = 90 * (Math.PI / 180) - bottomAngel;
+        var lineLength: number = bottomLength / Math.sin(topAngle) * Math.sin(camera.fieldOfView* (Math.PI / 180));
+        var perLength: number = lineLength / (this.m_MountLines.length - 1 );
+
+        var stepSpaceScale: number = perLength / Math.sqrt(GameModule.DesighnV * GameModule.DesighnV + GameModule.DesighnD * GameModule.DesighnD);
+        GameModule.VSpace = GameModule.VSpace * stepSpaceScale;
+        GameModule.DSpace = GameModule.DSpace * stepSpaceScale;
+        var switchFloor = startFloor - 1.5;
+        Laya.Vector3.add(cameraPS, new Laya.Vector3(0, -GameModule.VSpace * switchFloor, GameModule.DSpace * switchFloor), cameraPS);
+
+        var lines: MountLine[] = this.m_MountLines;
+        this.m_HeadFloorIdx = lines.length - 1;
+        this.m_TailFLoorIdx = 0;
+        this.m_rightSwitchCount = 0;
+        for (var idx: number = 0; idx < lines.length; ++idx) {
+            var line: MountLine = lines[idx];
+            line.SetLine(idx, this.CountNextFloorDirSwith());
+            if (idx > 1)
+                lines[idx - 1].SetNextFloor(line);
+            if (idx == startFloor) {
+                var PlayerStep = line.GetStep(Math.floor(line.Length / 2));
+                this.m_StartPosition = PlayerStep.position;
+                PlayerStep.IsDeadRoad = false;
+                this.m_SafeLocation = PlayerStep.Location;
+            }
+            this.PutItemInLine(idx);
+        }
+        for (var startFloorNum: number = 0; startFloorNum < startFloor; ++startFloorNum) {
+            lines[startFloorNum].active = false;
+        }
+        return cameraPS;
+    }
+*/
+    public SetPlayer(player: Player) {
+        this.m_Player = player;
     }
 
     public CountNextFloorDirSwith(): number {
-        return this.m_rightSwitchCount;
+        var switchCount: number = 0;
+        if (this.m_Player) {
+            var position: Laya.Vector3;
+            if (this.m_Player.CurStep && this.m_Player.CurStep.position) {
+                position = this.m_Player.CurStep.position;
+            } else {
+                position = this.m_Player.Position;
+            }
+            switchCount = (position.x - this.m_StartPosition.x) / (GameModule.HSpace / 2);
+        }
+        return switchCount;
     }
+
     public SetNextFlpprDirSwitch(num: number) {
         this.m_rightSwitchCount = num;
     }
@@ -108,8 +219,7 @@ export default class Gamemap extends Laya.Node {
         var breakFloor: MountLine = this.GetFloorByFloor(floor);
         for (var countFloor: number = tailFloor.FloorNum; countFloor <= floor; ++countFloor) {
             var targetFloor: MountLine = this.GetFloorByFloor(countFloor);
-            if(!targetFloor.breaked)
-            {
+            if (!targetFloor.breaked) {
                 targetFloor.Break();
             }
         }
@@ -186,11 +296,6 @@ export default class Gamemap extends Laya.Node {
         if (floorLine.LayOutDirty)
             return;
         floorLine.LayOutDirty = true;
-        /*
-        if(floor >= this._SafeLocation.Y + Controler.GameControler.MaxLineNum)
-        {
-            safeCol = this._CountOpenList(floor);
-        }else*/
         var safeIdxColl: { [key: number]: number; } = this.CountRoadInfo(floor);
 
         //出生点不放道具

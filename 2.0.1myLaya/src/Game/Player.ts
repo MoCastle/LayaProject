@@ -81,6 +81,10 @@ export default class Player extends Laya.Sprite3D {
 
     private InitBUffModel(playerModel: Laya.Sprite3D) {
         this.m_PlayerModel = playerModel;
+        var scale:Laya.Vector3 = this.m_PlayerModel.transform.scale;
+        Laya.Vector3.scale(scale,1.2,scale);
+        this.m_PlayerModel.transform.scale = scale;
+
         this.m_HeadNode = new Laya.Sprite3D();
         var HeadNode: Laya.Sprite3D = playerModel.getChildByName("head") as Laya.Sprite3D;
         this.addChild(this.m_HeadNode);

@@ -27,8 +27,8 @@ import { ModelFunc } from "../../Utility/ModelFunc";
 type LineItemInfo = Item.LineItemInfo;
 var ItemType = Item.ItemType;
 var FallTime: number = 2;
-var lineNum: number = 12;
-var column: number = 12;
+var lineNum: number = 9;
+var column: number = 5;
 
 //游戏导演
 export default class GameScenePlay extends Scene.BaseScenePlaye {
@@ -88,8 +88,8 @@ export default class GameScenePlay extends Scene.BaseScenePlaye {
     }
     get CountFloorTime(): number {
         this.m_BootomFloor = this.m_BootomFloor < this.m_GameMap.TailFLoor.FloorNum ? this.m_GameMap.TailFLoor.FloorNum :this.m_BootomFloor;
-        var between: number = this.Distance + this.m_StartFloor - this.m_BootomFloor;//this.m_GameMap.TailFLoor;
-        var rangeNum: number = 3;
+        var between: number = this.Distance + this.m_StartFloor - this.m_BootomFloor;
+        var rangeNum: number = 2;
         between = between > rangeNum ? rangeNum : between;
         return this._CountFloorTime - between / rangeNum * FallTime;
     }
@@ -106,7 +106,7 @@ export default class GameScenePlay extends Scene.BaseScenePlaye {
         this._CurBG = APP.SceneManager.BG as BGUI;
         this.FreshBGCount = 0;
         this.m_GameMap = new Gamemap(lineNum, column);
-        this.m_StartFloor = 3;
+        this.m_StartFloor = 2;
     }
 
     AddInputCtrler(value: Input.BaseGameInput) {
@@ -242,14 +242,17 @@ export default class GameScenePlay extends Scene.BaseScenePlaye {
         this.InputCtrl = new Input.NormGameInput(this);
         this.Player.Reset();
         var startFloor: number = this.m_StartFloor;
-        this.m_GameMap.Init(startFloor);
+        var cameraBasePS:Laya.Vector3 = this.m_GameMap.Init(startFloor,this.Camera,30);
         this.Player.SetStep(this.m_GameMap.GetSafeStep());
+        this.m_GameMap.SetPlayer(this.Player);
         var cameraPs:Laya.Vector3 = this.Player.Position.clone();
-        cameraPs.y += 0.2;
+        cameraPs.y -= GameModule.VSpace*2;
         this.Camera.transform.position = cameraPs;
         this.Camera.Init();
         this._StartPosition = this.Player.Position;
-        this.Camera.Reset(new Laya.Vector3(), new Laya.Vector3(0, GameModule.HSpace * 3.2, GameModule.HSpace * 3.2), this.Player);
+        //this.Camera.Reset(new Laya.Vector3(), new Laya.Vector3(0, GameModule.HSpace * 3.2, GameModule.HSpace * 3.2), this.Player);
+        this.Camera.Reset(new Laya.Vector3(), cameraBasePS, this.Player);
+        
         this.m_GoldNum = 0;
         this._LogicGoldNum = 0;
 
@@ -289,8 +292,8 @@ export default class GameScenePlay extends Scene.BaseScenePlaye {
         }
         ++this.FreshBGCount;
         var dDistance: number = this.m_GameMap.TailFLoor.FloorNum;
-        var distance = this.PlayerFloor - dDistance + 3;
-        if (distance > 3) {
+        var distance = this.PlayerFloor - dDistance + 4;
+        if (distance > 4) {
             this._PushFLoor();
         }
 

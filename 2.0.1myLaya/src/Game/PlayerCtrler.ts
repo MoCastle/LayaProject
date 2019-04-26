@@ -69,7 +69,7 @@ export module PlayerControler {
             this.Time = APP.TimeManager.GameTime + Controler.GameControler.PlayerMoveTime;
             this.IsFalling = false;
             this.m_StartPS = this.player.Position;
-            this.m_TargetPS = this.player.CurStep.position;
+            this.m_TargetPS = this.player.CurStep.standPoint.transform.position;
             this.m_TargetPS.y += Controler.GameControler.StepLength;
             var rotation: Laya.Quaternion = new Laya.Quaternion();
             var lookToPS = this.m_TargetPS.clone();
@@ -95,7 +95,7 @@ export module PlayerControler {
                     var lastTime: number = this.LastTime;
                     var rate: number = this.TimePercent;
                     var moveTimeRate: number = 0;
-                    var fallTimePoint: number = 0.4;
+                    var fallTimePoint: number = 0.5;
                     var startPS: Laya.Vector3;
                     var targetPS: Laya.Vector3;
                     if (rate > fallTimePoint) {
