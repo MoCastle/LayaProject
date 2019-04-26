@@ -1,0 +1,25 @@
+{
+	"version":"LAYAAVATAR:01",
+	"rootNode":{
+		"props":{
+			"name":"zhangaiwu_qiu",
+			"translate":[
+				0,
+				0,
+				0
+			],
+			"rotation":[
+				-0.09229591,
+				0.7010574,
+				0.7010574,
+				0.09229591
+			],
+			"scale":[
+				1,
+				1,
+				1
+			]
+		},
+		"child":[]
+	}
+}
