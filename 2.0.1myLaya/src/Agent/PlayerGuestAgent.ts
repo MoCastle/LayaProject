@@ -13,6 +13,10 @@ export default class PlayerGuestAgent extends BaseAgent {
         return "entersceneui/res" + this.m_PlayerEntity.CurLevel + "/";
     }
 
+    public get TotalStart(): number {
+        return this.m_PlayerEntity.TotalStart;
+    }
+
     public get CurLevel() {
         return this.m_PlayerEntity.CurLevel;
     }
@@ -41,7 +45,7 @@ export default class PlayerGuestAgent extends BaseAgent {
 
     public BuyCharacter(id: number)  {
         var price = GameAPP.CharacterMgr.GetPrice(id);
-        if (id < 0|| price <0 || price > this.m_PlayerEntity.Money)  {
+        if (id < 0|| price <0 || price > this.m_PlayerEntity.Money)  {0
             return false;
         }
         this.m_PlayerEntity.Money -= price;

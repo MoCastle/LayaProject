@@ -11,7 +11,7 @@ export default class GameConfig{
     static screenMode:string="none";
     static alignV:string="top";
     static alignH:string="left";
-    static startScene:any="Character.scene";
+    static startScene:any="Enter.scene";
     static sceneRoot:string="";
     static debug:boolean=true;
     static stat:boolean=false;

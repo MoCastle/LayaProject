@@ -1,22 +1,202 @@
-[
-    {
-        "ID": 1,
+{
+    "1": {
+        "ID": "1",
         "Passscore": 154,
-        "RewardActorID": -1
+        "FallTimeRange": "[[30,3],[0,2]]",
+        "Empty": "[[10,0,1],[10,1]]",
+        "Rock": "[[10,0,1],[10,5]]",
+        "Thorn": "[[10,0,1],[10,2]]",
+        "Vine": "[[10,0,1],[10,2]]",
+        "Shield": "[[50,1]]",
+        "Untouchable": "[[50,1]]",
+        "flyer": "[[20,0,1][50,1]]",
+        "absord": "[[50,1]]",
+        "Coin": "[[10,1]]",
+        "totalleval": 99999900,
+        "starnum": 3,
+        "startscore": "[100,400,500]"
     },
-    {
-        "ID": 2,
+    "2": {
+        "ID": "2",
         "Passscore": 254,
-        "RewardActorID": 2
+        "FallTimeRange": "[[30,3],[30,2],[0,1]]",
+        "Empty": "[[10,0,1],[10,1]]",
+        "Rock": "[[10,0,1],[10,5]]",
+        "Thorn": "[[10,0,1],[10,2]]",
+        "Vine": "[[10,0,1],[10,2]]",
+        "Shield": "[[50,1]]",
+        "Untouchable": "[[50,1]]",
+        "flyer": "[[20,0,1][50,1]]",
+        "absord": "[[50,1]]",
+        "Coin": "[[10,1]]",
+        "totalleval": 100,
+        "starnum": 3,
+        "startscore": "[100,400,501]"
     },
-    {
-        "ID": 3,
+    "3": {
+        "ID": "3",
         "Passscore": 354,
-        "RewardActorID": -1
+        "FallTimeRange": "[[30,3],[0,2]]",
+        "Empty": "[[10,0,1],[10,1]]",
+        "Rock": "[[10,0,1],[10,5]]",
+        "Thorn": "[[10,0,1],[10,2]]",
+        "Vine": "[[10,0,1],[10,2]]",
+        "Shield": "[[50,1]]",
+        "Untouchable": "[[50,1]]",
+        "flyer": "[[20,0,1][50,1]]",
+        "absord": "[[50,1]]",
+        "Coin": "[[10,1]]",
+        "totalleval": 100,
+        "starnum": 3,
+        "startscore": "[100,400,502]"
     },
-    {
-        "ID": 4,
+    "4": {
+        "ID": "4",
         "Passscore": 0,
-        "RewardActorID": -1
+        "FallTimeRange": "[[30,3],[0,2]]",
+        "Empty": "[[10,0,1],[10,1]]",
+        "Rock": "[[10,0,1],[10,5]]",
+        "Thorn": "[[10,0,1],[10,2]]",
+        "Vine": "[[10,0,1],[10,2]]",
+        "Shield": "[[50,1]]",
+        "Untouchable": "[[50,1]]",
+        "flyer": "[[20,0,1][50,1]]",
+        "absord": "[[50,1]]",
+        "Coin": "[[10,1]]",
+        "totalleval": 100,
+        "starnum": 3,
+        "startscore": "[100,400,503]"
+    },
+    "5": {
+        "ID": "5",
+        "totalleval": 100,
+        "starnum": 3,
+        "startscore": "[100,400,504]"
+    },
+    "6": {
+        "ID": "6",
+        "totalleval": 100,
+        "starnum": 3,
+        "startscore": "[100,400,505]"
+    },
+    "7": {
+        "ID": "7",
+        "totalleval": 100,
+        "starnum": 3,
+        "startscore": "[100,400,506]"
+    },
+    "8": {
+        "ID": "8",
+        "totalleval": 100,
+        "starnum": 3,
+        "startscore": "[100,400,507]"
+    },
+    "9": {
+        "ID": "9",
+        "totalleval": 100,
+        "starnum": 3,
+        "startscore": "[100,400,508]"
+    },
+    "10": {
+        "ID": "10",
+        "totalleval": 100,
+        "starnum": 3,
+        "startscore": "[100,400,509]"
+    },
+    "11": {
+        "ID": "11",
+        "totalleval": 100,
+        "starnum": 3,
+        "startscore": "[100,400,510]"
+    },
+    "12": {
+        "ID": "12",
+        "totalleval": 100,
+        "starnum": 3,
+        "startscore": "[100,400,511]"
+    },
+    "13": {
+        "ID": "13",
+        "totalleval": 100,
+        "starnum": 3,
+        "startscore": "[100,400,512]"
+    },
+    "14": {
+        "ID": "14",
+        "totalleval": 100,
+        "starnum": 3,
+        "startscore": "[100,400,513]"
+    },
+    "15": {
+        "ID": "15",
+        "totalleval": 100,
+        "starnum": 3,
+        "startscore": "[100,400,514]"
+    },
+    "16": {
+        "ID": "16",
+        "totalleval": 100,
+        "starnum": 3,
+        "startscore": "[100,400,515]"
+    },
+    "17": {
+        "ID": "17",
+        "totalleval": 100,
+        "starnum": 3,
+        "startscore": "[100,400,515]"
+    },
+    "18": {
+        "ID": "18",
+        "totalleval": 100,
+        "starnum": 3,
+        "startscore": "[100,400,517]"
+    },
+    "19": {
+        "ID": "19",
+        "totalleval": 100,
+        "starnum": 3,
+        "startscore": "[100,400,518]"
+    },
+    "20": {
+        "ID": "20",
+        "totalleval": 100,
+        "starnum": 3,
+        "startscore": "[100,400,519]"
+    },
+    "21": {
+        "ID": "21",
+        "totalleval": 100,
+        "starnum": 3,
+        "startscore": "[100,400,520]"
+    },
+    "22": {
+        "ID": "22",
+        "totalleval": 100,
+        "starnum": 3,
+        "startscore": "[100,400,521]"
+    },
+    "23": {
+        "ID": "23",
+        "totalleval": 100,
+        "starnum": 3,
+        "startscore": "[100,400,522]"
+    },
+    "24": {
+        "ID": "24",
+        "totalleval": 100,
+        "starnum": 3,
+        "startscore": "[100,400,523]"
+    },
+    "25": {
+        "ID": "25",
+        "totalleval": 100,
+        "starnum": 3,
+        "startscore": "[100,400,524]"
+    },
+    "26": {
+        "ID": "26",
+        "totalleval": 100,
+        "starnum": 3,
+        "startscore": "[100,400,525]"
     }
-]
+}

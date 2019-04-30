@@ -155,6 +155,8 @@ export default class CharacterUI extends BaseUI {
         GameControler.GameControler.SetPlayerID(this.characterUIScene.cntSelectIndex);
         APP.UIManager.Close(this);
         GameControler.GameControler.EnterGame();
+        this._UI.removeChild(this.characterUIScene);
+        this.characterUIScene = null;
     }
 
     checkIsLock(id): boolean {
@@ -235,6 +237,7 @@ export default class CharacterUI extends BaseUI {
             APP.UIManager.Close(this);
         }));
         this._UI.removeChild(this.characterUIScene);
+        this.characterUIScene = null;
     }
 
     stopRoateTimer(): void {
@@ -251,7 +254,7 @@ export default class CharacterUI extends BaseUI {
         this.m_CharacterList = GameAPP.CharacterMgr.GetIDList();
     }
 
-    Layout() {
+    Layout() {   
         super.Layout();
         if(!this._UI || !this._UI.bg) {
             return;
@@ -278,6 +281,9 @@ export default class CharacterUI extends BaseUI {
         
     }
     Open()  {
+        if(this.characterUIScene) {
+            return;
+        }
         APP.MessageManager.Regist(Player.Event.OnCurCharacterIDChange, this.OnNeedCloseUI, this);
         APP.MessageManager.Regist(Player.Event.OnMoneyChange, this.OnMoneyChange, this);
         APP.MessageManager.Regist(Player.Event.OnCharacterListChange, this.OnChangeList, this);
@@ -318,7 +324,7 @@ export default class CharacterUI extends BaseUI {
         if (!this.Showing)  {
             return;
         }
-        this.BackGameBtn();
+        //this.BackGameBtn();
     }
 
     private OnChangeList()  {

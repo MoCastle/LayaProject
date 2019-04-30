@@ -68,6 +68,11 @@ export module ui {
 		public Btn2:Laya.Image;
 		public Btn4:Laya.Image;
 		public Btn5:Laya.Image;
+		public startnumtxt1:Laya.Label;
+		public startnumtxt2:Laya.Label;
+		public startnumtxt3:Laya.Label;
+		public startnumtxt4:Laya.Label;
+		public startnumtxt5:Laya.Label;
 		public _SetPanel:Laya.Button;
 		public _CharacterList:Laya.Button;
 		public adv:Laya.Button;

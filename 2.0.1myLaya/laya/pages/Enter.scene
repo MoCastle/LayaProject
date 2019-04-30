@@ -1,12 +1,12 @@
 {
     "x":0,
     "type":"View",
-    "selectedBox":1,
-    "selecteID":31,
+    "selectedBox":56,
+    "selecteID":61,
     "searchKey":"View",
     "props":{"width":750,"top":0,"sceneColor":"#000000","right":0,"left":0,"height":1334,"bottom":0},
     "nodeParent":-1,
-    "maxID":57,
+    "maxID":62,
     "label":"View",
     "isOpen":true,
     "isDirectory":true,
@@ -86,7 +86,7 @@
                             "x":45,
                             "type":"Image",
                             "searchKey":"Image,Btn1,Btn1",
-                            "props":{"x":0,"var":"Btn1","skin":"entersceneui/gk/gk1.png","name":"Btn1"},
+                            "props":{"y":0,"x":0,"var":"Btn1","skin":"entersceneui/gk/gk1.png","name":"Btn1"},
                             "nodeParent":56,
                             "label":"Btn1",
                             "isOpen":true,
@@ -101,7 +101,7 @@
                             "x":45,
                             "type":"Image",
                             "searchKey":"Image,Btn3",
-                            "props":{"x":1260,"skin":"entersceneui/gk/gk3.png","name":"Btn3"},
+                            "props":{"y":0,"x":1260,"skin":"entersceneui/gk/gk3.png","name":"Btn3"},
                             "nodeParent":56,
                             "label":"Btn3",
                             "isOpen":true,
@@ -154,6 +154,76 @@
                             "isAniNode":true,
                             "hasChild":false,
                             "compId":52,
+                            "child":[
+                                ]
+                        },
+                        {
+                            "x":45,
+                            "type":"Label",
+                            "searchKey":"Label,startnumtxt1",
+                            "props":{"y":86,"x":228.6416015625,"var":"startnumtxt1","text":"50星过关","fontSize":42,"color":"#ffffff"},
+                            "nodeParent":56,
+                            "label":"startnumtxt1",
+                            "isDirectory":false,
+                            "isAniNode":true,
+                            "hasChild":false,
+                            "compId":57,
+                            "child":[
+                                ]
+                        },
+                        {
+                            "x":45,
+                            "type":"Label",
+                            "searchKey":"Label,startnumtxt2",
+                            "props":{"y":86,"x":858.6416015625,"var":"startnumtxt2","text":"50星过关","fontSize":42,"color":"#ffffff"},
+                            "nodeParent":56,
+                            "label":"startnumtxt2",
+                            "isDirectory":false,
+                            "isAniNode":true,
+                            "hasChild":false,
+                            "compId":58,
+                            "child":[
+                                ]
+                        },
+                        {
+                            "x":45,
+                            "type":"Label",
+                            "searchKey":"Label,startnumtxt3",
+                            "props":{"y":86,"x":1475,"var":"startnumtxt3","text":"50星过关","fontSize":42,"color":"#ffffff"},
+                            "nodeParent":56,
+                            "label":"startnumtxt3",
+                            "isDirectory":false,
+                            "isAniNode":true,
+                            "hasChild":false,
+                            "compId":59,
+                            "child":[
+                                ]
+                        },
+                        {
+                            "x":45,
+                            "type":"Label",
+                            "searchKey":"Label,startnumtxt4",
+                            "props":{"y":65,"x":2108,"var":"startnumtxt4","text":"50星过关","fontSize":42,"color":"#ffffff"},
+                            "nodeParent":56,
+                            "label":"startnumtxt4",
+                            "isDirectory":false,
+                            "isAniNode":true,
+                            "hasChild":false,
+                            "compId":60,
+                            "child":[
+                                ]
+                        },
+                        {
+                            "x":45,
+                            "type":"Label",
+                            "searchKey":"Label,startnumtxt5",
+                            "props":{"y":26,"x":2711,"var":"startnumtxt5","text":"50星过关","fontSize":42,"color":"#ffffff"},
+                            "nodeParent":56,
+                            "label":"startnumtxt5",
+                            "isDirectory":false,
+                            "isAniNode":true,
+                            "hasChild":false,
+                            "compId":61,
                             "child":[
                                 ]
                         }]

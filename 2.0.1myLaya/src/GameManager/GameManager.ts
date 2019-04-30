@@ -33,7 +33,7 @@ export module GameManager {
         }
         /**
          * 获取ID数组
-         */
+         */   
         public GetIDList(): Array<number> {
             var map: { [ID: number]: BaseInfo } = this.m_Map;
             var IDList: Array<number> = []
