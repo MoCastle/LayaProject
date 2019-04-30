@@ -54,7 +54,7 @@
 					{
 						"type":"Animator",
 						"avatar":{
-							"path":"Assets/Resource/Character/c001_teen_01-完成/c001_teen_01_skin-c001_teen_01_skin-c001_teen_01_skinAvatar.lav",
+							"path":"Assets/Resource/Character/c001_teen_01/c001_teen_01_skin-c001_teen_01_skin-c001_teen_01_skinAvatar.lav",
 							"linkSprites":{}
 						},
 						"layers":[
@@ -146,10 +146,10 @@
 							"materials":[
 								{
 									"type":"Laya.BlinnPhongMaterial",
-									"path":"Assets/Resource/Character/c001_teen_01-完成/c001_teen_01_mat.lmat"
+									"path":"Assets/Resource/Character/c001_teen_01/c001_teen_01_mat.lmat"
 								}
 							],
-							"meshPath":"Assets/Resource/Character/c001_teen_01-完成/c001_teen_01_skin-c001_teen_01.lm"
+							"meshPath":"Assets/Resource/Character/c001_teen_01/c001_teen_01_skin-c001_teen_01.lm"
 						},
 						"components":[],
 						"child":[]
@@ -164,9 +164,9 @@
 					"isStatic":false,
 					"layer":0,
 					"position":[
-						-1.056666,
-						0.9624761,
-						1.129731
+						-0.0649842,
+						1.647,
+						0.1716583
 					],
 					"rotation":[
 						0,
