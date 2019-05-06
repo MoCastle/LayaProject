@@ -41,17 +41,24 @@ export default class MountLine extends Laya.Sprite3D {
         this.LineIdx = lineIdx;
         this.FloorNum = floor;
         this.m_StepList = [];
-        var startX: number = 0;
         for (var StartIdx: number = 0; StartIdx < columns; ++StartIdx) {
             var newStep: Step = new Step(this, StartIdx);
             this.addChild(newStep);
             this.m_StepList[StartIdx] = newStep;
+        }
+        this.transform.position = new Laya.Vector3();
+    }
+
+    Init()
+    {
+        var startX: number = 0;
+        for (var StartIdx: number = 0; StartIdx < this.m_StepList.length; ++StartIdx) {
+            var newStep: Step = this.m_StepList[StartIdx];
             var stepVector = newStep.position;
             stepVector.x = startX;
             startX += GameModule.HSpace;
             newStep.transform.position = stepVector;
         }
-        this.transform.position = new Laya.Vector3();
     }
 
     //设获取显示出来的第几个平台

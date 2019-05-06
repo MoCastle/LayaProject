@@ -63,7 +63,7 @@ export default class Gamemap extends Laya.Node {
         this.m_CurLineRewards = new Array<Item.LineItemInfo>();
         this.m_rightSwitchCount = 0;
         this.m_SafeLocation = new GameStruct.MLocation(-1, -1);
-        var floorColumNum: number = floorNum * 2 + 4;
+        var floorColumNum: number = floorNum * 2;// + 4;
         for (var idx = 0; idx < floorNum; ++idx) {
             var newMountain = new MountLine(idx, floorColumNum, idx)
             this.m_MountLines[idx] = newMountain;
@@ -80,24 +80,24 @@ export default class Gamemap extends Laya.Node {
         //var lineNormalVector: Laya.Vector3 = new Laya.Vector3(0, GameModule.VSpace, GameModule.DSpace);
         startFloor = (!startFloor) && (startFloor < 0) && (startFloor >= lines.length) ? 0 : startFloor;
         //var cameraPS: Laya.Vector3 = new Laya.Vector3(0,15,20);
-        var cameraPS: Laya.Vector3 = new Laya.Vector3(0,15,20);
-        
+        var cameraPS: Laya.Vector3 = new Laya.Vector3(0, 15, 20);
         var cmeraViewHeight: number = viewHeight / (this.m_MountLines.length);
         GameModule.VSpace = cmeraViewHeight;
-        camera.orthographicVerticalSize = viewHeight - 2.5*cmeraViewHeight;
-        var screenWidht: number = Laya.stage.width;
-        var widtthSpace: number = screenWidht / this.m_ViewColums;
-        var spacePS: Laya.Vector3 = new Laya.Vector3(widtthSpace, 0, 0);
-        camera.convertScreenCoordToOrthographicCoord(spacePS, spacePS);
-        GameModule.HSpace = 3;//spacePS.x;
-        Laya.Vector3.add(cameraPS,new Laya.Vector3(0,GameModule.VSpace*(startFloor),0),cameraPS)
-       
+        camera.orthographicVerticalSize = viewHeight - 2.5 * cmeraViewHeight;
+        //var screenWidht: number = Laya.stage.width;
+        var widtthSpace: number = (camera.orthographicVerticalSize * camera.aspectRatio) / (this.m_ViewColums - 0.5);
+        GameModule.HSpace = widtthSpace;
+
+        Laya.Vector3.add(cameraPS, new Laya.Vector3(0, GameModule.VSpace * (startFloor), 0), cameraPS)
+
         var lines: MountLine[] = this.m_MountLines;
         this.m_HeadFloorIdx = lines.length - 1;
         this.m_TailFLoorIdx = 0;
         this.m_rightSwitchCount = 0;
+
         for (var idx: number = 0; idx < lines.length; ++idx) {
             var line: MountLine = lines[idx];
+            line.Init();
             line.SetLine(idx, this.CountNextFloorDirSwith());
             if (idx > 1)
                 lines[idx - 1].SetNextFloor(line);

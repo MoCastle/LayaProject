@@ -70,7 +70,6 @@ export default class ItemManager extends GameManager.BaseManager {
 
 class ItemInfo extends GameManager.BaseInfo {
     private m_ModelName: string;
-    private m_ExtendID: string;
     private m_Price: number;
     private m_ItemType:number;
     private m_Icon:string;
@@ -83,7 +82,7 @@ class ItemInfo extends GameManager.BaseInfo {
         return this.m_Passscore;
     }
     public get Name(): string {
-        return this.m_ModelName + this.m_ExtendID;
+        return this.m_ModelName;
     }
     public get Price(): number {
         return this.m_Price;
@@ -101,7 +100,6 @@ class ItemInfo extends GameManager.BaseInfo {
         this.m_ID = data.ID ? data.ID : "";
         this.m_Passscore = data.Passscore ? data.Passscore: "";
         this.m_ModelName = data.ModelName ? data.ModelName : "";
-        this.m_ExtendID = data.ExtendID ? data.ExtendID : "";
         this.m_Price = data.Price ? Number(data.Price) : 0;
         this.m_ItemType = data.ItemType? Number(data.ItemType):0;
         this.m_Icon = data.Icon?data.Icon:"";
