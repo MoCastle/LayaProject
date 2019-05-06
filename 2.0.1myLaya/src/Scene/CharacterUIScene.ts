@@ -18,6 +18,7 @@ export default class CharacterUIScene extends Laya.Scene3D{
     public initScalNum = 0.018;
 
     public moveCallBack;
+    public cntSelectSex;
 
     constructor(cntSelectIndex, moveCallBack) { 
         super();
@@ -29,24 +30,43 @@ export default class CharacterUIScene extends Laya.Scene3D{
         this.camera.transform.translate(new Laya.Vector3(0, 0, 0.2));
         this.camera.transform.rotate(new Laya.Vector3( 0, 0, 0), true, false);
         
-        // var model: Laya.Sprite3D = Laya.loader.getRes(path.GetLH("c001_child_01"));
-        // var model1: Laya.Sprite3D = Laya.loader.getRes(path.GetLH("L01_spr_barrier_04"));
-        
-        for(var i = 0 ;i < this.cntNum;i ++) {
+        for(var i = 0 ;i < 10;i ++) {
             var characterModel =  CharacterManager.Mgr.GetCharacterModel(i);
             var audt:Laya.Sprite3D = characterModel;
             audt.transform.localScale = new Laya.Vector3(this.initScalNum, this.initScalNum, this.initScalNum);
             this.addChild(audt);
             this.arrayDis.push(audt);
-
-            // var ao = (this.startao + i * this.perao) % 360
-            // var x = this.r * Math.cos(ao * 3.14 / 180);
-            // var y = this.startY + this.r * Math.sin(ao * 3.14 / 180);
-            // audt.transform.position = new Laya.Vector3(x, y, 0);
         }
         this.cntSelectIndex = (this.cntSelectIndex + 5) % 5;
-        this.nextAo = (this.startao + (this.cntNum - this.cntSelectIndex) * this.perao + 360) % 360;
+        this.nextAo = (this.startao + (this.cntNum - this.cntSelectIndex) *     this.perao + 360) % 360;
         this.updateSelect();
+     }
+
+     updateSelectSex(cntSelectSex: number): void {
+        if(cntSelectSex == 0) {
+            for(var i = 0;i < 10;i ++) {
+                if(i < 5) {
+                    this.arrayDis[i].active = true;
+                }
+                else
+                {
+                    this.arrayDis[i].active = false;
+                } 
+            }
+        }
+        else
+        {
+            for(var i = 0;i < 10;i ++) {
+                if(i >= 5) {
+                    this.arrayDis[i].active = true;
+                }
+                else
+                {
+                    this.arrayDis[i].active = false;
+                } 
+            }
+        }
+        this.cntSelectSex = cntSelectSex;
      }
 
     calCntStartao(): void {
@@ -94,18 +114,18 @@ export default class CharacterUIScene extends Laya.Scene3D{
     }
 
     updateSelect(): void {
-        for(var i = 0;i < this.arrayDis.length;i ++) {
+        for(var i = 0;i < 5;i ++) {
             var ao = (this.cntstartao + i * this.perao) % 360
             var x = this.r * Math.cos(ao * 3.14 / 180);
             var y = this.startY + this.r * Math.sin(ao * 3.14 / 180);
-            this.arrayDis[i].transform.position = new Laya.Vector3(x, y, 0);
+            this.arrayDis[5+i].transform.position = this.arrayDis[i].transform.position = new Laya.Vector3(x, y, 0);
 
             var scale = 0.2 * y;
             if(scale >= 0) {
-                this.arrayDis[i].transform.localScale = new Laya.Vector3(this.initScalNum + scale, this.initScalNum + scale, this.initScalNum + scale);
+                this.arrayDis[5+i].transform.localScale = this.arrayDis[i].transform.localScale = new Laya.Vector3(this.initScalNum + scale, this.initScalNum + scale, this.initScalNum + scale);
             }
             else{
-                this.arrayDis[i].transform.localScale = new Laya.Vector3(this.initScalNum, this.initScalNum, this.initScalNum);
+                this.arrayDis[5+i].transform.localScale = this.arrayDis[i].transform.localScale = new Laya.Vector3(this.initScalNum, this.initScalNum, this.initScalNum);
             } 
         }
         this.moveCallBack && this.moveCallBack();

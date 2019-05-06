@@ -9,6 +9,9 @@ import { GameAgent } from "./../Agent/GameAgent"
 import PlayerGuestAgent from "../Agent/PlayerGuestAgent";
 import EndGameUI from "./EndGameUI";
 import APP from "./../controler/APP"
+import { ModelFunc } from "../Utility/ModelFunc";
+import LoadUIScene from "./UnDownload/LoadUIScene";
+import LevelItemRangeManager from "../GameManager/LevelItemRangeManager";
 
 class ExtendEnterGameUI extends ui.EnterUI {
     Panel: Laya.Panel;
@@ -17,18 +20,11 @@ class ExtendEnterGameUI extends ui.EnterUI {
     }
     constructor() {
         super();
-        // this.Panel = this._Panel;
-        // this.Panel.vScrollBarSkin = "";
-        // this.Panel.hScrollBarSkin = "";
         this._Character.on(Laya.Event.CLICK, this, this.ShowCharacterPanel);
-        //this._Character.on(Laya.Event.CLICK, this, this.showCharacter);
         this._SetPanel.on(Laya.Event.CLICK, GameControler.GameControler, GameControler.GameControler.ShowSetPanel);
-        //this._Rank.on(Laya.Event.CLICK, GameControler.GameControler, GameControler.GameControler.ShowRankPanel);
-        //this._Start.on(Laya.Event.CLICK, GameControler.GameControler, GameControler.GameControler.EnterGame);
         this._Start.on(Laya.Event.CLICK, this, this.onStart);
 
         this._CharacterList.visible = false;
-        //this.Panel.visible = false; 
         this._Start["initX"] = this._Start.x;
         this._Character["initY"] = this._Character.y;
     }
@@ -78,6 +74,7 @@ export default class EnterGameUI extends BaseUI {
     constructor(name: string) {
         super(name);
         this._UI = new ExtendEnterGameUI();
+
         this.FixUI(this._UI);
         var uiMgr: UIManager = this._UIManager;
         this.m_BtnGroup = [];
@@ -91,7 +88,19 @@ export default class EnterGameUI extends BaseUI {
         this._gk.x = -this.cntSelectIndex * 630;
         this.initGKListener();
         this.updateButtonState();
-        laya.media.SoundManager.playMusic(path.GetSoundpathUIJS("bg"),0);
+        laya.media.SoundManager.playMusic(path.GetSoundpathUIJS("bg"),0);   
+    }
+
+    updateDesc() {
+        var data = LevelItemRangeManager.Mgr.GetAllInfo();
+        for(var key in data) {
+            var da1 = data[key].m_Passscore;
+            if(key == "1") {
+                this._UI["startnumtxt1"].text = "";
+                continue;
+            }
+            this._UI["startnumtxt" + parseInt(key)].text = da1 + "星解锁"; 
+        }
     }
 
     initGKListener() {
@@ -228,6 +237,7 @@ export default class EnterGameUI extends BaseUI {
         this._UI._Start.x = this._UI._Start["initX"];
         this._UI._Character.y = this._UI._Character["initY"];
         this.updateSelfSceneUI();
+        this.updateDesc();
     }
 
     Update() {

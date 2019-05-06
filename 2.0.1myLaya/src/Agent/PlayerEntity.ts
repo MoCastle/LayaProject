@@ -43,6 +43,12 @@ export module Player {
         private m_ItemList: Array<number>;
         //积分
         private m_CurScore: number;
+        //当前获得总星星数量
+        private m_TotalStars: number;
+
+        public get TotalStart(): number {
+            return this.m_TotalStars;
+        }
 
         public get Money(): number {
             return this.m_Money;

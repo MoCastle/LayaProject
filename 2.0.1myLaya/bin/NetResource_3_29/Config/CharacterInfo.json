@@ -9,8 +9,8 @@
     },
     "1": {
         "ID": "1",
-        "Passscore": "小女孩",
-        "ModelID": "c001_adult_01",
+        "Passscore": "中学生",
+        "ModelID": "c001_baby_01",
         "ItemID": -1,
         "Price": 0,
         "Desc": "能吃能喝能睡"
@@ -18,25 +18,65 @@
     "2": {
         "ID": "2",
         "Passscore": "实习生",
-        "ModelID": "c001_child_01",
+        "ModelID": "c001_adult_01",
         "ItemID": 1,
-        "Price": 1000,
+        "Price": 1,
         "Desc": "自带保护罩道具，开局既有，使用后30秒CD"
     },
     "3": {
         "ID": "3",
         "Passscore": "上班族",
-        "ModelID": "c001_adult_01",
+        "ModelID": "c001_senior_01",
         "ItemID": 2,
-        "Price": 2000,
+        "Price": 2,
         "Desc": "自带金刚罩道具，开局既有，使用后30秒CD"
     },
     "4": {
         "ID": "4",
-        "Passscore": "怀孕者",
-        "ModelID": "c001_child_01",
+        "Passscore": "夫",
+        "ModelID": "c001_teen_01",
         "ItemID": 3,
-        "Price": 5000,
+        "Price": 2,
+        "Desc": "自带小蜻蜓道具，开局既有，使用后30秒CD"
+    },
+    "5": {
+        "ID": "5",
+        "Passscore": "小孩",
+        "ModelID": "c002_child_01",
+        "ItemID": -1,
+        "Price": 0,
+        "Desc": "能吃能喝能睡"
+    },
+    "6": {
+        "ID": "6",
+        "Passscore": "中学生",
+        "ModelID": "c002_baby_01",
+        "ItemID": -1,
+        "Price": 0,
+        "Desc": "能吃能喝能睡"
+    },
+    "7": {
+        "ID": "7",
+        "Passscore": "实习生",
+        "ModelID": "c001_adult_01",
+        "ItemID": 1,
+        "Price": 1,
+        "Desc": "自带保护罩道具，开局既有，使用后30秒CD"
+    },
+    "8": {
+        "ID": "8",
+        "Passscore": "上班族",
+        "ModelID": "c001_senior_01",
+        "ItemID": 2,
+        "Price": 2,
+        "Desc": "自带金刚罩道具，开局既有，使用后30秒CD"
+    },
+    "9": {
+        "ID": "9",
+        "Passscore": "夫",
+        "ModelID": "c002_teen_01",
+        "ItemID": 3,
+        "Price": 2,
         "Desc": "自带小蜻蜓道具，开局既有，使用后30秒CD"
     }
 }
