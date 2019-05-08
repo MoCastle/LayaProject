@@ -15,6 +15,8 @@ import GameControler from "./../controler/GameControler"
 import APP from "./../controler/APP"
 
 import Controler from "./../controler/GameControler";
+import ItemManager from "../GameManager/ItemManager";
+import PlayerGuestAgent from "../Agent/PlayerGuestAgent";
 class ExtendsGameUI extends ui.GameUI {
     createChildren(): void {
         this.createView(Laya.loader.getRes(path.GetDepathUIJS("Game")));
@@ -45,14 +47,16 @@ export default class GameUI extends BaseUI {
         }
         this.DistanceStr[1] = dis;
         this.SetDirty();
-    }
+    }   
     set GoldNum(value: number) {
         this.GoldNumStr[1] = value.toString();
         this.SetDirty();
     }
     private _ShowDistance() {
         this._UI._TxtDistance.text = this.DistanceStr[0];
-        this._UI._TxtDistance1.value = this.DistanceStr[1];
+        this._UI._TxtDistance1.value = parseInt(this.DistanceStr[1]) * 20 + "";
+        this._UI.g_p_pro.value = parseInt(this.DistanceStr[1]) / 100;
+        this._UI.progressLabel.text = this.DistanceStr[1] + "%";
     }
 
     private _ShowGoldNum() {
@@ -96,8 +100,9 @@ export default class GameUI extends BaseUI {
 
     SetLeftTouch(owner: any, Listener: () => void): void {
         this._UI._LeftTouch.on(Laya.Event.MOUSE_DOWN, owner, Listener); 
-        
     }
+
+
 
     SetRightTouch(owner: any, Listener: () => void): void {
         this._UI._RightTouch.on(Laya.Event.MOUSE_DOWN, owner, Listener);
@@ -130,6 +135,8 @@ export default class GameUI extends BaseUI {
         } else {
             this._UI._PlayerItem.visible = true;
         }
+        var icon = ItemManager.Mgr.GetItemIcon(GameAgent.Agent.CurItem);
+        this._UI._PlayerItem.skin = icon;
     }
 
     /**

@@ -87,19 +87,25 @@ export module ui {
     }
     REG("ui.EnterUI",EnterUI);
     export class GameUI extends Laya.View {
-		public _CountDownUI:Laya.Box;
-		public _ItemListBtn:Laya.Button;
-		public _CountTime1:Laya.Label;
-		public _CountTime:Laya.FontClip;
 		public _GameInfo:Laya.Label;
 		public _GamePanel:Laya.Box;
+		public _LeftTouch:Laya.Button;
 		public _TxtDistance:Laya.Label;
 		public _TxtGold:Laya.Label;
-		public _LeftTouch:Laya.Button;
 		public _RightTouch:Laya.Button;
 		public _SkillItem:Laya.Button;
 		public _PlayerItem:Laya.Button;
 		public _TxtDistance1:Laya.FontClip;
+		public guankapanel:Laya.Panel;
+		public g_4:Laya.Image;
+		public g_1:Laya.Image;
+		public g_2:Laya.Image;
+		public g_3:Laya.Image;
+		public g_p_pro:Laya.ProgressBar;
+		public progressLabel:Laya.Label;
+		public _CountDownUI:Laya.Box;
+		public _ItemListBtn:Laya.Button;
+		public _CountTime:Laya.FontClip;
         constructor(){ super()}
         createChildren():void {
             super.createChildren();

@@ -4,6 +4,7 @@ import { Item } from "./GameItem";
 import Step from "./Step";
 import Player from "./Player";
 import { GameModule } from "./GameModule";
+import LevelSettingManager from "../GameManager/LevelSettingManager";
 
 var Mounts: number = 2;
 var LineSpace: number = 2;
@@ -63,7 +64,7 @@ export default class Gamemap extends Laya.Node {
         this.m_CurLineRewards = new Array<Item.LineItemInfo>();
         this.m_rightSwitchCount = 0;
         this.m_SafeLocation = new GameStruct.MLocation(-1, -1);
-        var floorColumNum: number = floorNum * 2;// + 4;
+        var floorColumNum: number = 7;//floorNum * 2;// + 4;
         for (var idx = 0; idx < floorNum; ++idx) {
             var newMountain = new MountLine(idx, floorColumNum, idx)
             this.m_MountLines[idx] = newMountain;
@@ -289,44 +290,109 @@ export default class Gamemap extends Laya.Node {
      * 摆放物品
      * @param {number} floor 物品列表
      */
+    //protected PutItemInLine(floor: number) {
+        // var safeCol: Array<number>;
+        // var floorLine = this.GetFloorByFloor(floor);
+        // //布置过了不用再布置了
+        // if (floorLine.LayOutDirty)
+        //     return;
+        // floorLine.LayOutDirty = true;
+        // var safeIdxColl: { [key: number]: number; } = this.CountRoadInfo(floor);
+
+        // //出生点不放道具
+        // if (floor < 1 || floor == this.m_SafeLocation.Y) {
+        //     return;
+        // }
+        // //获取该行要摆放的物品
+        // this.TakeItemList(floor)
+
+        // //把需要放道具的格子放入随机池
+        //var curFloor: MountLine = this.GetFloorByFloor(floor);
+        // var randomPool: Array<Step> = new Array();
+        // //把安全的格子暂时移出来
+        // var safeStepList: Array<Step> = new Array<Step>();
+        // for (var stepIdx: number = 0; stepIdx < curFloor.Length; ++stepIdx) {
+        //     var getStep: Step = curFloor.GetStep(stepIdx);
+        //     if (safeIdxColl[stepIdx] == undefined) {
+        //         randomPool.push(getStep);
+        //     } else {
+        //         safeStepList.push(getStep);
+        //     }
+        // }
+        // //放陷阱
+        // var barriersList: Array<Item.LineItemInfo> = this.m_CurLineBarriers;
+        // this.OrginizePutItem(barriersList, randomPool, true);
+        // //摆放道具
+        // for (var safeStepIdx: number = 0; safeStepIdx < safeStepList.length; ++safeStepIdx) {
+        //     randomPool.push(safeStepList[safeStepIdx]);
+        // }
+
+        // var rewardList = this.CurLineRewards;
+        // this.OrginizePutItem(rewardList, randomPool);
+    //}
     protected PutItemInLine(floor: number) {
-        var safeCol: Array<number>;
-        var floorLine = this.GetFloorByFloor(floor);
-        //布置过了不用再布置了
-        if (floorLine.LayOutDirty)
-            return;
-        floorLine.LayOutDirty = true;
-        var safeIdxColl: { [key: number]: number; } = this.CountRoadInfo(floor);
-
-        //出生点不放道具
-        if (floor < 1 || floor == this.m_SafeLocation.Y) {
+        if(floor <= 1) {
             return;
         }
-        //获取该行要摆放的物品
-        this.TakeItemList(floor)
-
-        //把需要放道具的格子放入随机池
         var curFloor: MountLine = this.GetFloorByFloor(floor);
-        var randomPool: Array<Step> = new Array();
-        //把安全的格子暂时移出来
-        var safeStepList: Array<Step> = new Array<Step>();
-        for (var stepIdx: number = 0; stepIdx < curFloor.Length; ++stepIdx) {
+        floor -= 2;
+        var setting = LevelSettingManager.Mgr.GetLevelSettingInfo();
+
+        var startIndex = 7;
+        var cntConfIndex = setting.length - floor % (setting.length) - 1;
+        if(cntConfIndex % 2 != 0) {
+            startIndex = 8;
+        }
+        for(var i = startIndex;i < startIndex + 14;i = i + 2) {
+            var stepIdx = (i - startIndex) / 2;
             var getStep: Step = curFloor.GetStep(stepIdx);
-            if (safeIdxColl[stepIdx] == undefined) {
-                randomPool.push(getStep);
-            } else {
-                safeStepList.push(getStep);
+            var type = this.ToolConfToOrginizePutItem(setting[cntConfIndex][i]);
+            getStep.active = true;
+            if(type == -1) {
+                continue;
             }
+            getStep.PutItem(type);
         }
-        //放陷阱
-        var barriersList: Array<Item.LineItemInfo> = this.m_CurLineBarriers;
-        this.OrginizePutItem(barriersList, randomPool, true);
-        //摆放道具
-        for (var safeStepIdx: number = 0; safeStepIdx < safeStepList.length; ++safeStepIdx) {
-            randomPool.push(safeStepList[safeStepIdx]);
+    }
+
+    /**
+     * 
+     * @param key 配置表类型转换
+     */
+    ToolConfToOrginizePutItem(key):number {
+        switch(key) {
+            case 0:
+                return Item.ItemType.Empty;
+                break;
+            case 1:
+                return -1;
+                break;
+            case 2:
+                return Item.ItemType.Coin;
+                break;
+            case 3:
+                return Item.ItemType.Rock;
+                break;
+            case 4:
+                return Item.ItemType.Protect;
+                break;
+            case 5:
+                return Item.ItemType.HolyProtect;
+                break;
+            case 6:
+                return Item.ItemType.Fly;
+                break;
+            case 7:
+                return Item.ItemType.Collector;
+                break;
+            case 8:
+                return Item.ItemType.Thorn;
+                break;
+            case 9:
+                return Item.ItemType.Vine;
+                break;
         }
-        var rewardList = this.CurLineRewards;
-        this.OrginizePutItem(rewardList, randomPool);
+       return Item.ItemType.Empty;
     }
 
     /**

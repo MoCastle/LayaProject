@@ -104,7 +104,6 @@ export default class ItemListUI extends BaseUI
             var audt:ToolItemUI = new ToolItemUI();
             audt.toolicon.loadImage(ItemManager.Mgr.GetItemIcon(i));
             audt.toolname.text = ItemManager.Mgr.GetItemInfo(i).Passscore;
-            // audt.loadImage(ItemManager.Mgr.GetItemIcon(i));
             audt.name = i  + "";
             this.UI.addChild(audt);
             this.arrayDis.push(audt);

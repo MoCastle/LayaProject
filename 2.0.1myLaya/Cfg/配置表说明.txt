@@ -1,0 +1,6 @@
+CharacterInfo 角色信息表 角色信息，包含角色模型命名
+ItemInfo 道具信息表
+LevelItemRange 关卡道具分布表
+ObstacleInfo 障碍信息表模型
+ItemCombine 物品组合
+StepLayOut 道具布局表

@@ -1,12 +1,12 @@
 {
     "x":0,
     "type":"View",
-    "selectedBox":10,
-    "selecteID":23,
+    "selectedBox":1,
+    "selecteID":27,
     "searchKey":"View",
     "props":{"width":750,"top":0,"sceneColor":"#000000","right":0,"left":0,"height":1334,"bottom":0},
     "nodeParent":-1,
-    "maxID":24,
+    "maxID":39,
     "label":"View",
     "isOpen":true,
     "isDirectory":true,
@@ -14,62 +14,6 @@
     "hasChild":true,
     "compId":1,
     "child":[
-        {
-            "x":15,
-            "type":"Box",
-            "searchKey":"Box,_CountDownUI",
-            "props":{"y":621,"x":283,"var":"_CountDownUI"},
-            "nodeParent":1,
-            "label":"_CountDownUI",
-            "isOpen":true,
-            "isDirectory":true,
-            "isAniNode":true,
-            "hasChild":true,
-            "compId":9,
-            "child":[
-                {
-                    "x":30,
-                    "type":"Button",
-                    "searchKey":"Button,_ItemListBtn",
-                    "props":{"var":"_ItemListBtn","stateNum":"2","skin":"entersceneui/res1/itemBtn.png","labelSize":30,"centerY":120,"centerX":-7},
-                    "nodeParent":9,
-                    "label":"_ItemListBtn",
-                    "isDirectory":false,
-                    "isAniNode":true,
-                    "hasChild":false,
-                    "compId":8,
-                    "child":[
-                        ]
-                },
-                {
-                    "x":30,
-                    "type":"Label",
-                    "searchKey":"Label,_CountTime1",
-                    "props":{"width":134,"var":"_CountTime1","valign":"middle","height":207,"fontSize":150,"color":"#ff7270","centerY":-200,"centerX":0,"align":"center"},
-                    "nodeParent":9,
-                    "label":"_CountTime1",
-                    "isDirectory":false,
-                    "isAniNode":true,
-                    "hasChild":false,
-                    "compId":7,
-                    "child":[
-                        ]
-                },
-                {
-                    "x":30,
-                    "type":"FontClip",
-                    "searchKey":"FontClip,_CountTime",
-                    "props":{"y":-84.5,"x":-8,"var":"_CountTime","value":"5","skin":"entersceneui/res1/chuanzi1.png","sheet":"1234567890","direction":"horizontal"},
-                    "nodeParent":9,
-                    "label":"_CountTime",
-                    "isDirectory":false,
-                    "isAniNode":true,
-                    "hasChild":false,
-                    "compId":22,
-                    "child":[
-                        ]
-                }]
-        },
         {
             "x":15,
             "type":"Label",
@@ -99,34 +43,6 @@
             "child":[
                 {
                     "x":30,
-                    "type":"Label",
-                    "searchKey":"Label,_TxtDistance",
-                    "props":{"width":194,"var":"_TxtDistance","valign":"middle","top":58,"text":"距离# ","left":11,"height":58,"fontSize":30,"color":"#ffffff","align":"center"},
-                    "nodeParent":10,
-                    "label":"_TxtDistance",
-                    "isDirectory":false,
-                    "isAniNode":true,
-                    "hasChild":false,
-                    "compId":12,
-                    "child":[
-                        ]
-                },
-                {
-                    "x":30,
-                    "type":"Label",
-                    "searchKey":"Label,_TxtGold",
-                    "props":{"y":62,"x":490,"width":244,"var":"_TxtGold","valign":"middle","text":"Gold:# ","height":54,"fontSize":30,"color":"#ffffff","align":"center"},
-                    "nodeParent":10,
-                    "label":"_TxtGold",
-                    "isDirectory":false,
-                    "isAniNode":true,
-                    "hasChild":false,
-                    "compId":13,
-                    "child":[
-                        ]
-                },
-                {
-                    "x":30,
                     "type":"Button",
                     "searchKey":"Button,_LeftTouch",
                     "props":{"width":334,"var":"_LeftTouch","skin":"comp/button.png","left":0,"labelStrokeColor":"#050505","labelSize":100,"labelBold":false,"labelAlign":"center","label":"L","height":1247,"bottom":0,"alpha":0},
@@ -141,9 +57,37 @@
                 },
                 {
                     "x":30,
+                    "type":"Label",
+                    "searchKey":"Label,_TxtDistance",
+                    "props":{"width":194,"var":"_TxtDistance","valign":"middle","top":105,"text":"距离# ","left":19,"height":58,"fontSize":30,"color":"#ffffff","align":"center"},
+                    "nodeParent":10,
+                    "label":"_TxtDistance",
+                    "isDirectory":false,
+                    "isAniNode":true,
+                    "hasChild":false,
+                    "compId":12,
+                    "child":[
+                        ]
+                },
+                {
+                    "x":30,
+                    "type":"Label",
+                    "searchKey":"Label,_TxtGold",
+                    "props":{"y":95,"x":490,"width":244,"var":"_TxtGold","valign":"middle","text":"Gold:# ","height":54,"fontSize":30,"color":"#ffffff","align":"center"},
+                    "nodeParent":10,
+                    "label":"_TxtGold",
+                    "isDirectory":false,
+                    "isAniNode":true,
+                    "hasChild":false,
+                    "compId":13,
+                    "child":[
+                        ]
+                },
+                {
+                    "x":30,
                     "type":"Button",
                     "searchKey":"Button,_RightTouch",
-                    "props":{"width":350,"var":"_RightTouch","top":87,"skin":"comp/button.png","right":-4,"labelSize":100,"label":"R","height":1247,"bottom":0,"alpha":0},
+                    "props":{"width":350,"var":"_RightTouch","top":107,"skin":"comp/button.png","right":0,"labelSize":100,"label":"R","height":1247,"bottom":0,"alpha":0},
                     "nodeParent":10,
                     "label":"_RightTouch",
                     "isDirectory":false,
@@ -157,7 +101,7 @@
                     "x":30,
                     "type":"Button",
                     "searchKey":"Button,_SkillItem",
-                    "props":{"width":115,"var":"_SkillItem","skin":"comp/button.png","left":19,"labelSize":30,"height":91,"centerY":74,"alpha":1},
+                    "props":{"width":115,"var":"_SkillItem","stateNum":"1","skin":"comp/button.png","left":19,"labelSize":30,"height":91,"centerY":74,"alpha":1},
                     "nodeParent":10,
                     "label":"_SkillItem",
                     "isDirectory":false,
@@ -171,7 +115,7 @@
                     "x":30,
                     "type":"Button",
                     "searchKey":"Button,_PlayerItem",
-                    "props":{"width":115,"var":"_PlayerItem","skin":"comp/button.png","left":19,"labelSize":30,"height":91,"centerY":-78,"alpha":1},
+                    "props":{"width":115,"var":"_PlayerItem","stateNum":"1","skin":"comp/button.png","left":19,"labelSize":30,"height":91,"centerY":-78,"alpha":1},
                     "nodeParent":10,
                     "label":"_PlayerItem",
                     "isDirectory":false,
@@ -185,7 +129,7 @@
                     "x":30,
                     "type":"FontClip",
                     "searchKey":"FontClip,_TxtDistance1,_TxtDistance1",
-                    "props":{"y":69,"x":147,"var":"_TxtDistance1","value":"0","skin":"entersceneui/res1/chuanzi1.png","sheet":"1234567890","scaleY":0.15,"scaleX":0.15,"name":"_TxtDistance1"},
+                    "props":{"y":119,"x":147,"var":"_TxtDistance1","value":"0","skin":"entersceneui/res1/chuanzi1.png","sheet":"1234567890","scaleY":0.15,"scaleX":0.15,"name":"_TxtDistance1"},
                     "nodeParent":10,
                     "label":"_TxtDistance1",
                     "isDirectory":false,
@@ -196,6 +140,215 @@
                         ]
                 }],
             "$HIDDEN":false
+        },
+        {
+            "x":15,
+            "type":"Panel",
+            "searchKey":"Panel,guankapanel",
+            "props":{"var":"guankapanel","top":6,"right":0,"left":0,"height":200},
+            "nodeParent":1,
+            "label":"guankapanel",
+            "isOpen":true,
+            "isDirectory":true,
+            "isAniNode":true,
+            "hasChild":true,
+            "compId":27,
+            "child":[
+                {
+                    "x":30,
+                    "type":"Image",
+                    "searchKey":"Image,g_4",
+                    "props":{"y":5,"x":459,"var":"g_4","skin":"entersceneui/rolebgcircle.png","scaleY":0.5,"scaleX":0.5},
+                    "nodeParent":27,
+                    "label":"g_4",
+                    "isOpen":false,
+                    "isDirectory":true,
+                    "isAniNode":true,
+                    "hasChild":true,
+                    "compId":31,
+                    "child":[
+                        {
+                            "type":"Label",
+                            "searchKey":"Label",
+                            "props":{"y":62,"x":2,"width":200,"text":"12","fontSize":80,"align":"center"},
+                            "nodeParent":31,
+                            "label":"Label",
+                            "isDirectory":false,
+                            "isAniNode":true,
+                            "hasChild":false,
+                            "compId":32,
+                            "child":[
+                                ]
+                        }]
+                },
+                {
+                    "x":30,
+                    "type":"Image",
+                    "searchKey":"Image,g_1",
+                    "props":{"y":1,"x":180,"var":"g_1","skin":"entersceneui/rolebgcircle.png","scaleY":0.5,"scaleX":0.5},
+                    "nodeParent":27,
+                    "label":"g_1",
+                    "isOpen":true,
+                    "isDirectory":true,
+                    "isAniNode":true,
+                    "hasChild":true,
+                    "compId":24,
+                    "child":[
+                        {
+                            "x":45,
+                            "type":"Label",
+                            "searchKey":"Label",
+                            "props":{"y":62,"x":2.8046875,"width":200,"text":"1","fontSize":80,"align":"center"},
+                            "nodeParent":24,
+                            "label":"Label",
+                            "isDirectory":false,
+                            "isAniNode":true,
+                            "hasChild":false,
+                            "compId":28,
+                            "child":[
+                                ]
+                        }]
+                },
+                {
+                    "x":30,
+                    "type":"Image",
+                    "searchKey":"Image,g_2",
+                    "props":{"y":1,"x":322,"var":"g_2","skin":"entersceneui/rolebgcircle.png","scaleY":0.5,"scaleX":0.5},
+                    "nodeParent":27,
+                    "label":"g_2",
+                    "isOpen":true,
+                    "isDirectory":true,
+                    "isAniNode":true,
+                    "hasChild":true,
+                    "compId":25,
+                    "child":[
+                        {
+                            "x":45,
+                            "type":"Label",
+                            "searchKey":"Label",
+                            "props":{"y":62,"x":2,"width":200,"text":"2","fontSize":80,"align":"center"},
+                            "nodeParent":25,
+                            "label":"Label",
+                            "isDirectory":false,
+                            "isAniNode":true,
+                            "hasChild":false,
+                            "compId":29,
+                            "child":[
+                                ]
+                        }]
+                },
+                {
+                    "x":30,
+                    "type":"Image",
+                    "searchKey":"Image,g_3",
+                    "props":{"y":1,"x":459,"var":"g_3","skin":"entersceneui/rolebgcircle.png","scaleY":0.5,"scaleX":0.5},
+                    "nodeParent":27,
+                    "label":"g_3",
+                    "isOpen":true,
+                    "isDirectory":true,
+                    "isAniNode":true,
+                    "hasChild":true,
+                    "compId":26,
+                    "child":[
+                        {
+                            "x":45,
+                            "type":"Label",
+                            "searchKey":"Label",
+                            "props":{"y":62,"x":2,"width":200,"text":"3","fontSize":80,"align":"center"},
+                            "nodeParent":26,
+                            "label":"Label",
+                            "isDirectory":false,
+                            "isAniNode":true,
+                            "hasChild":false,
+                            "compId":30,
+                            "child":[
+                                ]
+                        }]
+                },
+                {
+                    "x":30,
+                    "type":"ProgressBar",
+                    "searchKey":"ProgressBar,g_p_pro",
+                    "props":{"y":167,"x":146,"width":400,"var":"g_p_pro","skin":"comp/progress.png"},
+                    "nodeParent":27,
+                    "label":"g_p_pro",
+                    "isDirectory":false,
+                    "isAniNode":true,
+                    "hasChild":false,
+                    "compId":33,
+                    "child":[
+                        ]
+                },
+                {
+                    "x":30,
+                    "type":"Label",
+                    "searchKey":"Label,progressLabel",
+                    "props":{"y":147,"x":557,"var":"progressLabel","text":"10%","fontSize":40,"color":"#ffffff"},
+                    "nodeParent":27,
+                    "label":"progressLabel",
+                    "isDirectory":false,
+                    "isAniNode":true,
+                    "hasChild":false,
+                    "compId":38,
+                    "child":[
+                        ]
+                }]
+        },
+        {
+            "x":15,
+            "type":"Box",
+            "searchKey":"Box,_CountDownUI",
+            "props":{"y":633,"x":284,"var":"_CountDownUI"},
+            "nodeParent":1,
+            "label":"_CountDownUI",
+            "isOpen":true,
+            "isDirectory":true,
+            "isAniNode":true,
+            "hasChild":true,
+            "compId":34,
+            "child":[
+                {
+                    "x":30,
+                    "type":"Button",
+                    "searchKey":"Button,_ItemListBtn",
+                    "props":{"var":"_ItemListBtn","stateNum":"2","skin":"entersceneui/res1/itemBtn.png","labelSize":30,"centerY":120,"centerX":-7},
+                    "nodeParent":34,
+                    "label":"_ItemListBtn",
+                    "isDirectory":false,
+                    "isAniNode":true,
+                    "hasChild":false,
+                    "compId":35,
+                    "child":[
+                        ]
+                },
+                {
+                    "x":30,
+                    "type":"Label",
+                    "searchKey":"Label",
+                    "props":{"width":134,"valign":"middle","height":207,"fontSize":150,"color":"#ff7270","centerY":-200,"centerX":0,"align":"center"},
+                    "nodeParent":34,
+                    "label":"Label",
+                    "isDirectory":false,
+                    "isAniNode":true,
+                    "hasChild":false,
+                    "compId":36,
+                    "child":[
+                        ]
+                },
+                {
+                    "x":30,
+                    "type":"FontClip",
+                    "searchKey":"FontClip,_CountTime",
+                    "props":{"y":-84.5,"x":-8,"var":"_CountTime","value":"5","skin":"entersceneui/res1/chuanzi1.png","sheet":"1234567890","direction":"horizontal"},
+                    "nodeParent":34,
+                    "label":"_CountTime",
+                    "isDirectory":false,
+                    "isAniNode":true,
+                    "hasChild":false,
+                    "compId":37,
+                    "child":[
+                        ]
+                }]
         }],
     "animations":[
         {

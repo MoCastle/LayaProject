@@ -37,7 +37,7 @@ export default class MountLine extends Laya.Sprite3D {
     constructor(lineIdx: number, Columb: number, floor: number = 0) {
         var columns: number = Columb;
         super();
-        this.m_RightSwitch = 0;
+        this.m_RightSwitch = 1;//0;
         this.LineIdx = lineIdx;
         this.FloorNum = floor;
         this.m_StepList = [];
@@ -71,7 +71,7 @@ export default class MountLine extends Laya.Sprite3D {
     //设置每层
     SetLine(floor: number, rightSwitch: number): void {
         this.breaked = false;
-        this.m_RightSwitch = rightSwitch;
+        //this.m_RightSwitch = rightSwitch;
         this.OddSwitch = 0;
         this.LayOutDirty = false;
         this.active = true;
