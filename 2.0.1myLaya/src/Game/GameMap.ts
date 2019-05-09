@@ -5,6 +5,8 @@ import Step from "./Step";
 import Player from "./Player";
 import { GameModule } from "./GameModule";
 import LevelSettingManager from "../GameManager/LevelSettingManager";
+import LevelInfoManager from "../GameManager/LevelInfoManager";
+import PlayerGuestAgent from "../Agent/PlayerGuestAgent";
 
 var Mounts: number = 2;
 var LineSpace: number = 2;
@@ -337,6 +339,12 @@ export default class Gamemap extends Laya.Node {
         }
         var curFloor: MountLine = this.GetFloorByFloor(floor);
         floor -= 2;
+        if(floor > LevelInfoManager.Mgr.GetTotalLevel(PlayerGuestAgent.GuestAgent.CurLevel)) {
+            for(var key in curFloor.m_StepList) {
+                curFloor.m_StepList[key].PutItem(Item.ItemType.Empty);
+            }
+            return;
+        }
         var setting = LevelSettingManager.Mgr.GetLevelSettingInfo();
 
         var startIndex = 7;
@@ -358,10 +366,6 @@ export default class Gamemap extends Laya.Node {
             getStep.PutItem(type);
             //getStep.PutItem(-1);
         }
-
-        console.log("IDX" + floor);
-        console.log(setting[cntConfIndex]);
-        
     }
 
     /**

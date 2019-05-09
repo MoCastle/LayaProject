@@ -97,12 +97,12 @@ export module ui {
 		public _PlayerItem:Laya.Button;
 		public _TxtDistance1:Laya.FontClip;
 		public guankapanel:Laya.Panel;
-		public g_4:Laya.Image;
-		public g_1:Laya.Image;
-		public g_2:Laya.Image;
-		public g_3:Laya.Image;
 		public g_p_pro:Laya.ProgressBar;
 		public progressLabel:Laya.Label;
+		public g_2:ui.StarItemUI;
+		public g_1:ui.StarItemUI;
+		public g_4:ui.StarItemUI;
+		public g_3:ui.StarItemUI;
 		public _CountDownUI:Laya.Box;
 		public _ItemListBtn:Laya.Button;
 		public _CountTime:Laya.FontClip;
@@ -152,6 +152,24 @@ export module ui {
         }
     }
     REG("ui.PlayerListUI",PlayerListUI);
+    export class SelectLevelUI extends Laya.View {
+		public bg:Laya.Image;
+		public g_1:ui.StarItemUI;
+		public g_4:ui.StarItemUI;
+		public g_3:ui.StarItemUI;
+		public g_2:ui.StarItemUI;
+		public goldLabel:Laya.Label;
+		public _Start:Laya.Button;
+		public _selectLevelBtn:Laya.Button;
+		public bg1:Laya.Image;
+		public _backBtn:Laya.Button;
+        constructor(){ super()}
+        createChildren():void {
+            super.createChildren();
+            this.loadScene("SelectLevel");
+        }
+    }
+    REG("ui.SelectLevelUI",SelectLevelUI);
     export class SetPanelUI extends Laya.View {
 		public bg:Laya.Image;
 		public _Text:Laya.TextArea;
@@ -165,6 +183,14 @@ export module ui {
         }
     }
     REG("ui.SetPanelUI",SetPanelUI);
+    export class StarItemUI extends Laya.View {
+        constructor(){ super()}
+        createChildren():void {
+            super.createChildren();
+            this.loadScene("StarItem");
+        }
+    }
+    REG("ui.StarItemUI",StarItemUI);
     export class toolItemUI extends Laya.View {
 		public toolicon:Laya.Sprite;
 		public toolname:Laya.Label;

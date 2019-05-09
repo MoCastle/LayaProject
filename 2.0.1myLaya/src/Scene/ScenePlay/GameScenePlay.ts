@@ -23,6 +23,8 @@ import PlayerGuestAgent from "../../Agent/PlayerGuestAgent";
 import Gamemap from "../../Game/GameMap";
 import { GameModule } from "../../Game/GameModule";
 import { ModelFunc } from "../../Utility/ModelFunc";
+import LevelInfoManager from "../../GameManager/LevelInfoManager";
+import SelectLevelUI from "../../ui/SelectLevelUI";
 
 type LineItemInfo = Item.LineItemInfo;
 var ItemType = Item.ItemType;
@@ -306,7 +308,7 @@ export default class GameScenePlay extends Scene.BaseScenePlaye {
             ++this.m_BootomFloor;
         }
         this.InputCtrl.Update();
-        if(this.PlayerFloor>20)
+        if(this.PlayerFloor >= LevelInfoManager.Mgr.GetTotalLevel(PlayerGuestAgent.GuestAgent.CurLevel))
         {
             this.OnGameComplete();
         }
@@ -371,7 +373,7 @@ export default class GameScenePlay extends Scene.BaseScenePlaye {
 
     private OnGameComplete() {
         APP.MessageManager.DesRegist(MessageMD.GameEvent.PlayerDeath, this.Death, this);
-        var ui: EndGameUI = APP.UIManager.Show<EndGameUI>(EndGameUI);
+        var ui: SelectLevelUI = APP.UIManager.Show<SelectLevelUI>(SelectLevelUI);
         GameAgent.Agent.AddGold(this.m_GoldNum);
         GameAgent.Agent.AddScore(this.m_GoldNum * 10 + this.Distance * 10);
     }

@@ -12,6 +12,7 @@ import APP from "./../controler/APP"
 import { ModelFunc } from "../Utility/ModelFunc";
 import LoadUIScene from "./UnDownload/LoadUIScene";
 import LevelItemRangeManager from "../GameManager/LevelItemRangeManager";
+import SelectLevelUI from "./SelectLevelUI";
 
 class ExtendEnterGameUI extends ui.EnterUI {
     Panel: Laya.Panel;
@@ -34,6 +35,7 @@ class ExtendEnterGameUI extends ui.EnterUI {
         node.y = -Laya.stage.height;
         Laya.Tween.to(node, {y: 0}, 500, Laya.Ease.sineOut);
         Laya.Tween.to(this, {y: Laya.stage.height}, 500, Laya.Ease.sineOut);
+        // APP.UIManager.Show<SelectLevelUI>(SelectLevelUI);
     }
 
     onStart():void {
