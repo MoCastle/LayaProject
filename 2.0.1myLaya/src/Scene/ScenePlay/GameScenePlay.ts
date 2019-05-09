@@ -64,8 +64,8 @@ export default class GameScenePlay extends Scene.BaseScenePlaye {
         return this._PanelUI;
     }
     set PanelUI(value: GameUI) {
-        value.SetLeftTouch(this, () => { ModelFunc.vibrate(25);this.InputCtrl.Input(false); })
-        value.SetRightTouch(this, () => { ModelFunc.vibrate(25);this.InputCtrl.Input(true); });
+        value.SetLeftTouch(this, () => { ModelFunc.vibrate(25); this.InputCtrl.Input(false); })
+        value.SetRightTouch(this, () => { ModelFunc.vibrate(25); this.InputCtrl.Input(true); });
         this._PanelUI = value;
     }
     get PlayerFloor(): number {
@@ -87,7 +87,7 @@ export default class GameScenePlay extends Scene.BaseScenePlaye {
         return this.m_GoldNum;
     }
     get CountFloorTime(): number {
-        this.m_BootomFloor = this.m_BootomFloor < this.m_GameMap.TailFLoor.FloorNum ? this.m_GameMap.TailFLoor.FloorNum :this.m_BootomFloor;
+        this.m_BootomFloor = this.m_BootomFloor < this.m_GameMap.TailFLoor.FloorNum ? this.m_GameMap.TailFLoor.FloorNum : this.m_BootomFloor;
         var between: number = this.Distance + this.m_StartFloor - this.m_BootomFloor;
         var rangeNum: number = 2;
         between = between > rangeNum ? rangeNum : between;
@@ -178,7 +178,7 @@ export default class GameScenePlay extends Scene.BaseScenePlaye {
         if (step == null || step.StepItem.IsForbiden) {
             return;
         }
-        if(this.Player.BaseCtrler.Time > 0)     
+        if (this.Player.BaseCtrler.Time > 0)
             this.Player.CurStep.StandOnGround();
         this.Player.LayStep(step);
         this.Player.StartMove();
@@ -226,7 +226,7 @@ export default class GameScenePlay extends Scene.BaseScenePlaye {
         var playerModel = GameAPP.CharacterMgr.GetCharacterModel(gameAgent.CurCharacterID);
         player.SetPlayerModel(playerModel);
         APP.SceneManager.CurScene.PutObj(this.Player);
-        
+
         APP.SceneManager.CurScene.PutObj(this.m_GameMap);
         //准备玩家死亡事件
         APP.MessageManager.Regist(MessageMD.GameEvent.PlayerDeath, this.Death, this);
@@ -236,7 +236,7 @@ export default class GameScenePlay extends Scene.BaseScenePlaye {
 
     //进入游戏的设置放这里 重新开始走这里
     protected StartGame() {
-        Controler.GameControler.PlayerDeath= false;
+        Controler.GameControler.PlayerDeath = false;
         APP.UIManager.Clear();
         APP.SceneManager.CurScene.SceneObj.ambientColor = new Laya.Vector3(1, 1, 1)
         GameAgent.Agent.ResetGameItem();
@@ -246,16 +246,16 @@ export default class GameScenePlay extends Scene.BaseScenePlaye {
         this.InputCtrl = new Input.NormGameInput(this);
         this.Player.Reset();
         var startFloor: number = this.m_StartFloor;
-        var cameraBasePS:Laya.Vector3 = this.m_GameMap.Init(startFloor,this.Camera,30);
+        var cameraBasePS: Laya.Vector3 = this.m_GameMap.Init(startFloor, this.Camera, 30);
         this.Player.SetStep(this.m_GameMap.GetSafeStep());
         this.m_GameMap.SetPlayer(this.Player);
-        var cameraPs:Laya.Vector3 = this.Player.Position.clone();
-        cameraPs.y -= GameModule.VSpace*2;
+        var cameraPs: Laya.Vector3 = this.Player.Position.clone();
+        cameraPs.y -= GameModule.VSpace * 2;
         this.Camera.transform.position = cameraPs;
         this.Camera.Init();
         this._StartPosition = this.Player.Position;
         this.Camera.Reset(new Laya.Vector3(), cameraBasePS, this.Player);
-        
+
         this.m_GoldNum = 0;
         this._LogicGoldNum = 0;
 
@@ -306,10 +306,15 @@ export default class GameScenePlay extends Scene.BaseScenePlaye {
             ++this.m_BootomFloor;
         }
         this.InputCtrl.Update();
-        if(this.PlayerFloor>20)
-        {
+
+        if (this.PlayerFloor > 20)  {
             this.OnGameComplete();
+            this._GameUpdate = this._GameUpdate;
         }
+    }
+    private _GameEndUpdate()
+    {
+
     }
 
     //开始倒计时期间的每帧逻辑
@@ -346,7 +351,7 @@ export default class GameScenePlay extends Scene.BaseScenePlaye {
     public UseSkillItem() {
         if (GameAgent.Agent.SkillItemNum < 1)
             return;
-        if(this.Player.CurStep.locked)
+        if (this.Player.CurStep.locked)
             return;
         GameAgent.Agent.UseSkillItem();
         var characterID: number = GameAgent.Agent.CurCharacterID;
@@ -360,7 +365,7 @@ export default class GameScenePlay extends Scene.BaseScenePlaye {
     public UsePlayerItem() {
         if (GameAgent.Agent.GameItemNum < 1)
             return;
-        if(this.Player.CurStep.locked)
+        if (this.Player.CurStep.locked)
             return;
         GameAgent.Agent.UseGameItem();
         var ItemID: number = GameAgent.Agent.CurItem;
