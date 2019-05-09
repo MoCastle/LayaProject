@@ -144,8 +144,8 @@ export default class GameScenePlay extends Scene.BaseScenePlaye {
     Death(): void {
         this.Player.PlayerDeath = true;
 
-        this.OnGameComplete();
         Controler.GameControler.PlayerDeath = true;
+        this.OnGameComplete();
         //ui.SetGameInfo(this.PlayerDistance,this._GoldNum);
     }
 
