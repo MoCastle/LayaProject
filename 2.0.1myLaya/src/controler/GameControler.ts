@@ -139,6 +139,10 @@ class GameControler {
     get GameDir(): GameDirector {
         return APP.SceneManager.CurScene.Director as GameDirector;
     }
+    RestartGame():void
+    {
+        this.GameDir.ReStart();
+    }
     //进入游戏场景走这个接口
     EnterScene(): void {
         var newGameScene = new GameScene();

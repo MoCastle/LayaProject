@@ -234,6 +234,7 @@ export default class GameScenePlay extends Scene.BaseScenePlaye {
 
     //进入游戏的设置放这里 重新开始走这里
     protected StartGame() {
+        APP.UIManager.Clear();
         APP.SceneManager.CurScene.SceneObj.ambientColor = new Laya.Vector3(1, 1, 1)
         GameAgent.Agent.ResetGameItem();
         GameAgent.Agent.ResetSkillItem();
@@ -250,7 +251,6 @@ export default class GameScenePlay extends Scene.BaseScenePlaye {
         this.Camera.transform.position = cameraPs;
         this.Camera.Init();
         this._StartPosition = this.Player.Position;
-        //this.Camera.Reset(new Laya.Vector3(), new Laya.Vector3(0, GameModule.HSpace * 3.2, GameModule.HSpace * 3.2), this.Player);
         this.Camera.Reset(new Laya.Vector3(), cameraBasePS, this.Player);
         
         this.m_GoldNum = 0;
