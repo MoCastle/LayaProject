@@ -1,0 +1,32 @@
+{
+    "1": {
+        "ID": "1",
+        "Passscore": 0,
+        "RewardActorID": 2,
+        "levelrange": "[1,50]"
+    },
+    "2": {
+        "ID": "2",
+        "Passscore": 154,
+        "RewardActorID": 3,
+        "levelrange": "[50,150]"
+    },
+    "3": {
+        "ID": "3",
+        "Passscore": 254,
+        "RewardActorID": 4,
+        "levelrange": "[150,300]"
+    },
+    "4": {
+        "ID": "4",
+        "Passscore": 354,
+        "RewardActorID": 5,
+        "levelrange": "[300,450]"
+    },
+    "5": {
+        "ID": "5",
+        "Passscore": 500,
+        "RewardActorID": -1,
+        "levelrange": "[450,500]"
+    }
+}
