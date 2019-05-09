@@ -539,7 +539,7 @@ export default class Gamemap extends Laya.Node {
         this.m_HeadFloorIdx = (this.m_HeadFloorIdx + 1) % this.MountLines.length;
         this.m_TailFLoorIdx = (this.m_TailFLoorIdx + 1) % this.MountLines.length;
         var Headfloor: number = preHead.FloorNum + 1;
-        this.AddSwitch(dir);
+        //this.AddSwitch(dir);
         this.HeadFloor.SetLine(Headfloor, this.CountNextFloorDirSwith());
         preHead.SetNextFloor(this.HeadFloor);
         this.PutItemInLine(Headfloor);
