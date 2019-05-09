@@ -198,7 +198,8 @@ export default class Gamemap extends Laya.Node {
             }
             switchCount = (position.x - this.m_StartPosition.x) / (GameModule.HSpace / 2);
         }
-        return switchCount;
+       // return switchCount;
+       return 0;
     }
 
     public SetNextFlpprDirSwitch(num: number) {
@@ -339,27 +340,40 @@ export default class Gamemap extends Laya.Node {
         var setting = LevelSettingManager.Mgr.GetLevelSettingInfo();
 
         var startIndex = 7;
-        var cntConfIndex = setting.length - floor % (setting.length) - 1;
+        var loopLength:number = setting.length;
+        loopLength += loopLength%2 == 0?0:1;
+        var cntConfIndex = setting.length - floor % (loopLength) - 1;
         if(cntConfIndex % 2 != 0) {
             startIndex = 8;
         }
+        var lineItemInfoArr:Array<number> = setting[cntConfIndex];
         for(var i = startIndex;i < startIndex + 14;i = i + 2) {
             var stepIdx = (i - startIndex) / 2;
             var getStep: Step = curFloor.GetStep(stepIdx);
-            var type = this.ToolConfToOrginizePutItem(setting[cntConfIndex][i]);
+            var type = this.ToolConfToOrginizePutItem(lineItemInfoArr,i);
             getStep.active = true;
             if(type == -1) {
                 continue;
             }
             getStep.PutItem(type);
+            //getStep.PutItem(-1);
         }
+
+        console.log("IDX" + floor);
+        console.log(setting[cntConfIndex]);
+        
     }
 
     /**
      * 
      * @param key 配置表类型转换
      */
-    ToolConfToOrginizePutItem(key):number {
+    ToolConfToOrginizePutItem(itemIntoArr:Array<number>,idx:number):number {
+        if(!itemIntoArr)
+        {
+            return -1;
+        }
+        var key:number = itemIntoArr[idx];
         switch(key) {
             case 0:
                 return Item.ItemType.Empty;
