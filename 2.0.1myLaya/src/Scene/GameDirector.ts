@@ -17,6 +17,11 @@ export default class GameDirector extends Scene.BaseDirector {
         var loadList2D = [path.GetDepathUIJS("PlayerList"),path.GetDepathUIJS("Game"),path.GetDepathUIJS("EndGame")];
         this.ChangeState(new Scene.LoadSceneLogic(loadList2D,null,new GameScenePlay()));
     }
+    public ReStart()
+    {
+        super.ReStart();
+        this.GamePlay.ReStart();
+    }
     public End()
     {
         

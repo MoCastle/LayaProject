@@ -260,7 +260,7 @@ export default class GameScenePlay extends Scene.BaseScenePlaye {
         this.PanelUI.RegistClickPlayerItem(this, this.UsePlayerItem);
         this.PanelUI.RegistClickSkillItem(this, this.UseSkillItem);
         this.PanelUI.Gold = 0;
-        this._CountFloorTime = this.GameTime + 4;
+        this._CountFloorTime = APP.TimeManager.GameTime + 4;
         this._GameUpdate = this._StartCount;
         WechatOpen.getInstances().drawpass(0);
         this.m_BootomFloor = startFloor;
