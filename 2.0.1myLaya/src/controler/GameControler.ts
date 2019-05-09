@@ -76,6 +76,8 @@ class GameControler {
         return this._PlayerMoveTime;
     }
 
+    public PlayerDeath:boolean;
+    
     SetPlayerID(id: number) {
         var guestAgent:PlayerGuestAgent = PlayerGuestDelegate.GuestAgent;
         var characterList:Array<number> = guestAgent.CharacterList;

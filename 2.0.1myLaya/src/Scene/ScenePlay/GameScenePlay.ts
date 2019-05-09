@@ -141,7 +141,9 @@ export default class GameScenePlay extends Scene.BaseScenePlaye {
 
     Death(): void {
         this.Player.PlayerDeath = true;
+
         this.OnGameComplete();
+        Controler.GameControler.PlayerDeath = true;
         //ui.SetGameInfo(this.PlayerDistance,this._GoldNum);
     }
 
@@ -234,6 +236,7 @@ export default class GameScenePlay extends Scene.BaseScenePlaye {
 
     //进入游戏的设置放这里 重新开始走这里
     protected StartGame() {
+        Controler.GameControler.PlayerDeath= false;
         APP.UIManager.Clear();
         APP.SceneManager.CurScene.SceneObj.ambientColor = new Laya.Vector3(1, 1, 1)
         GameAgent.Agent.ResetGameItem();
