@@ -306,6 +306,10 @@ export default class GameScenePlay extends Scene.BaseScenePlaye {
             ++this.m_BootomFloor;
         }
         this.InputCtrl.Update();
+        if(this.PlayerFloor>20)
+        {
+            this.OnGameComplete();
+        }
     }
 
     //开始倒计时期间的每帧逻辑
