@@ -75,9 +75,16 @@ class GameControler {
         }
         return this._PlayerMoveTime;
     }
+    m_PlayerDeath:boolean;
+    public get PlayerDeath():boolean
+    {
+        return this.m_PlayerDeath;
+    }
+    public set PlayerDeath(value:boolean)
+    {
+        this.m_PlayerDeath = value;
+    }
 
-    public PlayerDeath:boolean;
-    
     SetPlayerID(id: number) {
         var guestAgent:PlayerGuestAgent = PlayerGuestDelegate.GuestAgent;
         var characterList:Array<number> = guestAgent.CharacterList;
