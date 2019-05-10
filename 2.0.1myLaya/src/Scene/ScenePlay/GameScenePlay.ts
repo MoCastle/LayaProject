@@ -230,6 +230,7 @@ export default class GameScenePlay extends Scene.BaseScenePlaye {
         APP.SceneManager.CurScene.PutObj(this.m_GameMap);
         //准备玩家死亡事件
         APP.MessageManager.Regist(MessageMD.GameEvent.PlayerDeath, this.Death, this);
+        APP.MessageManager.Regist(MessageMD.GameEvent.WinGame,this.OnWinGame,this);
 
         this.StartGame();
     }
@@ -306,11 +307,6 @@ export default class GameScenePlay extends Scene.BaseScenePlaye {
             ++this.m_BootomFloor;
         }
         this.InputCtrl.Update();
-
-        if (this.PlayerFloor > 20)  {
-            this.OnGameComplete();
-            this._GameUpdate = this._GameUpdate;
-        }
     }
     private _GameEndUpdate()
     {
@@ -373,9 +369,13 @@ export default class GameScenePlay extends Scene.BaseScenePlaye {
         var newBuff: Item.BasePlayerBuff = Item.ItemBuffFactory(ItemType);
         newBuff.AddToPlayer(this.Player);
     }
-
+    private OnWinGame()
+    {
+        this.OnGameComplete();
+    }
     private OnGameComplete() {
         APP.MessageManager.DesRegist(MessageMD.GameEvent.PlayerDeath, this.Death, this);
+        APP.MessageManager.DesRegist(MessageMD.GameEvent.WinGame,this.OnWinGame,this);
         var ui: EndGameUI = APP.UIManager.Show<EndGameUI>(EndGameUI);
         GameAgent.Agent.AddGold(this.m_GoldNum);
         GameAgent.Agent.AddScore(this.m_GoldNum * 10 + this.Distance * 10);
