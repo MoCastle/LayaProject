@@ -12,7 +12,7 @@
         "flyer": "[[20,0,1][50,1]]",
         "absord": "[[50,1]]",
         "Coin": "[[10,1]]",
-        "totalleval": 100,
+        "totalleval": 99999900,
         "starnum": 3,
         "startscore": "[100,400,500]"
     },

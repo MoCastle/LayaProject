@@ -7,7 +7,8 @@ export module MessageMD {
         {
             PlayerDeath: "PlayerDeath",
             GameTimeUp: "GameTimeUp",
-            GameContinue: "GameContinue"
+            GameContinue: "GameContinue",
+            WinGame:"WinGame"
         }
 
     export class MessageCenter extends BaseManager  {

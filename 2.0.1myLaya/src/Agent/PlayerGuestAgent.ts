@@ -17,28 +17,12 @@ export default class PlayerGuestAgent extends BaseAgent {
         return this.m_PlayerEntity.TotalStart;
     }
 
-    public get PerTogateStars(): number[] {
-        return this.m_PlayerEntity.PerTogateStars;
-    }
-
-    public setPerTogateStars(levelId, startNum) {
-        this.m_PlayerEntity.setPerTogateStars(levelId, startNum);
-    }
-
     public get CurLevel() {
         return this.m_PlayerEntity.CurLevel;
     }
 
     public set CurLevel(val:number) {
         this.m_PlayerEntity.CurLevel = val;
-    }
-
-    public get MaxLevel() {
-        return this.m_PlayerEntity.MaxLevel;
-    }
-
-    public set MaxLevel(val:number) {
-        this.m_PlayerEntity.MaxLevel = val;
     }
 
     public get Money(): number {
