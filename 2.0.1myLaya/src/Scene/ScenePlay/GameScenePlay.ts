@@ -311,9 +311,13 @@ export default class GameScenePlay extends Scene.BaseScenePlaye {
         if(this.PlayerFloor >= LevelInfoManager.Mgr.GetTotalLevel(PlayerGuestAgent.GuestAgent.CurLevel))
         {
             this.OnGameComplete();
+            this._GameUpdate = this._EndGameUpdate;
         }
     }
+    private _EndGameUpdate()
+    {
 
+    }
     //开始倒计时期间的每帧逻辑
     private _StartCount() {
         var time: string = ""
