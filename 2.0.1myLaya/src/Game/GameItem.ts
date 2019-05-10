@@ -33,6 +33,7 @@ export module Item {
         Fly,
         Rope,
         Collector,
+        WinFlag,
         Coin = 20,
     }
     export class LineItemInfo {
@@ -124,8 +125,8 @@ export module Item {
             this.ItemType = itemType;
             this.CurFloor = 0;
             //this.ItemNum = num;
-            this.ItemNum = num *3;
-            
+            this.ItemNum = num * 3;
+
             //分布图 物品idx:层数
             this.ItemList = new Array<number>(range);
             this.TouchedFloor = 0;
@@ -279,11 +280,11 @@ export module Item {
          * @param player 
          */
         TouchItem(player: Player) {
-            switch (this.ItemType) {
 
-            }
         }
+        CheckItem(player: Player) {
 
+        }
         public AddBuffToPlayer(player: Player, putBackItem: boolean = true): boolean {
             var Buff: BasePlayerBuff = ItemBuffFactory(this.ItemType);
             var success: boolean = Buff.AddToPlayer(player);
@@ -415,8 +416,8 @@ export module Item {
             model = Laya.loader.getRes(Name)
             model = model.clone();
             this.Model = model;
-            var scale:Laya.Vector3 = this.Model.transform.scale.clone();
-            Laya.Vector3.scale(scale,1.5,scale);
+            var scale: Laya.Vector3 = this.Model.transform.scale.clone();
+            Laya.Vector3.scale(scale, 1.5, scale);
             this.Model.transform.scale = scale;
         }
     }
@@ -433,14 +434,14 @@ export module Item {
             this.Model = model;
         }
         TouchItem(player: Player): void {
+            this.m_CharactorAnimator.play("trigger");
+            player.Die();
+        }
+        CheckItem(player: Player): void {
             if (this.BreakProtect(player))
                 this.PutItem();
             else {
-                //APP.MessageManager.Fire(MessageMD.GameEvent.PlayerDeath);
-                //var anim: Laya.Animator = this.Model.getChildAt(0).getComponent(Laya.Animator);
-                //anim.play("die");
-                this.m_CharactorAnimator.play("trigger");
-                player.Die();
+                this.Step.locked = true;
             }
         }
     }
@@ -777,6 +778,9 @@ export module Item {
                 console.log(this.Model.name);
             this.Touched = true;
         }
+        CheckItem(player: Player) {
+
+        }
         constructor(step: Step) {
             super(ItemType.Vine, step);
             this.Touched = false;
@@ -788,8 +792,8 @@ export module Item {
 
             var model: Laya.Sprite3D = Laya.loader.getRes(name).clone();
             this.Model = model;
-            var scale:Laya.Vector3 = this.Model.transform.scale.clone();
-            Laya.Vector3.scale(scale,1.2,scale);
+            var scale: Laya.Vector3 = this.Model.transform.scale.clone();
+            Laya.Vector3.scale(scale, 1.2, scale);
             this.Model.transform.scale = scale;
         }
         //消除 把自己存入内存池
@@ -922,5 +926,19 @@ export module Item {
             this.SetYPosition();
         }
     }
+
+    class WinFlag extends StepItem {
+
+        constructor(Step: Step) {
+            super(ItemType.WinFlag, Step);
+        }
+        TouchItem(player: Player): void {
+            APP.MessageManager.Fire(MessageMD.GameEvent.WinGame);
+        }
+        CheckItem(player: Player) {
+            this.Step.locked = true;
+        }
+    }
+    GameStruct.ItemDictType[ItemType.WinFlag] = WinFlag;
 }
 

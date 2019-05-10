@@ -11,6 +11,10 @@ export default class CharactorAnimator {
     public get curStateName(): string  {
         return this.m_CurStateName;
     }
+    public getDefaultState():Laya.AnimatorState
+    {
+        return this.m_Aniamtor.getDefaultState();
+    }
     constructor(animator: Laya.Animator)  {
         this.m_Aniamtor = animator;
         this.m_StateMap = {};
@@ -42,7 +46,6 @@ export default class CharactorAnimator {
     }
 
     public play(name: string)  {
-
         if (this.m_StateMap[name])  {
             this.m_Aniamtor.play(name);
             this.m_CurStateName = name;

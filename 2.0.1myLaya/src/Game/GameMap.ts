@@ -5,6 +5,7 @@ import Step from "./Step";
 import Player from "./Player";
 import { GameModule } from "./GameModule";
 import LevelSettingManager from "../GameManager/LevelSettingManager";
+import LevelInfoManager from "../GameManager/LevelInfoManager";
 
 var Mounts: number = 2;
 var LineSpace: number = 2;
@@ -347,10 +348,15 @@ export default class Gamemap extends Laya.Node {
             startIndex = 8;
         }
         var lineItemInfoArr:Array<number> = setting[cntConfIndex];
+        var endGameLine:number = LevelInfoManager.Mgr.GetTotalLevel(0);
         for(var i = startIndex;i < startIndex + 14;i = i + 2) {
             var stepIdx = (i - startIndex) / 2;
             var getStep: Step = curFloor.GetStep(stepIdx);
             var type = this.ToolConfToOrginizePutItem(lineItemInfoArr,i);
+            if(floor>endGameLine)
+            {
+                type = Item.ItemType.WinFlag;
+            }
             getStep.active = true;
             if(type == -1) {
                 continue;
@@ -358,10 +364,6 @@ export default class Gamemap extends Laya.Node {
             getStep.PutItem(type);
             //getStep.PutItem(-1);
         }
-
-        console.log("IDX" + floor);
-        console.log(setting[cntConfIndex]);
-        
     }
 
     /**
