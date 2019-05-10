@@ -78,6 +78,8 @@ class LoadScenePlaye extends Scene.BaseScenePlaye
             path.GetDepathUIJS("Character"),
             path.GetDepathUIJS("PlayerList"),
             path.GetDepathUIJS("BG"),
+            path.GetDepathUIJS("StarItem"),
+            path.GetDepathUIJS("SelectLevel"),
             path.GetAtlPath("entersceneui"),
             path.GetAtlPath("entersceneui/res1"),
             path.GetAtlPath("entersceneui/res2"),

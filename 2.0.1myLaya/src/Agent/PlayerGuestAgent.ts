@@ -9,6 +9,22 @@ export default class PlayerGuestAgent extends BaseAgent {
         return this._Agent;
     }
 
+    public get PerTogateStars(): number[] {
+        return this.m_PlayerEntity.PerTogateStars;
+    }
+
+    public setPerTogateStars(levelId, startNum) {
+        this.m_PlayerEntity.setPerTogateStars(levelId, startNum);
+    }
+
+    public get MaxLevel() {
+        return this.m_PlayerEntity.MaxLevel;
+    }
+
+    public set MaxLevel(val:number) {
+        this.m_PlayerEntity.MaxLevel = val;
+    }
+    
     public get SkinDir():String {
         return "entersceneui/res" + this.m_PlayerEntity.CurLevel + "/";
     }

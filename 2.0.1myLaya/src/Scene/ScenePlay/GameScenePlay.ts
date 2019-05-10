@@ -23,6 +23,7 @@ import PlayerGuestAgent from "../../Agent/PlayerGuestAgent";
 import Gamemap from "../../Game/GameMap";
 import { GameModule } from "../../Game/GameModule";
 import { ModelFunc } from "../../Utility/ModelFunc";
+import SelectLevelUI from "../../ui/SelectLevelUI";
 
 type LineItemInfo = Item.LineItemInfo;
 var ItemType = Item.ItemType;
@@ -376,7 +377,7 @@ export default class GameScenePlay extends Scene.BaseScenePlaye {
     private OnGameComplete() {
         APP.MessageManager.DesRegist(MessageMD.GameEvent.PlayerDeath, this.Death, this);
         APP.MessageManager.DesRegist(MessageMD.GameEvent.WinGame,this.OnWinGame,this);
-        var ui: EndGameUI = APP.UIManager.Show<EndGameUI>(EndGameUI);
+        var ui: SelectLevelUI = APP.UIManager.Show<SelectLevelUI>(SelectLevelUI);
         GameAgent.Agent.AddGold(this.m_GoldNum);
         GameAgent.Agent.AddScore(this.m_GoldNum * 10 + this.Distance * 10);
     }

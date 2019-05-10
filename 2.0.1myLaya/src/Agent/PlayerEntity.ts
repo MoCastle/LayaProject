@@ -46,6 +46,30 @@ export module Player {
         //当前获得总星星数量
         private m_TotalStars: number;
 
+        //没关获得的星星数量
+        private m_PerLevelStars: number[];
+        /*当前解锁的最大关卡 */
+        private m_maxLevel: number;
+
+        public get MaxLevel(): number {
+            return this.m_maxLevel;// ? this.m_CurLevel : this.m_HistoryMaxLevel;
+        }
+        public set MaxLevel(value: number) {
+            if (value <= this.m_maxLevel) {
+                return;
+            }
+            this.m_maxLevel = value;
+        }
+
+        public get PerTogateStars(): number[] {
+            return this.m_PerLevelStars;
+        }
+
+        public setPerTogateStars(levelId, startNum) {
+            this.m_PerLevelStars[levelId] = startNum;
+        }
+
+
         public get TotalStart(): number {
             return this.m_TotalStars;
         }
@@ -134,6 +158,8 @@ export module Player {
             this.m_MessageMgr = FrameWork.FM.GetManager<MessageMD.MessageCenter>(MessageMD.MessageCenter);
             this.m_ItemList = interestinglife.m_ItemList || [];
             this.m_CurScore = interestinglife.m_CurScore || 0;
+            this.m_PerLevelStars = interestinglife.m_PerLevelStars || [];
+            this.m_maxLevel = interestinglife.m_maxLevel || 1;
         }
 
         public saveDataToLocal(): void {
@@ -146,6 +172,8 @@ export module Player {
             localData.m_CurItem = this.m_CurItem;
             localData.m_ItemList = this.m_ItemList;
             localData.m_CurScore = this.m_CurScore;
+            localData.m_PerLevelStars = this.m_PerLevelStars;
+            localData.m_maxLevel = this.m_maxLevel;
             Laya.LocalStorage.setItem("Interestinglife", localData);
         }
         public AddCharacter(id: number) {
