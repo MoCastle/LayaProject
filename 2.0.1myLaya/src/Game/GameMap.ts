@@ -339,12 +339,12 @@ export default class Gamemap extends Laya.Node {
         floor -= 2;
         var setting = LevelSettingManager.Mgr.GetLevelSettingInfo();
 
-        var startIndex = 7;
+        var startIndex = 8;
         var loopLength:number = setting.length;
         loopLength += loopLength%2 == 0?0:1;
         var cntConfIndex = setting.length - floor % (loopLength) - 1;
         if(cntConfIndex % 2 != 0) {
-            startIndex = 8;
+            startIndex = 9;
         }
         var lineItemInfoArr:Array<number> = setting[cntConfIndex];
         for(var i = startIndex;i < startIndex + 14;i = i + 2) {
@@ -358,10 +358,6 @@ export default class Gamemap extends Laya.Node {
             getStep.PutItem(type);
             //getStep.PutItem(-1);
         }
-
-        console.log("IDX" + floor);
-        console.log(setting[cntConfIndex]);
-        
     }
 
     /**

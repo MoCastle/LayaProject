@@ -16,7 +16,7 @@ export module ModelFunc
             else if (os == "Conch-android") {
               //需要完整的类路径，注意与iOS的不同
               bridge = Laya.PlatformClass.createClass("demo.JSBridge");//创建脚步代理
-            } 
+            }   
             if (os == "Conch-ios") {
             //   //iOS注意函数签名，注意与Android的不同
             //   alert(bridge.call("testString:","hello"));

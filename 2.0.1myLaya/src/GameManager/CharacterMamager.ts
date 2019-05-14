@@ -39,6 +39,7 @@ export default class CharacterManager extends GameManager.BaseManager {
             return;
         return info.Item;
     }
+    
     public GetName(id) {
         var info: CharacterInfo = this.GetInfo<CharacterInfo>(id);
         if (!info)
