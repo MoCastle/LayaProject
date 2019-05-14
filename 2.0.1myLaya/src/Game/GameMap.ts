@@ -83,7 +83,7 @@ export default class Gamemap extends Laya.Node {
         startFloor = (!startFloor) && (startFloor < 0) && (startFloor >= lines.length) ? 0 : startFloor;
         //var cameraPS: Laya.Vector3 = new Laya.Vector3(0,15,20);
         var cameraPS: Laya.Vector3 = new Laya.Vector3(0, 15, 20);
-        var cmeraViewHeight: number = viewHeight / (this.m_MountLines.length);
+        var cmeraViewHeight: number = viewHeight / (this.m_MountLines.length + 1);
         GameModule.VSpace = cmeraViewHeight;
         camera.orthographicVerticalSize = viewHeight - 2.5 * cmeraViewHeight;
         //var screenWidht: number = Laya.stage.width;
@@ -101,7 +101,7 @@ export default class Gamemap extends Laya.Node {
             var line: MountLine = lines[idx];
             line.Init();
             line.SetLine(idx, this.CountNextFloorDirSwith());
-            if (idx > 1)
+            if (idx > 0)
                 lines[idx - 1].SetNextFloor(line);
             if (idx == startFloor) {
                 var PlayerStep = line.GetStep(Math.floor(line.Length / 2));
@@ -111,9 +111,11 @@ export default class Gamemap extends Laya.Node {
             }
             this.PutItemInLine(idx);
         }
+        /*
         for (var startFloorNum: number = 0; startFloorNum < startFloor; ++startFloorNum) {
             lines[startFloorNum].active = false;
-        }
+        }*/
+        lines[0].active = false;
         return cameraPS;
     }
     /**

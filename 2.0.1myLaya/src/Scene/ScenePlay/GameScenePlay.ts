@@ -88,8 +88,10 @@ export default class GameScenePlay extends Scene.BaseScenePlaye {
         return this.m_GoldNum;
     }
     get CountFloorTime(): number {
-        this.m_BootomFloor = this.m_BootomFloor < this.m_GameMap.TailFLoor.FloorNum ? this.m_GameMap.TailFLoor.FloorNum : this.m_BootomFloor;
-        var between: number = this.Distance + this.m_StartFloor - this.m_BootomFloor;
+        //this.m_BootomFloor = this.m_BootomFloor < this.m_GameMap.TailFLoor.FloorNum ? this.m_GameMap.TailFLoor.FloorNum : this.m_BootomFloor;
+//        var between: number = this.Distance + this.m_StartFloor - this.m_BootomFloor;
+        
+        var between: number = this.Distance - this.m_BootomFloor;
         var rangeNum: number = 2;
         between = between > rangeNum ? rangeNum : between;
         return this._CountFloorTime - between / rangeNum * FallTime;
@@ -268,7 +270,7 @@ export default class GameScenePlay extends Scene.BaseScenePlaye {
         this._CountFloorTime = APP.TimeManager.GameTime + 4;
         this._GameUpdate = this._StartCount;
         WechatOpen.getInstances().drawpass(0);
-        this.m_BootomFloor = startFloor;
+        this.m_BootomFloor = 1;
     }
 
     public Update(): void {
