@@ -27,7 +27,8 @@ export default class Step extends Laya.Sprite3D {
     Mark: any;
     Floor: MountLine;
     Idx: number;
-    locked: Boolean;
+    locked: boolean
+    
     //公有接口
     set position(newPS: Laya.Vector3) {
         this.transform.position = newPS.clone();
@@ -126,13 +127,17 @@ export default class Step extends Laya.Sprite3D {
     public TouchGround(player: Player) {
         this.StepItem.TouchItem(player);
     }
+    public CheckGround(player: Player) {
+        this.StepItem.CheckItem(player);
+    }
 
-    public StandOnGround(player = null) {
+    public StandOnGround(player,standOnGround:boolean = false) {
         if (player) {
             var newSprite: Laya.Sprite3D = this.m_StandPoint;
             newSprite.addChild(player);
         }
         this.m_CharacterAnimator.play("fall")
+        this.TouchGround(player)
     }
 
     public PutInItem(sprite3D: Laya.Sprite3D) {

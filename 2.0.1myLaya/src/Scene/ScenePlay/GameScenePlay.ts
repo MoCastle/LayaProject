@@ -180,7 +180,7 @@ export default class GameScenePlay extends Scene.BaseScenePlaye {
             return;
         }
         if (this.Player.BaseCtrler.Time > 0)
-            this.Player.CurStep.StandOnGround();
+            this.Player.CurStep.StandOnGround(this.Player,false);
         this.Player.LayStep(step);
         this.Player.StartMove();
         var nextFloorDir = isRight ? 1 : -1;

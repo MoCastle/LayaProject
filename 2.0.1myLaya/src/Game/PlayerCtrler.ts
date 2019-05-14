@@ -32,10 +32,14 @@ export module PlayerControler {
     export class PlayerNormCtrler extends BasePlayerCtrler {
         private m_StartPS: Laya.Vector3;
         private m_TargetPS: Laya.Vector3;
-        private get MiddlePS(): Laya.Vector3 {
+        private get m_FallTimePoint():number
+        {
+            return 0.4;
+        }
+        private get FallPS(): Laya.Vector3 {
             var midlePS: Laya.Vector3 = new Laya.Vector3();
-            Laya.Vector3.lerp(this.m_StartPS, this.m_TargetPS, 0.5, midlePS);
-            midlePS.y += Controler.GameControler.StepLength;
+            Laya.Vector3.lerp(this.m_StartPS, this.m_TargetPS, this.m_FallTimePoint, midlePS);
+            midlePS.y += GameModule.HSpace + 0.2;
             return midlePS;
         }
         IsFalling: boolean;
@@ -46,7 +50,8 @@ export module PlayerControler {
         }
         /**已消耗时间百分比 */
         get TimePercent(): number {
-            return this.LastTime / Controler.GameControler.PlayerMoveTime;
+            var timeProgress = this.LastTime > Controler.GameControler.PlayerMoveTime?Controler.GameControler.PlayerMoveTime:this.LastTime;
+            return timeProgress/Controler.GameControler.PlayerMoveTime;
         }
 
         constructor(player: Player = null) {
@@ -70,7 +75,7 @@ export module PlayerControler {
             this.IsFalling = false;
             this.m_StartPS = this.player.Position;
             this.m_TargetPS = this.player.CurStep.standPoint.transform.position;
-            this.m_TargetPS.y += Controler.GameControler.StepLength;
+            //this.m_TargetPS.y += Controler.GameControler.StepLength;
             var rotation: Laya.Quaternion = new Laya.Quaternion();
             var lookToPS = this.m_TargetPS.clone();
             lookToPS.y = this.m_StartPS.y;
@@ -95,22 +100,22 @@ export module PlayerControler {
                     var lastTime: number = this.LastTime;
                     var rate: number = this.TimePercent;
                     var moveTimeRate: number = 0;
-                    var fallTimePoint: number = 0.5;
+                    var fallTimePoint: number = this.m_FallTimePoint;
                     var startPS: Laya.Vector3;
                     var targetPS: Laya.Vector3;
                     if (rate > fallTimePoint) {
                         if (!this.IsFalling) {
                             this.IsFalling = true;
-                            this.player.JumpDown();
-                            this.player.TouchGround();
+                            //this.player.JumpDown();
+                            this.player.CheckGround();
                             return;
                         }
                         moveTimeRate = (rate - fallTimePoint) / (1 - fallTimePoint);
                         targetPS = this.m_TargetPS;
-                        startPS = this.MiddlePS;
+                        startPS = this.FallPS;
                     } else {
                         moveTimeRate = rate / fallTimePoint;
-                        targetPS = this.MiddlePS;
+                        targetPS = this.FallPS;
                         startPS = this.m_StartPS;
                     }
                     if (this.player.PlayerDeath)
