@@ -11,7 +11,7 @@ import EndGameUI from "./EndGameUI";
 import APP from "./../controler/APP"
 import { ModelFunc } from "../Utility/ModelFunc";
 import LoadUIScene from "./UnDownload/LoadUIScene";
-import LevelItemRangeManager from "../GameManager/LevelItemRangeManager";
+import LevelRangeManager from "../GameManager/LevelRangeManager";
 
 class ExtendEnterGameUI extends ui.EnterUI {
     Panel: Laya.Panel;
@@ -92,7 +92,7 @@ export default class EnterGameUI extends BaseUI {
     }
 
     updateDesc() {
-        var data = LevelItemRangeManager.Mgr.GetAllInfo();
+        var data = LevelRangeManager.Mgr.GetAllInfo();
         for(var key in data) {
             var da1 = data[key].m_Passscore;
             if(key == "1") {
