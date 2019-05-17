@@ -2,6 +2,7 @@
 import View=Laya.View;
 import Dialog=Laya.Dialog;
 import Scene=Laya.Scene;
+var REG: Function = Laya.ClassUtils.regClass;
 export module ui {
     export class LoadUIUI extends Laya.View {
 		public bg:Laya.Sprite;
@@ -9,10 +10,12 @@ export module ui {
 		public _Guider:Laya.Image;
 		public _Enter:Laya.Button;
 		public ErrorInfo:Laya.TextArea;
+		public logo:Laya.Sprite;
         constructor(){ super()}
         createChildren():void {
             super.createChildren();
             this.loadScene("LoadUI");
         }
     }
+    REG("ui.LoadUIUI",LoadUIUI);
 }

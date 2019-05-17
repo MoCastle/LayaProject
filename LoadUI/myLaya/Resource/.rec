@@ -2,18 +2,18 @@ D .
 D localcomp
 P 1F3929EA button.png
 P F7B6B7D7 clip_selectBox.png
+P F168C7FC enterGameBtn.png
 P 9EDA959E hscroll$bar.png
 P 274B8076 hscroll.png
 P C4BECA54 hslider.png
 P 5EDC128C html.png
 P ACFFCCCF image.png
 P 5EDC128C label.png
-P 601D892C layabox.png
 P 5EDC128C linkbutton.png
 P 7644B5AA loadbg.jpg
-P BF4D7376 logo.png
-P 9E4DD730 progress$bar.png
-P FAB2E37E progress.png
+P 4D65BDFA log.png
+P 9B668365 progress$bar.png
+P 431188A5 progress.png
 P C1C1AB09 roleload.png
 P 8CFD9D35 tab.png
 P BDA71F88 textarea.png

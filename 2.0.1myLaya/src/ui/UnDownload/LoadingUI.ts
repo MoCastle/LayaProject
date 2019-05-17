@@ -77,6 +77,7 @@ export default class LoadingUI extends BaseUI
         scene.addChild(newCamera);
         this._UI["bg"].addChild(scene);
         //this._UI["bg"].addChild(new LoadUIScene());      
+        this._UI._Progress.bottom -= 80;
     }
     
     Update()
