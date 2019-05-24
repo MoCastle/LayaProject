@@ -88,9 +88,6 @@ export default class GameScenePlay extends Scene.BaseScenePlaye {
         return this.m_GoldNum;
     }
     get CountFloorTime(): number {
-        //this.m_BootomFloor = this.m_BootomFloor < this.m_GameMap.TailFLoor.FloorNum ? this.m_GameMap.TailFLoor.FloorNum : this.m_BootomFloor;
-//        var between: number = this.Distance + this.m_StartFloor - this.m_BootomFloor;
-        
         var between: number = this.Distance - this.m_BootomFloor;
         var rangeNum: number = 2;
         between = between > rangeNum ? rangeNum : between;
@@ -300,7 +297,7 @@ export default class GameScenePlay extends Scene.BaseScenePlaye {
             this.FreshBGCount = 0;
         }
         ++this.FreshBGCount;
-        var dDistance: number = this.m_GameMap.TailFLoor.FloorNum;
+        var dDistance: number = this.m_GameMap.TailFLoor.floorNum;
         var distance = this.PlayerFloor - dDistance + 4;
         if (distance > 4) {
             this._PushFLoor();

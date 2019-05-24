@@ -10,6 +10,7 @@ import APP from "./controler/APP"
 import GameConfig from "./GameConfig"
 import {path} from "./Utility/Path"
 import UIManager from "./FrameWork/UIManager";
+
 class Game
 {
 	_Frame:FrameWork;

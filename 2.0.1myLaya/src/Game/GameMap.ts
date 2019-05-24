@@ -22,7 +22,7 @@ export default class Gamemap extends Laya.Node {
     private m_ItemLayout: Item.ItemLayout;
     private m_Player: Player;
     private m_StartPosition: Laya.Vector3;
-
+    private m_StartFloor: number;
     private m_rightSwitchCount: number;
     private m_ShowSteps: number;
     private m_ViewColums: number;
@@ -65,7 +65,7 @@ export default class Gamemap extends Laya.Node {
         this.m_CurLineRewards = new Array<Item.LineItemInfo>();
         this.m_rightSwitchCount = 0;
         this.m_SafeLocation = new GameStruct.MLocation(-1, -1);
-        var floorColumNum: number = 7;//floorNum * 2;// + 4;
+        var floorColumNum: number = column;//floorNum * 2;// + 4;
         for (var idx = 0; idx < floorNum; ++idx) {
             var newMountain = new MountLine(idx, floorColumNum, idx)
             this.m_MountLines[idx] = newMountain;
@@ -78,16 +78,16 @@ export default class Gamemap extends Laya.Node {
      * @param camera 相机
      * @param viewHeight 相机垂直视野
      */
-    public Init(startFloor: number, camera: Laya.Camera, viewHeight: number): Laya.Vector3 {
-        //var lineNormalVector: Laya.Vector3 = new Laya.Vector3(0, GameModule.VSpace, GameModule.DSpace);
+    public Init(startFloor: number, camera: Laya.Camera, viewHeight: number, gameStartFloor: number = 0): Laya.Vector3 {
+        this.m_ItemLayout.Init(gameStartFloor, 5);
         startFloor = (!startFloor) && (startFloor < 0) && (startFloor >= lines.length) ? 0 : startFloor;
-        //var cameraPS: Laya.Vector3 = new Laya.Vector3(0,15,20);
+        this.m_StartFloor = startFloor;
         var cameraPS: Laya.Vector3 = new Laya.Vector3(0, 15, 20);
-        var cmeraViewHeight: number = viewHeight / (this.m_MountLines.length + 1);
+        var cmeraViewHeight: number = viewHeight / (this.m_MountLines.length + 6);
+        
         GameModule.VSpace = cmeraViewHeight;
         camera.orthographicVerticalSize = viewHeight - 2.5 * cmeraViewHeight;
-        //var screenWidht: number = Laya.stage.width;
-        var widtthSpace: number = (camera.orthographicVerticalSize * camera.aspectRatio) / (this.m_ViewColums - 0.5);
+        var widtthSpace: number = (camera.orthographicVerticalSize * camera.aspectRatio) / (this.m_ViewColums - 0.5 + 4);
         GameModule.HSpace = widtthSpace;
 
         Laya.Vector3.add(cameraPS, new Laya.Vector3(0, GameModule.VSpace * (startFloor), 0), cameraPS)
@@ -100,92 +100,22 @@ export default class Gamemap extends Laya.Node {
         for (var idx: number = 0; idx < lines.length; ++idx) {
             var line: MountLine = lines[idx];
             line.Init();
-            line.SetLine(idx, this.CountNextFloorDirSwith());
+            line.startFloor = this.m_StartFloor;
+            line.SetLine(idx);
             if (idx > 0)
                 lines[idx - 1].SetNextFloor(line);
             if (idx == startFloor) {
-                var PlayerStep = line.GetStep(Math.floor(line.Length / 2));
+                var PlayerStep = line.GetStep(Math.ceil(line.Length / 2) - 1);
                 this.m_StartPosition = PlayerStep.position;
-                PlayerStep.IsDeadRoad = false;
+                PlayerStep.isDeadRoad = false;
                 this.m_SafeLocation = PlayerStep.Location;
             }
             this.PutItemInLine(idx);
         }
-        /*
-        for (var startFloorNum: number = 0; startFloorNum < startFloor; ++startFloorNum) {
-            lines[startFloorNum].active = false;
-        }*/
         lines[0].active = false;
         return cameraPS;
     }
-    /**
-     * 
-     * @param startFloor 
-     * @param camera 
-     * @param distance 
-     * @returns 相机位置
-     
-    public Init(startFloor: number, camera: Laya.Camera, distance: number): Laya.Vector3 {
-        //var lineNormalVector: Laya.Vector3 = new Laya.Vector3(0, GameModule.VSpace, GameModule.DSpace);
-        startFloor = (!startFloor) && (startFloor < 0) && (startFloor >= lines.length) ? 0 : startFloor;
-        var lineNormalVector: Laya.Vector3 = new Laya.Vector3(0, GameModule.DesighnV, GameModule.DesighnD);
-        Laya.Vector3.normalize(lineNormalVector, lineNormalVector);
-        var cameraPS: Laya.Vector3 = new Laya.Vector3();
-        var cameraMidelNormalVector: Laya.Vector3 = camera.transform.forward;
-        var xRotateAngle: number = (Math.PI / 180) * (camera.fieldOfView / 2);
 
-        var xRotateQuaternion: Laya.Quaternion = new Laya.Quaternion();
-        Laya.Quaternion.createFromAxisAngle(new Laya.Vector3(1, 0, 0), -xRotateAngle, xRotateQuaternion)
-        var cameraBottomNormalVector: Laya.Vector3 = new Laya.Vector3();
-        Laya.Vector3.transformQuat(cameraMidelNormalVector, xRotateQuaternion, cameraBottomNormalVector);
-
-        var bottomAngelCos: number = 0;
-
-        var bottomPointToCameraNormal:Laya.Vector3 = new Laya.Vector3();
-        Laya.Vector3.scale(cameraBottomNormalVector,-1,bottomPointToCameraNormal);
-        bottomAngelCos = Laya.Vector3.dot(lineNormalVector, bottomPointToCameraNormal);
-        var bottomAngelSin = Math.sqrt(1 - Math.pow(bottomAngelCos, 2));
-
-        var bottomLength: number = distance / bottomAngelSin;
-        var cameraBottomVector: Laya.Vector3 = cameraBottomNormalVector.clone();
-        Laya.Vector3.scale(cameraBottomNormalVector, -1 * bottomLength, cameraBottomVector);
-
-        cameraPS = new Laya.Vector3();
-        Laya.Vector3.add(cameraPS, cameraBottomVector, cameraPS);
-        var bottomAngel:number =Math.acos(bottomAngelCos);
-        var topAngle: number = 90 * (Math.PI / 180) - bottomAngel;
-        var lineLength: number = bottomLength / Math.sin(topAngle) * Math.sin(camera.fieldOfView* (Math.PI / 180));
-        var perLength: number = lineLength / (this.m_MountLines.length - 1 );
-
-        var stepSpaceScale: number = perLength / Math.sqrt(GameModule.DesighnV * GameModule.DesighnV + GameModule.DesighnD * GameModule.DesighnD);
-        GameModule.VSpace = GameModule.VSpace * stepSpaceScale;
-        GameModule.DSpace = GameModule.DSpace * stepSpaceScale;
-        var switchFloor = startFloor - 1.5;
-        Laya.Vector3.add(cameraPS, new Laya.Vector3(0, -GameModule.VSpace * switchFloor, GameModule.DSpace * switchFloor), cameraPS);
-
-        var lines: MountLine[] = this.m_MountLines;
-        this.m_HeadFloorIdx = lines.length - 1;
-        this.m_TailFLoorIdx = 0;
-        this.m_rightSwitchCount = 0;
-        for (var idx: number = 0; idx < lines.length; ++idx) {
-            var line: MountLine = lines[idx];
-            line.SetLine(idx, this.CountNextFloorDirSwith());
-            if (idx > 1)
-                lines[idx - 1].SetNextFloor(line);
-            if (idx == startFloor) {
-                var PlayerStep = line.GetStep(Math.floor(line.Length / 2));
-                this.m_StartPosition = PlayerStep.position;
-                PlayerStep.IsDeadRoad = false;
-                this.m_SafeLocation = PlayerStep.Location;
-            }
-            this.PutItemInLine(idx);
-        }
-        for (var startFloorNum: number = 0; startFloorNum < startFloor; ++startFloorNum) {
-            lines[startFloorNum].active = false;
-        }
-        return cameraPS;
-    }
-*/
     public SetPlayer(player: Player) {
         this.m_Player = player;
     }
@@ -201,8 +131,8 @@ export default class Gamemap extends Laya.Node {
             }
             switchCount = (position.x - this.m_StartPosition.x) / (GameModule.HSpace / 2);
         }
-       // return switchCount;
-       return 0;
+        // return switchCount;
+        return 0;
     }
 
     public SetNextFlpprDirSwitch(num: number) {
@@ -218,17 +148,16 @@ export default class Gamemap extends Laya.Node {
 
     public BreakLine(floor: number): void {
         var tailFloor = this.TailFLoor;
-        if (floor < tailFloor.FloorNum) {
+        if (floor < tailFloor.floorNum) {
             return;
         }
         var breakFloor: MountLine = this.GetFloorByFloor(floor);
-        for (var countFloor: number = tailFloor.FloorNum; countFloor <= floor; ++countFloor) {
+        for (var countFloor: number = tailFloor.floorNum; countFloor <= floor; ++countFloor) {
             var targetFloor: MountLine = this.GetFloorByFloor(countFloor);
             if (!targetFloor.breaked) {
                 targetFloor.Break();
             }
         }
-
     }
 
     public GetTaileFloor(): number {
@@ -242,7 +171,7 @@ export default class Gamemap extends Laya.Node {
     //设置安全位置
     SetSafePS(location: GameStruct.MLocation) {
         this.m_SafeLocation = location;
-        if (location.Y < this.TailFLoor.FloorNum || location.Y > this.HeadFloor.FloorNum) {
+        if (location.Y < this.TailFLoor.floorNum || location.Y > this.HeadFloor.floorNum) {
             return;
         }
         this.ResetItem(location.Y)
@@ -252,10 +181,10 @@ export default class Gamemap extends Laya.Node {
     ResetItem(floor: number) {
         this.m_CurLineBarriers = new Array<Item.LineItemInfo>();
         this.m_CurLineRewards = new Array<Item.LineItemInfo>();
-        for (let loopFloor: number = floor; loopFloor <= this.HeadFloor.FloorNum; ++loopFloor) {
+        for (let loopFloor: number = floor; loopFloor <= this.HeadFloor.floorNum; ++loopFloor) {
             var floorLine = this.GetFloorByFloor(loopFloor);
             floorLine.LayOutDirty = false;
-            floorLine.SetLine(floorLine.FloorNum, this.CountNextFloorDirSwith());
+            floorLine.SetLine(floorLine.floorNum);
             this.PutItemInLine(loopFloor);
         }
     }
@@ -266,10 +195,10 @@ export default class Gamemap extends Laya.Node {
      */
     GetFloorByFloor(floor: number) {
         var tailFloor: MountLine = this.TailFLoor;
-        if (floor < tailFloor.FloorNum || floor > this.HeadFloor.FloorNum) {
+        if (floor < tailFloor.floorNum || floor > this.HeadFloor.floorNum) {
             return null;
         }
-        var floorID = (floor - tailFloor.FloorNum + this.m_TailFLoorIdx) % this.m_MountLines.length;
+        var floorID = (floor - tailFloor.floorNum + this.m_TailFLoorIdx) % this.m_MountLines.length;
         return this.m_MountLines[floorID];
     }
 
@@ -280,7 +209,7 @@ export default class Gamemap extends Laya.Node {
      * @param callBack 循环执行回调
      */
     LoopDoFloorStep(floor: number, Owner: any, callBack: (step: Step) => void): void {
-        if (floor < this.TailFLoor.FloorNum || floor > this.HeadFloor.FloorNum) {
+        if (floor < this.TailFLoor.floorNum || floor > this.HeadFloor.floorNum) {
             return;
         }
         var floorLine: MountLine = this.GetFloorByFloor(floor);
@@ -294,91 +223,183 @@ export default class Gamemap extends Laya.Node {
      * 摆放物品
      * @param {number} floor 物品列表
      */
-    //protected PutItemInLine(floor: number) {
-        // var safeCol: Array<number>;
-        // var floorLine = this.GetFloorByFloor(floor);
-        // //布置过了不用再布置了
-        // if (floorLine.LayOutDirty)
-        //     return;
-        // floorLine.LayOutDirty = true;
-        // var safeIdxColl: { [key: number]: number; } = this.CountRoadInfo(floor);
-
-        // //出生点不放道具
-        // if (floor < 1 || floor == this.m_SafeLocation.Y) {
-        //     return;
-        // }
-        // //获取该行要摆放的物品
-        // this.TakeItemList(floor)
-
-        // //把需要放道具的格子放入随机池
-        //var curFloor: MountLine = this.GetFloorByFloor(floor);
-        // var randomPool: Array<Step> = new Array();
-        // //把安全的格子暂时移出来
-        // var safeStepList: Array<Step> = new Array<Step>();
-        // for (var stepIdx: number = 0; stepIdx < curFloor.Length; ++stepIdx) {
-        //     var getStep: Step = curFloor.GetStep(stepIdx);
-        //     if (safeIdxColl[stepIdx] == undefined) {
-        //         randomPool.push(getStep);
-        //     } else {
-        //         safeStepList.push(getStep);
-        //     }
-        // }
-        // //放陷阱
-        // var barriersList: Array<Item.LineItemInfo> = this.m_CurLineBarriers;
-        // this.OrginizePutItem(barriersList, randomPool, true);
-        // //摆放道具
-        // for (var safeStepIdx: number = 0; safeStepIdx < safeStepList.length; ++safeStepIdx) {
-        //     randomPool.push(safeStepList[safeStepIdx]);
-        // }
-
-        // var rewardList = this.CurLineRewards;
-        // this.OrginizePutItem(rewardList, randomPool);
-    //}
     protected PutItemInLine(floor: number) {
-        if(floor <= 1) {
+        var floorLine = this.GetFloorByFloor(floor);
+
+        var safeCol: Array<number>;
+        //布置过了不用再布置了
+        if (floorLine.LayOutDirty)
+            return;
+        floorLine.LayOutDirty = true;
+        var safeIdxColl: { [key: number]: number; } = this.CountRoadInfo(floor);
+
+        //出生点不放道具
+        if (floor <= this.m_StartFloor || floor == this.m_SafeLocation.Y) {
             return;
         }
-        var curFloor: MountLine = this.GetFloorByFloor(floor);
-        floor -= 2;
-        var setting = LevelSettingManager.Mgr.GetLevelSettingInfo();
+        this.m_CurLineRewards = new Array<Item.LineItemInfo>();
+        this.m_CurLineRewards = new Array<Item.LineItemInfo>();
+        //获取该行要摆放的物品
+        this.TakeItemList(floor)
 
-        var startIndex = 8;
-        var loopLength:number = setting.length;
-        loopLength += loopLength%2 == 0?0:1;
-        var cntConfIndex = setting.length - floor % (loopLength) - 1;
-        if(cntConfIndex % 2 != 0) {
-            startIndex = 9;
-        }
-        var lineItemInfoArr:Array<number> = setting[cntConfIndex];
-        var endGameLine:number = LevelInfoManager.Mgr.GetTotalLevel(0);
-        for(var i = startIndex;i < startIndex + 14;i = i + 2) {
-            var stepIdx = (i - startIndex) / 2;
+        //把需要放道具的格子放入随机池
+        var curFloor: MountLine = this.GetFloorByFloor(floor);
+        var randomPool: Array<Step> = new Array();
+        //把安全的格子暂时移出来
+        var safeStepList: Array<Step> = new Array<Step>();
+        for (var stepIdx: number = 0; stepIdx < curFloor.Length; ++stepIdx) {
             var getStep: Step = curFloor.GetStep(stepIdx);
-            var type = this.ToolConfToOrginizePutItem(lineItemInfoArr,i);
-            if(floor>endGameLine)
-            {
-                type = Item.ItemType.WinFlag;
+            if (safeIdxColl[stepIdx] == undefined) {
+                randomPool.push(getStep);
+            } else {
+                safeStepList.push(getStep);
             }
-            getStep.active = true;
-            if(type == -1) {
-                continue;
+        }
+        //放陷阱
+        var barriersList: Array<Item.LineItemInfo> = this.m_CurLineBarriers;
+
+        var testGetBarrierNum: number = 0;
+        barriersList.forEach(element => {
+            testGetBarrierNum += element.Number;
+        });
+        
+        this.OrginizePutItem(barriersList, randomPool, true);
+        if (barriersList.length > 0)//障碍物放不下 把一部分通路毙掉 障碍物 重新放进去
+        {
+            var countBarrierNum = 0;
+            barriersList.forEach(element => {
+                countBarrierNum += element.Number;
+            });
+            var NumberArr: Array<number> = this.FindSafeStep(floor);
+            if (countBarrierNum <= NumberArr.length) {
+                var putInfStep: Array<Step> = []
+                while (barriersList.length > 0) {
+                    var info: Item.LineItemInfo = barriersList[0]
+                    var putinIdx: number = NumberArr[Math.floor(Math.random() * NumberArr.length)];
+                    var putinStep:Step = floorLine.GetStep(putinIdx);
+                    putinStep.PutItem(info.Type);
+                    for (var safeStepIdx: number = 0; safeStepIdx < safeStepList.length; ++safeStepIdx)  {
+                        var safeStep:Step = safeStepList[safeStepIdx];
+                        if(putinIdx == safeStep.Idx)
+                        {
+                            safeStepList.splice(safeStepIdx,1);
+                            break;
+                        }
+                    }
+                    --info.Number;
+                    if(info.Number <1)
+                    {
+                        barriersList.shift();
+                    }
+                }
             }
-            getStep.PutItem(type);
-            //getStep.PutItem(-1);
+            else {
+                var NumberArr: Array<number> = this.FindSafeStep(floor);
+                while (barriersList.length > 0) {
+                    var info: Item.LineItemInfo = barriersList[0]
+                    var safeStepIdx: number = Math.floor(Math.random() * safeStepList.length);
+                    var safeStep:Step = safeStepList[safeStepIdx];
+                    safeStepList.splice(safeStepIdx,1);
+                    --info.Number;
+                    if(info.Number <1)
+                    {
+                        barriersList.shift();
+                    }
+                }
+            }
+        }
+
+        //摆放道具
+        for (var safeStepIdx: number = 0; safeStepIdx < safeStepList.length; ++safeStepIdx) {
+            randomPool.push(safeStepList[safeStepIdx]);
+        }
+
+        var rewardList = this.CurLineRewards;
+        this.OrginizePutItem(rewardList, randomPool);
+    }
+
+    public GetStepByPosition(location: GameStruct.MLocation) {
+        var floor: MountLine = this.GetFloorByFloor(location.Y);
+        if(!floor)
+        {
+            return null;
+        }
+        var step: Step = floor.GetStep(location.X);
+        return step;
+    }
+
+    protected FindSafeStep(floor: number): Array<number> {
+        var stepContainer: Array<number> = new Array<number>();
+        var startStep: Step = this.m_Player && this.m_Player.CurStep ? this.m_Player.CurStep:this.GetStepByPosition(this.m_SafeLocation);
+        if(startStep)
+        {
+             this.SearchingCurFloor(startStep, floor, stepContainer);
+        }
+        
+        return stepContainer;
+    }
+
+    protected SearchingCurFloor(curStep: Step, targetFloor: number, targetStepContainer: Array<number>) {
+        if (curStep.Floor.floorNum == targetFloor) {
+            targetStepContainer.push(curStep.Idx);
+            return;
+        }
+        else {
+            var leftParent = curStep.LeftParent;
+            if (leftParent && !leftParent.isDeadRoad) {
+                this.SearchingCurFloor(leftParent, targetFloor, targetStepContainer);
+            }
+            var rightParent = curStep.RightParent;
+            if (rightParent && !rightParent.isDeadRoad) {
+                this.SearchingCurFloor(rightParent, targetFloor, targetStepContainer);
+            }
         }
     }
+
+    // protected PutItemInLine(floor: number) {
+    //     if(floor <= 1) {
+    //         return;
+    //     }
+    //     var curFloor: MountLine = this.GetFloorByFloor(floor);
+    //     floor -= 2;
+    //     var setting = LevelSettingManager.Mgr.GetLevelSettingInfo();
+
+    //     var startIndex = 8;
+    //     var loopLength:number = setting.length;
+    //     loopLength += loopLength%2 == 0?0:1;
+    //     var cntConfIndex = setting.length - floor % (loopLength) - 1;
+    //     if(cntConfIndex % 2 != 0) {
+    //         startIndex = 9;
+    //     }
+    //     var lineItemInfoArr:Array<number> = setting[cntConfIndex];
+    //     var endGameLine:number = LevelInfoManager.Mgr.GetTotalLevel(0);
+    //     for(var i = startIndex;i < startIndex + 14;i = i + 2) {
+    //         var stepIdx = (i - startIndex) / 2;
+    //         var getStep: Step = curFloor.GetStep(stepIdx);
+    //         var type = this.ToolConfToOrginizePutItem(lineItemInfoArr,i);
+    //         if(floor>endGameLine)
+    //         {
+    //             type = Item.ItemType.WinFlag;
+    //         }
+    //         getStep.active = true;
+    //         if(type == -1) {
+    //             continue;
+    //         }
+    //         getStep.PutItem(type);
+    //         //getStep.PutItem(-1);
+    //     }
+    // }
 
     /**
      * 
      * @param key 配置表类型转换
      */
-    ToolConfToOrginizePutItem(itemIntoArr:Array<number>,idx:number):number {
-        if(!itemIntoArr)
-        {
+    ToolConfToOrginizePutItem(itemIntoArr: Array<number>, idx: number): number {
+        if (!itemIntoArr) {
             return -1;
         }
-        var key:number = itemIntoArr[idx];
-        switch(key) {
+        var key: number = itemIntoArr[idx];
+        switch (key) {
             case 0:
                 return Item.ItemType.Empty;
                 break;
@@ -410,7 +431,7 @@ export default class Gamemap extends Laya.Node {
                 return Item.ItemType.Vine;
                 break;
         }
-       return Item.ItemType.Empty;
+        return Item.ItemType.Empty;
     }
 
     /**
@@ -420,9 +441,9 @@ export default class Gamemap extends Laya.Node {
      * @param {boolean} isDeadRoad 是否是死路
      */
     OrginizePutItem(itemList: Array<Item.LineItemInfo>, randomPool: Array<Step>, isDeadRoad: boolean = null): void {
-        for (var itemIdx: number = 0; itemIdx < itemList.length; ++itemIdx) {
-            var info: Item.LineItemInfo = itemList[itemIdx];
-            for (var difficultyNum: number = 0; difficultyNum < info.Number;) {
+        while (itemList.length > 0) {
+            var info: Item.LineItemInfo = itemList[0];
+            while (info.Number > 0) {
                 if (randomPool.length < 1) {
                     break;
                 }
@@ -432,15 +453,15 @@ export default class Gamemap extends Laya.Node {
                 randomPool.splice(randomIdx, 1);
                 step.PutItem(info.Type);
                 if (isDeadRoad != null)
-                    step.IsDeadRoad = isDeadRoad;
+                    step.isDeadRoad = isDeadRoad;
                 --info.Number;
+            }
+            if (info.Number < 1) {
+                itemList.shift();
             }
             if (randomPool.length < 1) {
                 break;
             }
-        }
-        if (itemIdx > 0) {
-            itemList.splice(0, itemIdx);
         }
     }
 
@@ -463,18 +484,18 @@ export default class Gamemap extends Laya.Node {
         if (floor == this.m_SafeLocation.Y) {
             this._ResetStepInfo(thisFloor);
             var safeStep = thisFloor.GetStep(this.m_SafeLocation.X);
-            safeStep.IsDeadRoad = false;
+            safeStep.isDeadRoad = false;
             safeMap[this.m_SafeLocation.X] = 1;
         }
         else {
             for (var stepIdx: number = 0; stepIdx < lastFloor.Length; ++stepIdx) {
                 var step: Step = lastFloor.GetStep(stepIdx);
-                if (step.IsDeadRoad)
+                if (step.isDeadRoad)
                     continue;
                 var leftStep: Step = step.LeftParent;
                 var rightStep: Step = step.RightParent;
-                var leftIdx: number = leftStep ? leftStep.Idx : -1;
-                var righttIdx: number = rightStep ? rightStep.Idx : -1;
+                var leftIdx: number = leftStep && !leftStep.isDeadRoad ? leftStep.Idx : -1;
+                var righttIdx: number = rightStep && !rightStep.isDeadRoad ? rightStep.Idx : -1;
                 if (leftIdx > -1) {
                     stepNodeCount[leftIdx] = stepNodeCount[leftIdx] ? stepNodeCount[leftIdx] : 0;
                     stepNodeCount[leftIdx] += 1;
@@ -491,8 +512,9 @@ export default class Gamemap extends Laya.Node {
                     if (safeStepIdx < 0)
                         continue;
                     safeMap[safeStepIdx] = 1;
-                    safeIdx += safeStepIdx;
                 }
+                
+                
             }
             for (var countIdx: number = 0; countIdx < stepNeedRandomList.length; ++countIdx) {
                 var info = stepNeedRandomList[countIdx];
@@ -502,11 +524,9 @@ export default class Gamemap extends Laya.Node {
                     var rand = Math.random();
                     if (rand > 0.5) {
                         safeMap[leftIdx] = 1;
-                        safeIdx += leftIdx;
                     }
                     else {
                         safeMap[rightIdx] = 1;
-                        safeIdx += rightIdx;
                     }
                 }
             }
@@ -514,8 +534,8 @@ export default class Gamemap extends Laya.Node {
                 var stepnum: number = stepNodeCount[countStepNode];
                 stepnum = stepnum ? stepnum : 0;
                 if (stepnum < 1) {
-                    var step: Step = lastFloor.GetStep(countStepNode);
-                    step.IsDeadRoad = true;
+                    var step: Step = thisFloor.GetStep(countStepNode);
+                    step.isDeadRoad = true;
                 }
             }
         }
@@ -528,7 +548,7 @@ export default class Gamemap extends Laya.Node {
         }
         for (var logicIdx: number = 0; logicIdx < thisFloor.Length; ++logicIdx) {
             var step: Step = thisFloor.GetStep(logicIdx);
-            step.IsDeadRoad = true;
+            step.isDeadRoad = true;
         }
     }
 
@@ -538,16 +558,12 @@ export default class Gamemap extends Laya.Node {
      */
     TakeItemList(floor: number) {
         var line = this.GetFloorByFloor(floor);
-        var itemList = new Array(line.Length);
-        var lineRewards = this.m_ItemLayout.TakeLineReward(floor);
-        this.m_CurLineRewards = this.m_CurLineRewards.concat(lineRewards);
+        this.m_CurLineRewards = new Array<Item.LineItemInfo>();
+        this.m_CurLineBarriers = new Array<Item.LineItemInfo>();
+        this.m_CurLineRewards = this.m_ItemLayout.TakeLineReward(floor);
         if (this.m_SafeLocation.Y > floor || floor > this.m_SafeLocation.Y + 1) {
             var lineBarriers = this.m_ItemLayout.TakeLineDifficulty(floor);
             this.m_CurLineBarriers = this.m_CurLineBarriers.concat(lineBarriers);
-        }
-        else {
-            if (this.m_CurLineBarriers.length > 0)
-                this.m_CurLineBarriers = new Array<Item.LineItemInfo>();
         }
     }
 
@@ -556,9 +572,9 @@ export default class Gamemap extends Laya.Node {
         var preHead: MountLine = this.HeadFloor;
         this.m_HeadFloorIdx = (this.m_HeadFloorIdx + 1) % this.MountLines.length;
         this.m_TailFLoorIdx = (this.m_TailFLoorIdx + 1) % this.MountLines.length;
-        var Headfloor: number = preHead.FloorNum + 1;
+        var Headfloor: number = preHead.floorNum + 1;
         //this.AddSwitch(dir);
-        this.HeadFloor.SetLine(Headfloor, this.CountNextFloorDirSwith());
+        this.HeadFloor.SetLine(Headfloor);
         preHead.SetNextFloor(this.HeadFloor);
         this.PutItemInLine(Headfloor);
 
@@ -571,9 +587,4 @@ export default class Gamemap extends Laya.Node {
         else if (dir < -0.01)
             this.m_rightSwitchCount -= 1;
     }
-}
-
-class StepInfo {
-    parentID: number;
-
 }

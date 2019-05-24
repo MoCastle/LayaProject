@@ -21,9 +21,9 @@ export default class LevelRangeManager extends GameManager.BaseManager {
         if (!id || id < 0) {
             id = 0;
         }
-        var BaseInfo = this.m_Map[id];
+        var BaseInfo = this.m_DataArr[id];
         if (!BaseInfo) {
-            BaseInfo = this.m_Map[this.m_BottomID];
+            BaseInfo = this.m_DataArr[this.m_BottomID];
         }
         if (BaseInfo) {
             return BaseInfo as T;
@@ -33,7 +33,7 @@ export default class LevelRangeManager extends GameManager.BaseManager {
     }
 
     public GetAllInfo(): any {
-        return this.m_Map;
+        return this.m_DataArr;
     }
 }
 

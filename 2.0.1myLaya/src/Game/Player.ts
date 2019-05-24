@@ -197,6 +197,7 @@ export default class Player extends Laya.Sprite3D {
 
     //摆放角色
     SetStep(putStep: Step): void {
+        this.JumpDown();
         this.CurStep = putStep;
         var newPS = putStep.position.clone();
         newPS.y += Controler.GameControler.StepLength;
@@ -207,9 +208,8 @@ export default class Player extends Laya.Sprite3D {
             this.FallDownImd();
             return;
         }
-        this.CurStep.StandOnGround(this)
-        this.TouchGround();
-        this.JumpDown();
+        this.CurStep.StandOnGround(this);
+        //this.TouchGround();
     }
 
     /**
@@ -360,7 +360,6 @@ class PlayerAnimator extends CharactorAnimator {
         }
         
         super.play(name);
-        console.log(name);
     }
 }
 

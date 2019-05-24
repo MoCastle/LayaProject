@@ -26,9 +26,12 @@ export default class Step extends Laya.Sprite3D {
     RoadNum: number;
     Mark: any;
     Floor: MountLine;
-    Idx: number;
+    realIdx: number;
     locked: boolean
-    
+
+    get Idx(): number  {
+        return this.realIdx - 1;
+    }
     //公有接口
     set position(newPS: Laya.Vector3) {
         this.transform.position = newPS.clone();
@@ -37,12 +40,14 @@ export default class Step extends Laya.Sprite3D {
         return this.transform.position.clone();
     }
     get Location(): MLocation {
-        return new GameStruct.MLocation(this.Idx, this.Floor.FloorNum);
+        return new GameStruct.MLocation(this.Idx, this.Floor.floorNum);
     }
-    get IsDeadRoad(): boolean {
+    get isDeadRoad(): boolean {
         return this._IsDeadRoad || !this.active || this.StepItem.IsDifficulty;
     }
-    set IsDeadRoad(value: boolean) {
+    set isDeadRoad(value: boolean) {
+        if (value && !this.isDeadRoad && this.StepItem.ItemType == Item.ItemType.Vine)
+            console.log("Fuck");
         this._IsDeadRoad = value;
     }
     get IsForbiden(): boolean {
@@ -54,14 +59,14 @@ export default class Step extends Laya.Sprite3D {
     get standPoint(): Laya.Sprite3D {
         return this.m_StandPoint;
     }
-    constructor(floor: MountLine, idx: number) {
+    constructor(floor: MountLine, realIdx: number) {
         super();
-        if (this.Idx != 0) {
-            var Idx = Math.random() * Step.stepModelNum;
-            Idx = Idx > 0.5 ? 2 : 1;
-            var name: string = path.GetLH("dizuo_qiu0" + Idx)
-            var model = Laya.loader.getRes(name);
-        }
+
+        var modelIdx = Math.random() * Step.stepModelNum;
+        modelIdx = modelIdx > 0.5 ? 2 : 1;
+        var name: string = path.GetLH("dizuo_qiu0" + modelIdx)
+        var model = Laya.loader.getRes(name);
+
         var cloneModel: Laya.Sprite3D = model.clone();
         this.m_CharacterAnimator = new StepAnimator(cloneModel.getChildAt(0).getComponent(Laya.Animator), this);
         this.m_CharacterAnimator.Init();
@@ -80,7 +85,7 @@ export default class Step extends Laya.Sprite3D {
         this.StepItem = Item.StepItemFactory(Item.ItemType.None, this);
         this.StepItem.ResetItem();
         this.Floor = floor;
-        this.Idx = idx;
+        this.realIdx = realIdx;
 
         this.LeftParent = null;
         this.RightParent = null;
@@ -118,8 +123,7 @@ export default class Step extends Laya.Sprite3D {
         var position: Laya.Vector3 = this.transform.localPosition;
         position.y = 0;
         this.transform.localPosition = position;
-        if(this.m_YieldFunc)
-        {
+        if (this.m_YieldFunc)  {
             clearTimeout(this.m_YieldFunc);
         }
     }
@@ -131,7 +135,7 @@ export default class Step extends Laya.Sprite3D {
         this.StepItem.CheckItem(player);
     }
 
-    public StandOnGround(player,standOnGround:boolean = false) {
+    public StandOnGround(player, standOnGround: boolean = false) {
         if (player) {
             var newSprite: Laya.Sprite3D = this.m_StandPoint;
             newSprite.addChild(player);
@@ -143,16 +147,15 @@ export default class Step extends Laya.Sprite3D {
     public PutInItem(sprite3D: Laya.Sprite3D) {
         this.m_StandPoint.addChild(sprite3D);
     }
-    
+
     public Break() {
         var randomTime = 1000 * Math.random();
-        var step:Step = this;
+        var step: Step = this;
         this.m_YieldFunc = setTimeout(() => {
             step.YieldBreak();
         }, randomTime);
     }
-    private YieldBreak()
-    {
+    private YieldBreak()  {
         this.m_CharacterAnimator.play("warning");
         this.m_YieldFunc = null;
     }
@@ -176,16 +179,16 @@ class StepAnimator extends CharactorAnimator {
         var warningScript: WarningScript = warningState.addScript(WarningScript) as WarningScript;
         warningScript.Init(this.m_Step, this);
     }
-    play(name: string)  {
+    play(name: string) {
         var animatorStateName: string = this.curStateName;
-        switch (name)  {
+        switch (name) {
             case "fallDown":
             case "warning":
             case "idle":
                 super.play(name);
                 break;
             default:
-                if (animatorStateName != "fallDown" && animatorStateName != "warning")  {
+                if (animatorStateName != "fallDown" && animatorStateName != "warning") {
                     super.play(name);
                 }
                 break;
@@ -295,7 +298,7 @@ class WarningScript extends Laya.AnimatorStateScript {
                 this.m_ShakeTimeCount;
                 this.m_ShakeTimeCount = 0;
             }
-            else  {
+            else {
                 ++this.m_ShakeTimeCount;
             }
 
