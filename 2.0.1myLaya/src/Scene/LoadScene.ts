@@ -91,8 +91,9 @@ class LoadScenePlaye extends Scene.BaseScenePlaye
             path.GetJsonPath("CharacterInfo"),
             path.GetJsonPath("ItemInfo"),
             path.GetJsonPath("LevelInfo"),
-            path.GetJsonPath("LevelSetting1"),
+            //path.GetJsonPath("LevelSetting1"),
             //path.GetJsonPath("LevelInfo"),
+            path.GetJsonPath("LevelRange"),
             path.GetJsonPath("LevelItemRange"),
             path.GetSoundpathUIJS("bg")
         ];

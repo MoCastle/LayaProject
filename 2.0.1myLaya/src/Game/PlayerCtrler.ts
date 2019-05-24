@@ -39,11 +39,19 @@ export module PlayerControler {
         private get FallPS(): Laya.Vector3 {
             var midlePS: Laya.Vector3 = new Laya.Vector3();
             Laya.Vector3.lerp(this.m_StartPS, this.m_TargetPS, this.m_FallTimePoint, midlePS);
-            midlePS.y += GameModule.HSpace + 0.2;
+            midlePS.y = this.m_TargetPS.y + GameModule.HSpace * 0.2;
             return midlePS;
         }
         IsFalling: boolean;
-        Time: number;
+        m_Time:number;
+        get Time(): number
+        {
+            return this.m_Time;
+        }
+        set Time(value:number)
+        {
+            this.m_Time = value;
+        }
         get LastTime(): number {
             var lastTime: number = Controler.GameControler.PlayerMoveTime - (this.Time - APP.TimeManager.GameTime);
             return lastTime;
@@ -106,7 +114,6 @@ export module PlayerControler {
                     if (rate > fallTimePoint) {
                         if (!this.IsFalling) {
                             this.IsFalling = true;
-                            //this.player.JumpDown();
                             this.player.CheckGround();
                             return;
                         }

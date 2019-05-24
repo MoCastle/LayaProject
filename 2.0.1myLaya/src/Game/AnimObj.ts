@@ -114,7 +114,7 @@ export module AnimObj
             var position = this.transform.position;
             var disDir = new Laya.Vector3();
             Laya.Vector3.subtract(targetPosition,position,disDir);
-            if( Laya.Vector3.scalarLengthSquared(disDir)<0.1)
+            if( Laya.Vector3.scalarLengthSquared(disDir)<2)
             {
                 return true;
             }

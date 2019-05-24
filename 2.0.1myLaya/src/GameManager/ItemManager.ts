@@ -41,7 +41,7 @@ export default class ItemManager extends GameManager.BaseManager {
     * 获取ID数组
     */
     public GetSellItemIDList(): Array<number> {
-        var map = this.m_Map;
+        var map = this.m_DataArr;
         var IDList: Array<number> = []
         for (var key in map) {
             var data: any = map[key]

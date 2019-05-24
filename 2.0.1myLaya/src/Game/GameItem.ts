@@ -12,6 +12,8 @@ import Controler from "./../controler/GameControler"
 import { GameModule } from "./GameModule";
 import CharactorAnimator from "./CharacterAnimator";
 import { BaseFunc } from "../Base/BaseFunc";
+import { LevelItemInfo } from "../GameManager/LevelItemRangeManager"
+import ItemManager from "../GameManager/ItemManager";
 
 type AnimCoin = AnimObj.AnimCoin
 export module Item {
@@ -53,12 +55,16 @@ export module Item {
 
     //物品布局
     export class ItemLayout {
-        RewardList: Array<LayItemMgr>;
-        BarrierList: Array<LayItemMgr>;
-        constructor() {
-            this.RewardList = new Array<LayItemMgr>();
-            this.BarrierList = new Array<LayItemMgr>();
+        rewardList: Array<ItemLayOutData>;
+        barrierList: Array<ItemLayOutData>;
+        layOutCount: Array<number>;
 
+        //RewardMap: { [key: number]: LevelItemInfo.ItemInfo } ;
+        ///BarrierMap:{ [key: number]: LevelItemInfo.ItemInfo };
+        constructor() {
+            //this.RewardList = new Array<LayItemMgr>();
+            //this.BarrierList = new Array<LayItemMgr>();
+            /*
             this.BarrierList.push(new LayItemMgr(10, 1, ItemType.Empty, 10));
             this.BarrierList.push(new LayItemMgr(10, 5, ItemType.Rock, 10));
             this.BarrierList.push(new LayItemMgr(10, 2, ItemType.Thorn, 10));
@@ -70,23 +76,66 @@ export module Item {
             this.RewardList.push(new LayItemMgr(50, 1, ItemType.Collector));
             this.RewardList.push(new LayItemMgr(50, 1, ItemType.Protect));
             this.RewardList.push(new LayItemMgr(50, 1, ItemType.HolyProtect));
+            */
+        }
 
-            ResetItemFactory();
+        public Init(floor: number, colum: number = 5) {
+            var itemInfo: LevelItemInfo.ItemRangeInfo = LevelItemInfo.LevelItemRangeManager.Mgr.GetFloorInfo(floor);
+            var range: number = itemInfo.GetFloorRange();
+            var layOutCount = new Array<number>();
+
+            for (var startIdx: number = 0; startIdx < range; ++startIdx) {
+                if (startIdx % 2 == 0) {
+                    layOutCount[startIdx] = colum;
+                } else {
+                    layOutCount[startIdx] = colum - 1;
+                }
+            }
+            this.layOutCount = layOutCount;
+
+            var itemDataMap: { [key: number]: LevelItemInfo.ItemInfo } = itemInfo.ItemInfoMap;
+
+            this.rewardList = new Array<ItemLayOutData>();
+            this.barrierList = new Array<ItemLayOutData>();
+
+            var barrierList: Array<ItemLayOutData> = this.barrierList;
+            var rewardList: Array<ItemLayOutData> = this.rewardList;
+
+            for (var key in ItemType) {
+                var theKey: any = key
+                if (isNaN(theKey)) {
+                    var itemType: any = ItemType[theKey];
+                    var itemTypeEnum: ItemType = itemType;
+                    if (itemTypeEnum == ItemType.None || itemTypeEnum == ItemType.WinFlag || itemTypeEnum == ItemType.Rope) {
+                    }
+                    else if (itemTypeEnum < ItemType.Vine) {
+                        barrierList.push(new ItemLayOutData(this.layOutCount, itemDataMap[itemType], floor));
+                    }
+                    else {
+                        rewardList.push(new ItemLayOutData(this.layOutCount, itemDataMap[itemType], floor));
+                    }
+                }
+            }
         }
 
         TakeLineReward(floor: number) {
-            return this.TakeItem(floor, this.RewardList);
+            return this.TakeItem(floor, this.rewardList);
         }
 
         TakeLineDifficulty(floor: number) {
-            return this.TakeItem(floor, this.BarrierList);
+            return this.TakeItem(floor, this.barrierList);
         }
 
-        TakeItem(floor: number, MgrList: Array<LayItemMgr>): Array<LineItemInfo> {
+        TakeItem(floor: number, MgrList: Array<ItemLayOutData>): Array<LineItemInfo> {
             var returnInfo = new Array<LineItemInfo>();
             for (var listIdx = 0; listIdx < MgrList.length; ++listIdx) {
-                MgrList[listIdx].OnFloor(floor);
+                MgrList[listIdx].UpdateFloor(floor);
+
                 var info: LineItemInfo = MgrList[listIdx].TakeItems(floor);
+                if(info.Number>1)
+                {
+                    console.log("why");
+                }
                 if (info.Number > 0) {
                     returnInfo.push(info);
                 }
@@ -96,71 +145,99 @@ export module Item {
     }
 
     //该对象的分布图每层等概率分布
-    export class LayItemMgr {
+    export class ItemLayOutData {
         //道具类型
-        ItemType: ItemType;
-        //当前层数
-        CurFloor: number;
-        //区间分布总数量
-        ItemNum: number;
+        itemType: ItemType;
         //开始分布的层数
-        StartFloor: number;
-        //分布区间
         //已获取层标记
-        TouchedFloor: number;
-        ItemList: Array<number>;
-        /**
-         * 
-         * @param range 区间范围
-         * @param num 区间范围数量
-         * @param itemType 生产的道具类型
-         * @param startFloor 从哪一行开始投掷
-         */
-        constructor(range: number, num: number, itemType: ItemType, startFloor: number = 1) {
-            if (num == undefined)
-                num = 1;
-            if (startFloor == undefined)
-                //第0层是玩家起步位置
-                startFloor = 1;
-            this.ItemType = itemType;
-            this.CurFloor = 0;
-            //this.ItemNum = num;
-            this.ItemNum = num * 3;
+        curFloorNum: number;
+        //开始层
+        protected m_StartFloorArr: Array<number>;
+        layoutItemList: Array<number>;
+        itemListArr: Array<number>;
+        itemNum: Array<number>;
+        itemInfo: LevelItemInfo.ItemInfo;
 
-            //分布图 物品idx:层数
-            this.ItemList = new Array<number>(range);
-            this.TouchedFloor = 0;
-            this.GenMap(startFloor)
-        }
         get Range(): number {
-            return this.ItemList.length;
-        }
-        //层更新函数
-        OnFloor(floor: number) {
-            if (floor < this.TouchedFloor) {
-                this.GenMap(floor);
-            }
-            if (floor >= this.StartFloor + this.Range) {
-                this.GenMap(floor);
-            }
-        }
-        //生成分布图
-        GenMap(startFloor: number) {
-            this.StartFloor = startFloor;
-            var itemNum = this.ItemNum;
-            for (let count: number = 0; count < this.ItemList.length; ++count) {
-                this.ItemList[count] = 0;
-            }
-            var itemList = this.ItemList;
-            for (var countNum: number = 0; countNum < itemNum; ++countNum) {
-                var ItemFloor: number = Math.floor(Math.random() * this.Range);
-                this.ItemList[ItemFloor] += 1;
-            }
+            return this.layoutItemList.length;
         }
 
-        TakeItems(floor: number) {
-            this.TouchedFloor = floor;
-            return new LineItemInfo(this.ItemType, this.ItemList[floor - this.StartFloor]);
+        constructor(layout: Array<number>, itemInfo: LevelItemInfo.ItemInfo, startFloor: number) {
+            this.m_StartFloorArr = new Array<number>();
+            this.itemType = itemInfo.itemType;
+            this.layoutItemList = layout;
+            this.itemListArr = new Array<number>();
+            this.itemInfo = itemInfo;
+            var itemNum: Array<number> = new Array<number>();
+            this.itemNum = itemNum;
+            this.GenMap(4, true);
+            this.GenMap(4, false);
+        }
+
+        GetEndFloor(isOdd: boolean): number {
+            return this.m_StartFloorArr[isOdd ? 0 : 1] + this.itemInfo.GetRange(isOdd);
+        }
+
+        //层更新函数
+        UpdateFloor(floor: number) {
+            var isOdd: boolean = floor % 2 == 0;
+            if (this.GetEndFloor(isOdd) < floor) {
+                var range: number = this.itemInfo.GetRange(isOdd);
+                var startFloor = Math.floor(floor / range) * range;
+                this.GenMap(startFloor, isOdd);
+            }
+            /*
+            if (floor >= this.startFloor + this.Range) {
+                this.GenMap(floor);
+            }
+            */
+        }
+
+        //生成分布图
+        GenMap(startFloor: number, isOdd: boolean) {
+            var itemList: Array<number>;
+            var itemNum: number = this.itemInfo.GetNum(isOdd);
+            var range: number = this.itemInfo.GetRange(isOdd);
+            var floorArr: Array<number> = new Array<number>();
+            this.itemListArr = this.itemListArr ? this.itemListArr : new Array<number>();
+            itemList = this.itemListArr;
+
+            for (var floorIdx: number = startFloor; floorIdx < startFloor + range; floorIdx++) {
+                if (isOdd && floorIdx % 2 == 0 && this.layoutItemList[floorIdx] > 0) {
+                    if((this.itemInfo.itemType >Item.ItemType.None && this.itemInfo.itemType <10)||(this.itemInfo.itemType>10) )
+                    {
+                        floorArr.push(floorIdx)
+                        itemList[floorIdx - startFloor] = 0;
+                    }
+                }
+                else if (!isOdd && floorIdx % 2 != 0 && this.layoutItemList[floorIdx] > 0) {
+                    if((this.itemInfo.itemType >Item.ItemType.None && this.itemInfo.itemType <10)||(this.itemInfo.itemType>10) )
+                    {
+                        floorArr.push(floorIdx)
+                        itemList[floorIdx - startFloor] = 0;
+                    }
+                }
+            }
+            while (itemNum > 0) {
+                if (floorArr.length < 1) {
+                    break;
+                }
+                var randomLine = Math.floor(Math.random() * floorArr.length);
+                var leftItemNum = --this.layoutItemList[floorArr[randomLine]];
+                itemList[floorArr[randomLine] - startFloor] += 1;
+                
+                if (leftItemNum < 1) {
+                    floorArr.splice(randomLine, 1);
+                }
+                --itemNum;
+            }
+           
+            this.m_StartFloorArr[isOdd ? 0 : 1] = startFloor;
+        }
+
+        TakeItems(floor: number): LineItemInfo {
+            var listItem: Array<number> = this.itemListArr;
+            return new LineItemInfo(this.itemType, listItem[floor - this.m_StartFloorArr[floor % 2 == 0 ? 0 : 1]]);
         }
     }
 
@@ -582,15 +659,18 @@ export module Item {
         }
         Start() {
             this.CountFloor = this.GameDir.GamePlay.PlayerFloor - 2;
+            console.log("Start");
         }
         Removed() {
-
+            console.log("End");
         }
         Update() {
             if (this.Time < APP.TimeManager.GameTime) {
                 this.RemoveSelf();
             } else {
-                if (this.GameDir.GamePlay.PlayerFloor - this.CountFloor + 1 < 0) {
+//                if (this.GameDir.GamePlay.PlayerFloor + 1 - this.CountFloor < 0) {
+                if (this.player.CurStep.Location.Y + 1 - this.CountFloor < 0) {
+                    
                     return;
                 }
                 this.GameDir.GamePlay.LoopDoFloorStep(this.CountFloor, this, this.CountCoins);
@@ -599,6 +679,7 @@ export module Item {
         }
         private CountCoins(step: Step) {
             if (step.StepItem.ItemType == ItemType.Coin) {
+                console.log(step.Location);
                 var Coin: Coin = step.StepItem as Coin;
                 Coin.FlyToPlayer(this.player);
             }
@@ -745,8 +826,8 @@ export module Item {
         }
         private _Input(isRight: boolean): void {
             var closeFloor = Controler.GameControler.GameDir.GamePlay.PlayerFloorLine;
-            if (closeFloor.FloorNum % 2 != this._FinalLocation.Y % 2) {
-                closeFloor = Controler.GameControler.GameDir.GamePlay.GetFloorByFloor(closeFloor.FloorNum + 1);
+            if (closeFloor.floorNum % 2 != this._FinalLocation.Y % 2) {
+                closeFloor = Controler.GameControler.GameDir.GamePlay.GetFloorByFloor(closeFloor.floorNum + 1);
             }
             var step: Step = closeFloor.GetStep(this._FinalLocation.X);
             if (isRight)
@@ -774,12 +855,10 @@ export module Item {
             this.AddBuffToPlayer(player, false);
             if (this.m_CharactorAnimator)
                 this.m_CharactorAnimator.play("trigger");
-            else
-                console.log(this.Model.name);
             this.Touched = true;
         }
         CheckItem(player: Player) {
-
+            this.Step.locked = true;
         }
         constructor(step: Step) {
             super(ItemType.Vine, step);
@@ -813,6 +892,7 @@ export module Item {
 
         Removed() {
             Controler.GameControler.GameDir.GamePlay.PopInputCtrler();
+            this.player.CurStep.locked = false;
         }
 
         constructor(countTime: number = 4, inputDir: boolean = true) {

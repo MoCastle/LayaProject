@@ -5,7 +5,7 @@ import EnterGameUI from "./../ui/EnterGameUI"
 import {path} from "./../Utility/Path"
 import {Scene} from "./../Scene/Scene"
 import APP from "../controler/APP";
-
+ 
 export default class GuiderManager 
 {
 //对外接口
