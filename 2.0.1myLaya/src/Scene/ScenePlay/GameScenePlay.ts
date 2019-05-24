@@ -271,6 +271,8 @@ export default class GameScenePlay extends Scene.BaseScenePlaye {
         this._GameUpdate = this._StartCount;
         WechatOpen.getInstances().drawpass(0);
         this.m_BootomFloor = 1;
+
+        BGUI.mgrBGUI.ResetBgPoint();
     }
 
     public Update(): void {
