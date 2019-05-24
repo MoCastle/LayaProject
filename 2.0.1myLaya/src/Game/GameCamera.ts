@@ -1,6 +1,7 @@
 import Player from "./Player"
 import { path } from "./../Utility/Path"
 import { BaseFunc } from "../Base/BaseFunc";
+import BGUI from "../ui/BG";
 //游戏中相机
 export default class GameCamera extends Laya.Camera {
     Ctrler: BaseGameCameraCtrler;
@@ -25,6 +26,7 @@ export default class GameCamera extends Laya.Camera {
         this.frameLoop(1, this, this._Update);
         this.clearFlag = Laya.BaseCamera.CLEARFLAG_SKY;
         this.m_CountPS = new BaseFunc.SmoothDamp(1,1000)
+        this.on(Laya.Event.REMOVED, this, () => { this.destroy() })
     }
     
     Init()
@@ -77,6 +79,10 @@ class GameCameraCtrler extends BaseGameCameraCtrler {
         super(camera, ctrler);
     }
 
+    OnDestory() {
+        var a = 1;
+    }
+
     Update()  {
         if (this.Camera == null || this.Camera.Player == null)  {
             return;
@@ -115,6 +121,9 @@ class GameCameraCtrler extends BaseGameCameraCtrler {
         }
         this.Camera.DynamicPS = CameraPS;
         this.Camera.CountSetPS();
+        if(BGUI.mgrBGUI) {
+            BGUI.mgrBGUI.UpdateBgPos(this.Camera.transform.position.x, this.Camera.transform.position.y);
+        }
     }
 }
 

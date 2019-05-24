@@ -18,6 +18,7 @@ import CharacterManager from "../GameManager/CharacterMamager";
 import { GameManager } from "../GameManager/GameManager";
 import UIButtonTouchEvent from "../Utility/UIButtonTouchEvent";
 import StarItemUI from "./StarItemUI";
+import GuiderManager from "../Scene/GuiderManager";
 
 class ExtendSelectLevelUI extends ui.SelectLevelUI {
     createChildren(): void {
