@@ -1,8 +1,7 @@
 import { GameManager } from "./GameManager"
 import { Item } from "./../Game/GameItem"
 
-export module LevelItemInfo
-{
+export module LevelItemInfo {
     export class LevelItemRangeManager extends GameManager.BaseManager {
         private static g_Mgr: LevelItemRangeManager;
         public static get Mgr(): LevelItemRangeManager {
@@ -15,25 +14,29 @@ export module LevelItemInfo
             super("LevelItemRange");
         }
         protected GenInfo(data: any): GameManager.BaseInfo {
-            return new ItemRangeInfo(data);
+            var itemRangeInfo = new ItemRangeInfo(data);
+            
+            if(itemRangeInfo.ID > 1)
+            {
+                var lastItemInfo:ItemRangeInfo = this.GetInfo(itemRangeInfo.ID -1 );
+                itemRangeInfo.StartFloor = lastItemInfo.StartFloor + lastItemInfo.GetFloorRange();
+            }
+            return itemRangeInfo;
         }
         /**
          * 
          * @param targetFloor 起始层
          */
-        GetFloorInfo( targetFloor:number ):ItemRangeInfo
-        {
-            var itemRangeInfo:ItemRangeInfo = null;
-            var startRange:number = 0;
-            for(var floorIdx:number = 0;floorIdx<this.m_DataArr.length;++floorIdx )
-            {
+        GetFloorInfo(targetFloor: number): ItemRangeInfo  {
+            var itemRangeInfo: ItemRangeInfo = null;
+            var startRange: number = 0;
+            for (var floorIdx: number = 0; floorIdx < this.m_DataArr.length; ++floorIdx)  {
                 itemRangeInfo = this.m_DataArr[floorIdx] as ItemRangeInfo;
                 startRange += itemRangeInfo.GetFloorRange();
-                if(startRange > targetFloor)
-                {
+                if (startRange > targetFloor)  {
                     break;
                 }
-            } 
+            }
             return itemRangeInfo;
         }
     }
@@ -43,19 +46,18 @@ export module LevelItemInfo
         protected m_Num: Array<number>;
         protected m_Shift: Array<number>;
         protected m_Frequency: Array<number>;
-        protected m_ItemType:Item.ItemType;
-        get itemType():Item.ItemType
-        {
+        protected m_ItemType: Item.ItemType;
+        get itemType(): Item.ItemType  {
             return this.m_ItemType;
         }
 
-        constructor(itemType:Item.ItemType) {
+        constructor(itemType: Item.ItemType) {
             this.m_Num = new Array<number>();
             this.m_Shift = new Array<number>();
             this.m_Frequency = new Array<number>();
             this.m_ItemType = itemType;
         }
-    
+
         GetRange(isOdd: boolean): number {
             var idx = isOdd ? 0 : 1;
             return this.m_Frequency[idx] + this.m_Shift[idx];
@@ -77,15 +79,17 @@ export module LevelItemInfo
 
     export class ItemRangeInfo extends GameManager.BaseInfo {
         private m_FloorRange: number;
+        StartFloor: number;
+
         private m_ItemInfos: { [key: number]: ItemInfo };
-        
-        get ItemInfoMap():{[key:number]:ItemInfo}
-        {
+
+        get ItemInfoMap(): { [key: number]: ItemInfo }  {
             return this.m_ItemInfos;
         }
 
         constructor(data: any) {
             super(data); 6
+            this.StartFloor = 0;
             this.m_FloorRange = !isNaN(data.FloorRange) ? Number(data.FloorRange) : 0;
             this.m_ItemInfos = {};
             for (var name in Item.ItemType) {
@@ -97,7 +101,7 @@ export module LevelItemInfo
                     var numb: Array<number> = new Array<number>();
                     var shift: Array<number> = new Array<number>();
                     var frequency: Array<number> = new Array<number>();
-                    if (Item.ItemType.None == itemType || Item.ItemType.WinFlag == itemType || Item.ItemType.Rope == itemType)  {
+                    if (Item.ItemType.None == itemType || Item.ItemType.WinFlag == itemType || Item.ItemType.Rope == itemType) {
                         continue;
                     }
                     if (itemType != Item.ItemType.Coin) {
@@ -133,17 +137,14 @@ export module LevelItemInfo
                 }
             }
         }
-        public GetFloorRange():number
-        {
+        public GetFloorRange(): number  {
             return this.m_FloorRange;
         }
-        public GetItemNum(itemType:Item.ItemType,floor:number):number
-        {
-            return this.m_ItemInfos[itemType].GetNum(floor%2 == 1)
+        public GetItemNum(itemType: Item.ItemType, floor: number): number  {
+            return this.m_ItemInfos[itemType].GetNum(floor % 2 == 1)
         }
-        public GetItemFrequency(itemType:Item.ItemType,floor:number):number
-        {
-            return this.m_ItemInfos[itemType].GetRange(floor%2 == 1)
+        public GetItemFrequency(itemType: Item.ItemType, floor: number): number  {
+            return this.m_ItemInfos[itemType].GetRange(floor % 2 == 1)
         }
     }
 }

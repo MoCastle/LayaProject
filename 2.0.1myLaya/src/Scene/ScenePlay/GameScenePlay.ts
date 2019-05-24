@@ -27,7 +27,7 @@ import SelectLevelUI from "../../ui/SelectLevelUI";
 
 type LineItemInfo = Item.LineItemInfo;
 var ItemType = Item.ItemType;
-var FallTime: number = 2;
+var FallTime: number = 1;
 var lineNum: number = 9;
 var column: number = 5;
 
@@ -44,7 +44,7 @@ export default class GameScenePlay extends Scene.BaseScenePlaye {
     private _SafeLocation: GameStruct.MLocation;
     private m_GameMap: Gamemap;
     private m_BootomFloor: number;
-    private m_StartFloor: number;
+    private m_JumpFloor: number;
 
     Camera: GameCamera;
     Player: Player;
@@ -106,7 +106,7 @@ export default class GameScenePlay extends Scene.BaseScenePlaye {
         this._CurBG = APP.SceneManager.BG as BGUI;
         this.FreshBGCount = 0;
         this.m_GameMap = new Gamemap(lineNum, column);
-        this.m_StartFloor = 2;
+        this.m_JumpFloor = 2;
     }
 
     AddInputCtrler(value: Input.BaseGameInput) {
@@ -179,7 +179,7 @@ export default class GameScenePlay extends Scene.BaseScenePlaye {
             return;
         }
         if (this.Player.BaseCtrler.Time > 0)
-            this.Player.CurStep.StandOnGround(this.Player,false);
+            this.Player.CurStep.StandOnGround(this.Player, false);
         this.Player.LayStep(step);
         this.Player.StartMove();
         var nextFloorDir = isRight ? 1 : -1;
@@ -230,7 +230,7 @@ export default class GameScenePlay extends Scene.BaseScenePlaye {
         APP.SceneManager.CurScene.PutObj(this.m_GameMap);
         //准备玩家死亡事件
         APP.MessageManager.Regist(MessageMD.GameEvent.PlayerDeath, this.Death, this);
-        APP.MessageManager.Regist(MessageMD.GameEvent.WinGame,this.OnWinGame,this);
+        APP.MessageManager.Regist(MessageMD.GameEvent.WinGame, this.OnWinGame, this);
 
         this.StartGame();
     }
@@ -246,8 +246,7 @@ export default class GameScenePlay extends Scene.BaseScenePlaye {
         //创建输入控制器
         this.InputCtrl = new Input.NormGameInput(this);
         this.Player.Reset();
-        var startFloor: number = this.m_StartFloor;
-        var cameraBasePS: Laya.Vector3 = this.m_GameMap.Init(startFloor, this.Camera, 30);
+        var cameraBasePS: Laya.Vector3 = this.m_GameMap.Init(this.m_JumpFloor, this.Camera, 30, PlayerGuestAgent.GuestAgent.CurLevel);
         this.Player.SetStep(this.m_GameMap.GetSafeStep());
         this.m_GameMap.SetPlayer(this.Player);
         var cameraPs: Laya.Vector3 = this.Player.Position.clone();
@@ -307,9 +306,11 @@ export default class GameScenePlay extends Scene.BaseScenePlaye {
             ++this.m_BootomFloor;
         }
         this.InputCtrl.Update();
+        if (this.m_GameMap.EndFloor <= (this.PlayerFloor + this.m_JumpFloor))  {
+            this.OnWinGame();
+        }
     }
-    private _GameEndUpdate()
-    {
+    private _GameEndUpdate()  {
 
     }
 
@@ -326,7 +327,9 @@ export default class GameScenePlay extends Scene.BaseScenePlaye {
             GameAgent.Agent.ResetGameItem();
             GameAgent.Agent.ResetSkillItem();
         }
-        this.PanelUI.SetCountTime(time);
+        this.PanelUI.SetCountTime(time)
+        {
+        }
     }
 
     //将层向上叠
@@ -369,16 +372,16 @@ export default class GameScenePlay extends Scene.BaseScenePlaye {
         var newBuff: Item.BasePlayerBuff = Item.ItemBuffFactory(ItemType);
         newBuff.AddToPlayer(this.Player);
     }
-    private OnWinGame()
-    {
+    private OnWinGame()  {
         this.OnGameComplete();
     }
     private OnGameComplete() {
         APP.MessageManager.DesRegist(MessageMD.GameEvent.PlayerDeath, this.Death, this);
-        APP.MessageManager.DesRegist(MessageMD.GameEvent.WinGame,this.OnWinGame,this);
+        APP.MessageManager.DesRegist(MessageMD.GameEvent.WinGame, this.OnWinGame, this);
         var ui: SelectLevelUI = APP.UIManager.Show<SelectLevelUI>(SelectLevelUI);
         GameAgent.Agent.AddGold(this.m_GoldNum);
         GameAgent.Agent.AddScore(this.m_GoldNum * 10 + this.Distance * 10);
+        this._GameUpdate = ():void =>{};
     }
 
     private OnTimePause() {

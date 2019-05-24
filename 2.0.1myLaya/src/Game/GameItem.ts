@@ -58,7 +58,13 @@ export module Item {
         rewardList: Array<ItemLayOutData>;
         barrierList: Array<ItemLayOutData>;
         layOutCount: Array<number>;
-
+        startFloor:number;
+        range:number
+        itemInfo:LevelItemInfo.ItemRangeInfo;
+        get endFloor():number
+        {
+            return this.startFloor + this.itemInfo.GetFloorRange();
+        }
         //RewardMap: { [key: number]: LevelItemInfo.ItemInfo } ;
         ///BarrierMap:{ [key: number]: LevelItemInfo.ItemInfo };
         constructor() {
@@ -79,11 +85,12 @@ export module Item {
             */
         }
 
-        public Init(floor: number, colum: number = 5) {
-            var itemInfo: LevelItemInfo.ItemRangeInfo = LevelItemInfo.LevelItemRangeManager.Mgr.GetFloorInfo(floor);
+        public Init(startFloor: number, colum: number = 5) {
+            var itemInfo: LevelItemInfo.ItemRangeInfo = LevelItemInfo.LevelItemRangeManager.Mgr.GetFloorInfo(startFloor);
+            this.itemInfo = itemInfo;
             var range: number = itemInfo.GetFloorRange();
             var layOutCount = new Array<number>();
-
+            this.range = range;
             for (var startIdx: number = 0; startIdx < range; ++startIdx) {
                 if (startIdx % 2 == 0) {
                     layOutCount[startIdx] = colum;
@@ -109,10 +116,10 @@ export module Item {
                     if (itemTypeEnum == ItemType.None || itemTypeEnum == ItemType.WinFlag || itemTypeEnum == ItemType.Rope) {
                     }
                     else if (itemTypeEnum < ItemType.Vine) {
-                        barrierList.push(new ItemLayOutData(this.layOutCount, itemDataMap[itemType], floor));
+                        barrierList.push(new ItemLayOutData(this.layOutCount, itemDataMap[itemType], startFloor));
                     }
                     else {
-                        rewardList.push(new ItemLayOutData(this.layOutCount, itemDataMap[itemType], floor));
+                        rewardList.push(new ItemLayOutData(this.layOutCount, itemDataMap[itemType], startFloor));
                     }
                 }
             }
@@ -170,8 +177,8 @@ export module Item {
             this.itemInfo = itemInfo;
             var itemNum: Array<number> = new Array<number>();
             this.itemNum = itemNum;
-            this.GenMap(4, true);
-            this.GenMap(4, false);
+            this.GenMap(0, true);
+            this.GenMap(0, false);
         }
 
         GetEndFloor(isOdd: boolean): number {
@@ -658,7 +665,7 @@ export module Item {
             this.CountFloor = 0;
         }
         Start() {
-            this.CountFloor = this.GameDir.GamePlay.PlayerFloor - 2;
+            this.CountFloor = this.GameDir.GamePlay.PlayerFloor;
             console.log("Start");
         }
         Removed() {
@@ -668,8 +675,7 @@ export module Item {
             if (this.Time < APP.TimeManager.GameTime) {
                 this.RemoveSelf();
             } else {
-//                if (this.GameDir.GamePlay.PlayerFloor + 1 - this.CountFloor < 0) {
-                if (this.player.CurStep.Location.Y + 1 - this.CountFloor < 0) {
+                if (this.GameDir.GamePlay.PlayerFloor + 2 + 1 - this.CountFloor < 0) {
                     
                     return;
                 }

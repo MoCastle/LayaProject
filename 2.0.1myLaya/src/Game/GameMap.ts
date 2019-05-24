@@ -6,6 +6,7 @@ import Player from "./Player";
 import { GameModule } from "./GameModule";
 import LevelSettingManager from "../GameManager/LevelSettingManager";
 import LevelInfoManager from "../GameManager/LevelInfoManager";
+import PlayerGuestAgent from "../Agent/PlayerGuestAgent";
 
 var Mounts: number = 2;
 var LineSpace: number = 2;
@@ -15,18 +16,21 @@ export default class Gamemap extends Laya.Node {
     private m_TailFLoorIdx: number;
     private m_MountLines: MountLine[];
     private m_CurIdx: number;
-    private m_ItemRange: {};
     private m_SafeLocation: GameStruct.MLocation;
     private m_CurLineBarriers: Array<Item.LineItemInfo>;
     private m_CurLineRewards: Array<Item.LineItemInfo>;
     private m_ItemLayout: Item.ItemLayout;
     private m_Player: Player;
     private m_StartPosition: Laya.Vector3;
-    private m_StartFloor: number;
+    private m_JumpFloor: number;
     private m_rightSwitchCount: number;
     private m_ShowSteps: number;
     private m_ViewColums: number;
 
+    get EndFloor():number
+    {
+        return this.m_JumpFloor + this.m_ItemLayout.range;
+    }
     private get CurLineRewards(): Array<Item.LineItemInfo> {
         return this.m_CurLineRewards;
     }
@@ -74,23 +78,23 @@ export default class Gamemap extends Laya.Node {
     }
     /**
      * 
-     * @param startFloor 起始层
+     * @param jumpFloor 跳过的层
      * @param camera 相机
      * @param viewHeight 相机垂直视野
      */
-    public Init(startFloor: number, camera: Laya.Camera, viewHeight: number, gameStartFloor: number = 0): Laya.Vector3 {
+    public Init(jumpFloor: number, camera: Laya.Camera, viewHeight: number, gameStartFloor: number = 0): Laya.Vector3 {
         this.m_ItemLayout.Init(gameStartFloor, 5);
-        startFloor = (!startFloor) && (startFloor < 0) && (startFloor >= lines.length) ? 0 : startFloor;
-        this.m_StartFloor = startFloor;
+        jumpFloor = (!jumpFloor) && (jumpFloor < 0) && (jumpFloor >= lines.length) ? 0 : jumpFloor;
+        this.m_JumpFloor = jumpFloor;
         var cameraPS: Laya.Vector3 = new Laya.Vector3(0, 15, 20);
-        var cmeraViewHeight: number = viewHeight / (this.m_MountLines.length + 6);
+        var cmeraViewHeight: number = viewHeight / (this.m_MountLines.length + 1);
         
         GameModule.VSpace = cmeraViewHeight;
         camera.orthographicVerticalSize = viewHeight - 2.5 * cmeraViewHeight;
-        var widtthSpace: number = (camera.orthographicVerticalSize * camera.aspectRatio) / (this.m_ViewColums - 0.5 + 4);
+        var widtthSpace: number = (camera.orthographicVerticalSize * camera.aspectRatio) / (this.m_ViewColums - 0.5 + 0.4);
         GameModule.HSpace = widtthSpace;
 
-        Laya.Vector3.add(cameraPS, new Laya.Vector3(0, GameModule.VSpace * (startFloor), 0), cameraPS)
+        Laya.Vector3.add(cameraPS, new Laya.Vector3(0, GameModule.VSpace * (jumpFloor), 0), cameraPS)
 
         var lines: MountLine[] = this.m_MountLines;
         this.m_HeadFloorIdx = lines.length - 1;
@@ -100,11 +104,11 @@ export default class Gamemap extends Laya.Node {
         for (var idx: number = 0; idx < lines.length; ++idx) {
             var line: MountLine = lines[idx];
             line.Init();
-            line.startFloor = this.m_StartFloor;
+            line.startFloor = this.m_JumpFloor;
             line.SetLine(idx);
             if (idx > 0)
                 lines[idx - 1].SetNextFloor(line);
-            if (idx == startFloor) {
+            if (idx == jumpFloor) {
                 var PlayerStep = line.GetStep(Math.ceil(line.Length / 2) - 1);
                 this.m_StartPosition = PlayerStep.position;
                 PlayerStep.isDeadRoad = false;
@@ -234,7 +238,7 @@ export default class Gamemap extends Laya.Node {
         var safeIdxColl: { [key: number]: number; } = this.CountRoadInfo(floor);
 
         //出生点不放道具
-        if (floor <= this.m_StartFloor || floor == this.m_SafeLocation.Y) {
+        if (floor <= this.m_JumpFloor || floor == this.m_SafeLocation.Y) {
             return;
         }
         this.m_CurLineRewards = new Array<Item.LineItemInfo>();
@@ -557,6 +561,11 @@ export default class Gamemap extends Laya.Node {
      * @param {number}floor 
      */
     TakeItemList(floor: number) {
+        if(floor < this.m_JumpFloor)
+        {
+            return;
+        }
+        floor -= this.m_JumpFloor
         var line = this.GetFloorByFloor(floor);
         this.m_CurLineRewards = new Array<Item.LineItemInfo>();
         this.m_CurLineBarriers = new Array<Item.LineItemInfo>();
