@@ -222,8 +222,11 @@ export default class Player extends Laya.Sprite3D {
     }
 
     StartMove(): void {
-        this.BaseCtrler.StartMove();
-        this.m_PlayerCharacter.play(Character.PlayerAnimName(Character.AnimEnum.Jump));
+        if(this._Ctrler == this.BaseCtrler)
+        {
+            this.BaseCtrler.StartMove();
+            this.m_PlayerCharacter.play(Character.PlayerAnimName(Character.AnimEnum.Jump));
+        }
     }
 
     JumpDown(): void {

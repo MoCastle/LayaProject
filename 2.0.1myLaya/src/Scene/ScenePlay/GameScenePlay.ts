@@ -246,7 +246,9 @@ export default class GameScenePlay extends Scene.BaseScenePlaye {
         //创建输入控制器
         this.InputCtrl = new Input.NormGameInput(this);
         this.Player.Reset();
-        var cameraBasePS: Laya.Vector3 = this.m_GameMap.Init(this.m_JumpFloor, this.Camera, 30, PlayerGuestAgent.GuestAgent.CurLevel);
+        //var cameraBasePS: Laya.Vector3 = this.m_GameMap.Init(this.m_JumpFloor, this.Camera, 30, PlayerGuestAgent.GuestAgent.CurLevel);
+        var cameraBasePS: Laya.Vector3 = this.m_GameMap.Init(this.m_JumpFloor, this.Camera, 30, 0);
+        
         this.Player.SetStep(this.m_GameMap.GetSafeStep());
         this.m_GameMap.SetPlayer(this.Player);
         var cameraPs: Laya.Vector3 = this.Player.Position.clone();

@@ -15,10 +15,9 @@ export module LevelItemInfo {
         }
         protected GenInfo(data: any): GameManager.BaseInfo {
             var itemRangeInfo = new ItemRangeInfo(data);
-            
-            if(itemRangeInfo.ID > 1)
-            {
-                var lastItemInfo:ItemRangeInfo = this.GetInfo(itemRangeInfo.ID -1 );
+
+            if (itemRangeInfo.ID > 1)  {
+                var lastItemInfo: ItemRangeInfo = this.GetInfo(itemRangeInfo.ID - 1);
                 itemRangeInfo.StartFloor = lastItemInfo.StartFloor + lastItemInfo.GetFloorRange();
             }
             return itemRangeInfo;
@@ -27,17 +26,30 @@ export module LevelItemInfo {
          * 
          * @param targetFloor 起始层
          */
-        GetFloorInfo(targetFloor: number): ItemRangeInfo  {
+        GetFloorInfo(targetFloor: number): ItemRangeInfo {
             var itemRangeInfo: ItemRangeInfo = null;
             var startRange: number = 0;
-            for (var floorIdx: number = 0; floorIdx < this.m_DataArr.length; ++floorIdx)  {
+            for (var floorIdx: number = 0; floorIdx < this.m_DataArr.length; ++floorIdx) {
                 itemRangeInfo = this.m_DataArr[floorIdx] as ItemRangeInfo;
                 startRange += itemRangeInfo.GetFloorRange();
-                if (startRange > targetFloor)  {
+                if (startRange > targetFloor) {
                     break;
                 }
             }
             return itemRangeInfo;
+        }
+
+        /**
+         * 根据ID获取层信息
+         * @param id 的关卡ID
+         */
+        GetFloorInfoByLevelID(id: number): ItemRangeInfo  {
+            var info: ItemRangeInfo = null;
+            if (id > this.m_DataArr.length)  {
+                id = this.m_DataArr.length
+            }
+            info = this.GetInfo(id);
+            return info
         }
     }
 
@@ -47,7 +59,7 @@ export module LevelItemInfo {
         protected m_Shift: Array<number>;
         protected m_Frequency: Array<number>;
         protected m_ItemType: Item.ItemType;
-        get itemType(): Item.ItemType  {
+        get itemType(): Item.ItemType {
             return this.m_ItemType;
         }
 
@@ -83,7 +95,7 @@ export module LevelItemInfo {
 
         private m_ItemInfos: { [key: number]: ItemInfo };
 
-        get ItemInfoMap(): { [key: number]: ItemInfo }  {
+        get ItemInfoMap(): { [key: number]: ItemInfo } {
             return this.m_ItemInfos;
         }
 
@@ -137,13 +149,13 @@ export module LevelItemInfo {
                 }
             }
         }
-        public GetFloorRange(): number  {
+        public GetFloorRange(): number {
             return this.m_FloorRange;
         }
-        public GetItemNum(itemType: Item.ItemType, floor: number): number  {
+        public GetItemNum(itemType: Item.ItemType, floor: number): number {
             return this.m_ItemInfos[itemType].GetNum(floor % 2 == 1)
         }
-        public GetItemFrequency(itemType: Item.ItemType, floor: number): number  {
+        public GetItemFrequency(itemType: Item.ItemType, floor: number): number {
             return this.m_ItemInfos[itemType].GetRange(floor % 2 == 1)
         }
     }
