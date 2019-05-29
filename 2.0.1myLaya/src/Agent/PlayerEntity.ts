@@ -46,7 +46,7 @@ export module Player {
         //当前获得总星星数量
         private m_TotalStars: number;
 
-        //没关获得的星星数量
+        //每关获得的星星数量
         private m_PerLevelStars: number[];
         /*当前解锁的最大关卡 */
         private m_maxLevel: number;
@@ -66,7 +66,16 @@ export module Player {
         }
 
         public setPerTogateStars(levelId, startNum) {
+            if(this.m_PerLevelStars[levelId] && this.m_PerLevelStars[levelId] > startNum) {
+                return;
+            }
             this.m_PerLevelStars[levelId] = startNum;
+            this.m_TotalStars = 0;
+            for(var key in this.m_PerLevelStars) {
+                if(this.m_PerLevelStars[key] && this.m_PerLevelStars[key] > 0) {
+                    this.m_TotalStars += this.m_PerLevelStars[key];
+                }
+            }
         }
 
 

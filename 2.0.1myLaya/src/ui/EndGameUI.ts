@@ -75,8 +75,8 @@ export default class EndGameUI extends BaseUI
         this.FixUI(this.UI);
         //this.UI._CharacterList.on(Laya.Event.CLICK,null,()=>{ this._UIManager.Show<PlayerListUI>(PlayerListUI)});
         this.Layout();
-        this.UI.distance.text = GameControler.GameControler.GameDir.GamePlay.Distance + "";
-        this.UI.gold.text = GameControler.GameControler.GameDir.GamePlay.GameGold + "";
+        this.UI.distance.text = PlayerGuestAgent.GuestAgent.TotalStarts + "";
+        this.UI.gold.text = PlayerGuestAgent.GuestAgent.Money + "";
         this.updateSelfSceneUI();
     }
     

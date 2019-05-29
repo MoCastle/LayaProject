@@ -57,11 +57,11 @@ export default class GameUI extends BaseUI {
         this.SetDirty();
     }
     private _ShowDistance() {
-        var a = parseInt(this.DistanceStr[1]) / 100;
+        var a = parseInt(this.DistanceStr[1]) / 50;
         this._UI._TxtDistance.text = this.DistanceStr[0];
         this._UI._TxtDistance1.value = parseInt(this.DistanceStr[1]) + "";
         this._UI.g_p_pro.value = (a > 1 ? 1 : a);
-        this._UI.progressLabel.text = this.DistanceStr[1] + "%";
+        this._UI.progressLabel.text = Math.floor(a * 100) + "%";
     }
 
     private _ShowGoldNum() {

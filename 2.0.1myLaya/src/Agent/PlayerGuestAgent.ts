@@ -21,6 +21,10 @@ export default class PlayerGuestAgent extends BaseAgent {
         return this.m_PlayerEntity.MaxLevel;
     }
 
+    public get TotalStarts():String {
+        return this.m_PlayerEntity.TotalStart + "";
+    }
+
     public set MaxLevel(val:number) {
         this.m_PlayerEntity.MaxLevel = val;
     }

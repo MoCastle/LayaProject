@@ -163,6 +163,7 @@ export module ui {
 		public _selectLevelBtn:Laya.Button;
 		public bg1:Laya.Image;
 		public _backBtn:Laya.Button;
+		public _MenueBtn:Laya.Button;
         constructor(){ super()}
         createChildren():void {
             super.createChildren();

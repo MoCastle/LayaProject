@@ -18,7 +18,6 @@ export module GameManager {
         protected abstract GenInfo(data): BaseInfo;
         protected GetInfo<T extends BaseInfo>(id: number): T {
             if (!id || id < 0) {
-
                 id = 0;
             }
             var BaseInfo = this.m_DataArr[id];

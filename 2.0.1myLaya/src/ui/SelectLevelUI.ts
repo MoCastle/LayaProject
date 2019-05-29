@@ -1,4 +1,3 @@
-
 import { ui } from "./layaMaxUI"
 import BaseUI from "./BaseUI"
 import { path } from "./../Utility/Path"
@@ -37,11 +36,10 @@ export default class SelectLevelUI extends BaseUI {
     private config = {"img":
         [   
             {key:"bg",textureName:"mainbg.jpg"}
-
         ],
         "btn":
         [
-            {key:"_backBtn",textureName:"back.png"},
+            {key:"_backBtn",textureName:"back.png"}
         ]
     };
 
@@ -53,6 +51,7 @@ export default class SelectLevelUI extends BaseUI {
         this._UI._selectLevelBtn.on(Laya.Event.CLICK, this, this.SelectLevel);
         this._UI._backBtn.on(Laya.Event.CLICK, this, this.BackSelectLevelUI);
         this._UI._Start.on(Laya.Event.CLICK, this, this.onStart);
+        this._UI._MenueBtn.on(Laya.Event.CLICK, this, this.MenuEvent);
         this.totalLevelImgPoint = [];
         for(var i = 1;i <= 4;i ++) {
             this.totalLevelImgPoint.push({x:this._UI["g_" + i].x, y:this._UI["g_" + i].y, scaleX:this._UI["g_" + i].scaleX, scaleY:this._UI["g_" + i].scaleY});
@@ -64,7 +63,11 @@ export default class SelectLevelUI extends BaseUI {
         APP.SceneManager.BG["upateBgTexture"]();
     }
 
-    BackSelectLevelUI() {
+    MenuEvent():void {
+        GuiderManager.Mgr.EnterScene();
+    }
+
+    BackSelectLevelUI():void {
         this._UI.bg1.visible = false;
     }
 
@@ -210,6 +213,7 @@ export default class SelectLevelUI extends BaseUI {
     Open()  {
         this.Layout();
         this.updateSelfSceneUI();
+        this._UI.bg.visible = true;
         this._UI.bg1.visible = false;
 
         this.UpdateLevelInfo();
@@ -223,6 +227,7 @@ export default class SelectLevelUI extends BaseUI {
                 PlayerGuestAgent.GuestAgent.MaxLevel = PlayerGuestAgent.GuestAgent.CurLevel;
             }
         }
+        GameControler.GameControler.PlayerDeath = true;
     }
 
     Close()  {

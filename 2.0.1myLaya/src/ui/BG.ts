@@ -50,7 +50,7 @@ export default class BGUI extends ui.BGUI {
         this.bg1.y = -Laya.stage.height;
         this.bg1.anchorX = 0.5;
         this.bg1.x = Laya.stage.width / 2;
-            //this._SkyQue.Push(image);
+        //this._SkyQue.Push(image);
         // } 
         // this.SetSky(0);
         // var earth = new Laya.Image();
@@ -91,7 +91,7 @@ export default class BGUI extends ui.BGUI {
         var offestX = camerPosX - this.lastX;
         offestY *= 50;
         offestX *= -30;
-        if(offestY < 0.5 || Math.abs(offestX) < 0.1) {
+        if(offestY < 0.5) {
             this.lastY = camerPosY;
             this.lastX = camerPosX;
             return;

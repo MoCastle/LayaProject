@@ -2,11 +2,11 @@
     "x":0,
     "type":"View",
     "selectedBox":2,
-    "selecteID":8,
+    "selecteID":6,
     "searchKey":"View",
     "props":{"width":750,"sceneColor":"#000000","height":1334},
     "nodeParent":-1,
-    "maxID":14,
+    "maxID":15,
     "label":"View",
     "isOpen":true,
     "isDirectory":true,
@@ -92,7 +92,7 @@
             "x":15,
             "type":"Sprite",
             "searchKey":"Sprite",
-            "props":{"y":468,"x":236,"texture":"entersceneui/gold.png","scaleY":0.5,"scaleX":0.5},
+            "props":{"y":468,"x":285,"texture":"entersceneui/gold.png","scaleY":0.5,"scaleX":0.5},
             "nodeParent":2,
             "label":"Sprite",
             "isDirectory":false,
@@ -106,7 +106,7 @@
             "x":15,
             "type":"Label",
             "searchKey":"Label,goldLabel",
-            "props":{"y":486,"x":331,"width":200,"var":"goldLabel","valign":"middle","text":"+5000","fontSize":40,"color":"#975c5b","align":"center"},
+            "props":{"y":486,"x":380,"width":200,"var":"goldLabel","valign":"middle","text":"+5000","fontSize":40,"color":"#975c5b","align":"left"},
             "nodeParent":2,
             "label":"goldLabel",
             "isDirectory":false,
@@ -171,6 +171,20 @@
                         ]
                 }],
             "$HIDDEN":true
+        },
+        {
+            "x":15,
+            "type":"Button",
+            "searchKey":"Button,_MenueBtn",
+            "props":{"var":"_MenueBtn","stateNum":"2","skin":"entersceneui/res1/homeBtn.png","labelSize":30,"centerY":288,"centerX":-20},
+            "nodeParent":2,
+            "label":"_MenueBtn",
+            "isDirectory":false,
+            "isAniNode":true,
+            "hasChild":false,
+            "compId":14,
+            "child":[
+                ]
         }],
     "animations":[
         {

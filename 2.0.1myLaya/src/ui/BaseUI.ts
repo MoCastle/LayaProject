@@ -7,8 +7,6 @@ import {MessageMD} from "./../FrameWork/MessageCenter"
 //UI基类
 export default abstract class BaseUI extends Laya.Box
 {
-    
-    
     //
     protected _UIType:BaseEnum.UITypeEnum;
     protected _IsMutex:boolean;
