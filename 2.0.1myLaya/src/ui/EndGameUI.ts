@@ -17,9 +17,6 @@ class ExtendEndGameUI extends ui.EndGameUI {
     constructor()
     {
         super();
-        //this.Panel = this.Panel;
-        //this.Panel.vScrollBarSkin = "";
-        //this.Panel.hScrollBarSkin = "";
         this._MenueBtn.on(Laya.Event.CLICK,GuiderManager.Mgr,GuiderManager.Mgr.EnterScene);
         this._SetBtn.on(Laya.Event.CLICK,Controler.GameControler,Controler.GameControler.ShowSetPanel);
         this._StartBtn.on(Laya.Event.CLICK,Controler.GameControler,Controler.GameControler.EnterGame);

@@ -12,7 +12,7 @@
         "flyer": "[[20,0,1][50,1]]",
         "absord": "[[50,1]]",
         "Coin": "[[10,1]]",
-        "totalleval": 99999900,
+        "totalleval": 50,
         "starnum": 3,
         "startscore": "[100,400,500]"
     },
@@ -29,7 +29,7 @@
         "flyer": "[[20,0,1][50,1]]",
         "absord": "[[50,1]]",
         "Coin": "[[10,1]]",
-        "totalleval": 100,
+        "totalleval": 50,
         "starnum": 3,
         "startscore": "[100,400,501]"
     },
@@ -46,7 +46,7 @@
         "flyer": "[[20,0,1][50,1]]",
         "absord": "[[50,1]]",
         "Coin": "[[10,1]]",
-        "totalleval": 100,
+        "totalleval": 50,
         "starnum": 3,
         "startscore": "[100,400,502]"
     },
@@ -63,103 +63,103 @@
         "flyer": "[[20,0,1][50,1]]",
         "absord": "[[50,1]]",
         "Coin": "[[10,1]]",
-        "totalleval": 100,
+        "totalleval": 50,
         "starnum": 3,
         "startscore": "[100,400,503]"
     },
     "5": {
         "ID": "5",
-        "totalleval": 100,
+        "totalleval": 50,
         "starnum": 3,
         "startscore": "[100,400,504]"
     },
     "6": {
         "ID": "6",
-        "totalleval": 100,
+        "totalleval": 50,
         "starnum": 3,
         "startscore": "[100,400,505]"
     },
     "7": {
         "ID": "7",
-        "totalleval": 100,
+        "totalleval": 50,
         "starnum": 3,
         "startscore": "[100,400,506]"
     },
     "8": {
         "ID": "8",
-        "totalleval": 100,
+        "totalleval": 50,
         "starnum": 3,
         "startscore": "[100,400,507]"
     },
     "9": {
         "ID": "9",
-        "totalleval": 100,
+        "totalleval": 50,
         "starnum": 3,
         "startscore": "[100,400,508]"
     },
     "10": {
         "ID": "10",
-        "totalleval": 100,
+        "totalleval": 50,
         "starnum": 3,
         "startscore": "[100,400,509]"
     },
     "11": {
         "ID": "11",
-        "totalleval": 100,
+        "totalleval": 50,
         "starnum": 3,
         "startscore": "[100,400,510]"
     },
     "12": {
         "ID": "12",
-        "totalleval": 100,
+        "totalleval": 50,
         "starnum": 3,
         "startscore": "[100,400,511]"
     },
     "13": {
         "ID": "13",
-        "totalleval": 100,
+        "totalleval": 50,
         "starnum": 3,
         "startscore": "[100,400,512]"
     },
     "14": {
         "ID": "14",
-        "totalleval": 100,
+        "totalleval": 50,
         "starnum": 3,
         "startscore": "[100,400,513]"
     },
     "15": {
         "ID": "15",
-        "totalleval": 100,
+        "totalleval": 50,
         "starnum": 3,
         "startscore": "[100,400,514]"
     },
     "16": {
         "ID": "16",
-        "totalleval": 100,
+        "totalleval": 50,
         "starnum": 3,
         "startscore": "[100,400,515]"
     },
     "17": {
         "ID": "17",
-        "totalleval": 100,
+        "totalleval": 50,
         "starnum": 3,
         "startscore": "[100,400,515]"
     },
     "18": {
         "ID": "18",
-        "totalleval": 100,
+        "totalleval": 50,
         "starnum": 3,
         "startscore": "[100,400,517]"
     },
     "19": {
         "ID": "19",
-        "totalleval": 100,
+        "totalleval": 50,
         "starnum": 3,
         "startscore": "[100,400,518]"
     },
     "20": {
         "ID": "20",
-        "totalleval": 100,
+        "totalleval": 50,
         "starnum": 3,
         "startscore": "[100,400,519]"
     },
