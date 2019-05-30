@@ -48,9 +48,6 @@ export default class MountLine extends Laya.Sprite3D {
             this.addChild(newStep);
             this.m_StepList[StartIdx] = newStep;
         }
-
-
-
         this.transform.position = new Laya.Vector3();
     }
 
@@ -61,9 +58,8 @@ export default class MountLine extends Laya.Sprite3D {
             var stepVector = newStep.position;
             stepVector.x = startX;
             startX += GameModule.HSpace;
-            newStep.transform.position = stepVector;
+            newStep.position = stepVector;
         }
-
     }
 
     //设获取显示出来的第几个平台
@@ -87,14 +83,17 @@ export default class MountLine extends Laya.Sprite3D {
         this.active = true;
         this.floorNum = floor;
         var newPS = this.transform.position;
+        var positionFloor = floor - this.startFloor;
         newPS.y = GameModule.VSpace * floor;
         newPS.z = -GameModule.DSpace * floor;
         this.transform.position = newPS;
 
         this.m_StepList[0].active = false;
+        
         this.m_StepList[this.m_StepList.length - 1].active = false;
         this.Length = this.m_StepList.length - 2;
         if (!this.JugIsOdd()) {
+            this.m_StepList[this.m_StepList.length - 2].ResetStep();
             this.m_StepList[this.m_StepList.length - 2].active = false;
             this.Length = this.m_StepList.length - 3;
         }
@@ -137,9 +136,10 @@ export default class MountLine extends Laya.Sprite3D {
             leftParent && (leftParent.RightChild = thisStep);
             thisStep.RightParent = rightParent;
             rightParent && (rightParent.LeftChild = thisStep);
+            /*
             if (startIdx == 0 || startIdx > this.Length) {
                 thisStep.active = false;
-            }
+            }*/
         }
     }
 
@@ -147,8 +147,8 @@ export default class MountLine extends Laya.Sprite3D {
     Break(): void {
         this.breaked = true;
         var stepList: Array<Step> = this.m_StepList;
-        for (var idx: number = 0; idx < stepList.length; ++idx) {
-            var thisStep: Step = stepList[idx];
+        for (var idx: number = 0; idx < this.Length; ++idx) {
+            var thisStep: Step = this.GetStep(idx);
             thisStep.Break();
         }
     }

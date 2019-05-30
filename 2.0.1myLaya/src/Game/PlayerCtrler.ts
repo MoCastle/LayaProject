@@ -32,8 +32,7 @@ export module PlayerControler {
     export class PlayerNormCtrler extends BasePlayerCtrler {
         private m_StartPS: Laya.Vector3;
         private m_TargetPS: Laya.Vector3;
-        private get m_FallTimePoint():number
-        {
+        private get m_FallTimePoint(): number  {
             return 0.4;
         }
         private get FallPS(): Laya.Vector3 {
@@ -43,13 +42,11 @@ export module PlayerControler {
             return midlePS;
         }
         IsFalling: boolean;
-        m_Time:number;
-        get Time(): number
-        {
+        m_Time: number;
+        get Time(): number  {
             return this.m_Time;
         }
-        set Time(value:number)
-        {
+        set Time(value: number)  {
             this.m_Time = value;
         }
         get LastTime(): number {
@@ -58,8 +55,8 @@ export module PlayerControler {
         }
         /**已消耗时间百分比 */
         get TimePercent(): number {
-            var timeProgress = this.LastTime > Controler.GameControler.PlayerMoveTime?Controler.GameControler.PlayerMoveTime:this.LastTime;
-            return timeProgress/Controler.GameControler.PlayerMoveTime;
+            var timeProgress = this.LastTime > Controler.GameControler.PlayerMoveTime ? Controler.GameControler.PlayerMoveTime : this.LastTime;
+            return timeProgress / Controler.GameControler.PlayerMoveTime;
         }
 
         constructor(player: Player = null) {
@@ -131,7 +128,7 @@ export module PlayerControler {
                     Laya.Vector3.lerp(startPS, targetPS, moveTimeRate, newPs);
                     this.player.Position = newPs;
                 }
-            } 
+            }
         }
     }
 
@@ -150,7 +147,7 @@ export module PlayerControler {
             player.ResetParenet();
             player.Fly();
             var stepPS: Laya.Vector3 = player.CurStep.standPoint.transform.position.clone();
-            stepPS.y += GameModule.VSpace*0.6 ;
+            stepPS.y += GameModule.VSpace * 0.6;
             player.Position = stepPS;
             player.transform.rotationEuler = new Laya.Vector3(0, 180, 0);
             player.ModelRotateEular(new Laya.Vector3(0, 180, 0));
