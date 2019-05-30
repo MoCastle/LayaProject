@@ -69,17 +69,22 @@ export default class GameScenePlay extends Scene.BaseScenePlaye {
         value.SetRightTouch(this, () => { ModelFunc.vibrate(25); this.InputCtrl.Input(true); });
         this._PanelUI = value;
     }
-    get PlayerFloor(): number {
+    get PlayerJumped(): number {
         var floor: number = this._StartPosition.z - this.Player.LogicPosition.z;
         floor = floor / GameModule.DSpace;
         floor = Math.round(floor);
         return Math.abs(floor);
     }
-    get Distance(): number {
-        return Math.floor(this.PlayerFloor)
+    get PlayerCurFloor():number
+    {
+        var floor:number = this.PlayerJumped + this.m_GameMap.StartFloor;
+        return floor;
+    }
+    get JumpedDistance(): number {
+        return Math.floor(this.PlayerJumped)
     }
     get PlayerFloorLine(): MountLine {
-        return this.GetFloorByFloor(this.PlayerFloor);
+        return this.GetFloorByFloor(this.PlayerCurFloor);
     }
     get GameTime(): number {
         return (this.m_owner as GameDirector).GameTime;
@@ -88,7 +93,7 @@ export default class GameScenePlay extends Scene.BaseScenePlaye {
         return this.m_GoldNum;
     }
     get CountFloorTime(): number {
-        var between: number = this.Distance - this.m_BootomFloor;
+        var between: number = this.JumpedDistance - this.m_BootomFloor;
         var rangeNum: number = 2;
         between = between > rangeNum ? rangeNum : between;
         return this._CountFloorTime - between / rangeNum * FallTime;
@@ -291,15 +296,15 @@ export default class GameScenePlay extends Scene.BaseScenePlaye {
 
     //正常运行时的每帧逻辑
     private _RunGameUpdate() {
-        var dist: number = this.PlayerFloor;
-        this.PanelUI.Distance = this.Distance;
+        var dist: number = this.PlayerJumped;
+        this.PanelUI.Distance = this.JumpedDistance;
         if (this.FreshBGCount > 10) {
             this._CurBG.UpdatePage(dist);
             this.FreshBGCount = 0;
         }
         ++this.FreshBGCount;
         var dDistance: number = this.m_GameMap.TailFLoor.floorNum;
-        var distance = this.PlayerFloor - dDistance + 4;
+        var distance = this.PlayerJumped - dDistance + 4;
         if (distance > 4) {
             this._PushFLoor();
         }
@@ -310,8 +315,9 @@ export default class GameScenePlay extends Scene.BaseScenePlaye {
             ++this.m_BootomFloor;
         }
         this.InputCtrl.Update();
-        if (this.m_GameMap.EndFloor <= (this.PlayerFloor + this.m_JumpFloor))  {
-            this.OnWinGame();
+        if (this.m_GameMap.EndFloor <= (this.PlayerCurFloor))  {
+            //Todo
+            //this.OnWinGame();
         }
     }
     private _GameEndUpdate()  {
@@ -384,7 +390,7 @@ export default class GameScenePlay extends Scene.BaseScenePlaye {
         APP.MessageManager.DesRegist(MessageMD.GameEvent.WinGame, this.OnWinGame, this);
         var ui: SelectLevelUI = APP.UIManager.Show<SelectLevelUI>(SelectLevelUI);
         GameAgent.Agent.AddGold(this.m_GoldNum);
-        GameAgent.Agent.AddScore(this.m_GoldNum * 10 + this.Distance * 10);
+        GameAgent.Agent.AddScore(this.m_GoldNum * 10 + this.JumpedDistance * 10);
         this._GameUpdate = ():void =>{};
     }
 

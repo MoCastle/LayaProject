@@ -8,8 +8,12 @@ import CharactorAnimator from "./CharacterAnimator";
 import Controler from "../controler/GameControler";
 type StepItem = Item.StepItem;
 type MLocation = GameStruct.MLocation;
+var num:number = 0;
+
 //步
 export default class Step extends Laya.Sprite3D {
+    private m_Num:number;
+
     private m_CharacterAnimator: StepAnimator;
     //模型个数
     public static stepModelNum: number = 2;
@@ -61,7 +65,7 @@ export default class Step extends Laya.Sprite3D {
     }
     constructor(floor: MountLine, realIdx: number) {
         super();
-
+        this.m_Num = num++;
         var modelIdx = Math.random() * Step.stepModelNum;
         modelIdx = modelIdx > 0.5 ? 2 : 1;
         var name: string = path.GetLH("dizuo_qiu0" + modelIdx)
@@ -126,6 +130,7 @@ export default class Step extends Laya.Sprite3D {
         if (this.m_YieldFunc)  {
             clearTimeout(this.m_YieldFunc);
         }
+        console.log("Reset" + this.m_Num);
     }
 
     public TouchGround(player: Player) {
@@ -152,6 +157,7 @@ export default class Step extends Laya.Sprite3D {
         var randomTime = 1000 * Math.random();
         var step: Step = this;
         this.m_YieldFunc = setTimeout(() => {
+            console.log("Run" + this.m_Num);
             step.YieldBreak();
         }, randomTime);
     }
@@ -163,40 +169,71 @@ export default class Step extends Laya.Sprite3D {
 
 class StepAnimator extends CharactorAnimator {
     private m_Step: Step;
+    private m_FallDownScript:FallDownScript;
+    private m_WarningScript:WarningScript;
+    private m_ScriptMap:{};
+    private m_CurState:any;
+
     constructor(animator: Laya.Animator, step: Step) {
         super(animator);
         this.m_Step = step;
     }
     Init() {
-        var stepFallState: Laya.AnimatorState = this.GetState("fall")
-        var stepFallScript: Laya.AnimatorStateScript = stepFallState.addScript(Laya.AnimatorStateScript);
-        var stepAnimator = this;
-        var fallDownState: Laya.AnimatorState = this.GetState("fallDown");
-        var fallDownScript: FallDownScript = fallDownState.addScript(FallDownScript) as FallDownScript;
-        fallDownScript.Init(this.m_Step, this);
+        this.m_ScriptMap = {};
+        this.m_FallDownScript = new FallDownScript();
+        this.m_ScriptMap["fallDown"] = this.m_FallDownScript;
+        this.m_FallDownScript.Init(this.m_Step,this);
+        this.m_WarningScript= new WarningScript();
+        this.m_WarningScript.Init(this.m_Step,this);
+        this.m_ScriptMap["warning"] = this.m_WarningScript;
 
-        var warningState: Laya.AnimatorState = this.GetState("warning");
-        var warningScript: WarningScript = warningState.addScript(WarningScript) as WarningScript;
-        warningScript.Init(this.m_Step, this);
+        var stepFallState: any = this.GetState("fall")
+        //var stepFallScript: Laya.AnimatorStateScript = stepFallState.addScript(Laya.AnimatorStateScript);
+
+        var fallDownState: any = this.GetState("fallDown");
+        fallDownState.mScrpt = this.m_FallDownScript;
+        
+        var fallDownScript: Laya.AnimatorStateScript = fallDownState.addScript(Laya.AnimatorStateScript);
+        fallDownScript.onStateUpdate = ()=>{this.m_FallDownScript.onStateUpdate();}
+        // fallDownScript.onStateEnter = ()=>{this.m_FallDownScript.onStateEnter();}
+        // fallDownScript.onStateExit = ()=>{this.m_FallDownScript.onStateExit();}
+
+        var warningState: any = this.GetState("warning");
+        warningState.mScrpt = this.m_WarningScript;
+        var warningScript: Laya.AnimatorStateScript = warningState.addScript(Laya.AnimatorStateScript);
+        warningScript.onStateUpdate = ()=>{this.m_WarningScript.onStateUpdate();}
+        // warningScript.onStateEnter = ()=>{this.m_WarningScript.onStateEnter();}
+        // warningScript.onStateExit = ()=>{this.m_WarningScript.onStateExit();}
     }
+
     play(name: string) {
         var animatorStateName: string = this.curStateName;
         switch (name) {
             case "fallDown":
             case "warning":
             case "idle":
-                super.play(name);
+                this.playAnum(name);
                 break;
             default:
                 if (animatorStateName != "fallDown" && animatorStateName != "warning") {
-                    super.play(name);
+                    this.playAnum(name);
                 }
                 break;
         }
     }
+    playAnum(name:string)
+    {
+        var curState: any = this.GetState(this.curStateName);
+        if(curState.mScrpt)
+            curState.mScrpt.onStateExit();
+        super.play(name);
+        curState = this.GetState(name)
+        if(curState.mScrpt)
+            curState.mScrpt.onStateEnter();
+    }
 }
 
-class FallDownScript extends Laya.AnimatorStateScript {
+class FallDownScript{
     private m_Step: Step;
     private m_Speed: number;
     private m_TimeCount: number;
@@ -204,8 +241,8 @@ class FallDownScript extends Laya.AnimatorStateScript {
     private m_Animator: CharactorAnimator;
     private m_Player: Player;
     private m_TimeOut;
+    private m_num:number;
     constructor() {
-        super();
         this.m_Speed = 0;
         this.m_CountinueTime = 1;
     }
@@ -225,7 +262,9 @@ class FallDownScript extends Laya.AnimatorStateScript {
         var stepPosition: Laya.Vector3 = this.m_Step.transform.localPosition;
         this.m_Step.transform.localPosition = stepPosition;
         if (this.m_TimeOut)
+        {
             clearTimeout(this.m_TimeOut);
+        }
     }
 
     public onStateUpdate(): void {
@@ -249,8 +288,7 @@ class FallDownScript extends Laya.AnimatorStateScript {
         this.m_Step.position = position;
     }
 }
-
-class WarningScript extends Laya.AnimatorStateScript {
+class WarningScript{
     private m_Step: Step;
     private m_Animator: CharactorAnimator;
     private m_TimeCount: number;
@@ -258,13 +296,11 @@ class WarningScript extends Laya.AnimatorStateScript {
     private m_StartXPositin: number;
     private m_SwitchNum: number;
     private m_ShakeTimeCount: number;
-
     get EndTimePoint(): number {
         return this.m_TimeCount + this.m_CountinueTime;
     }
 
     constructor() {
-        super();
         this.m_CountinueTime = 1;
     }
 
@@ -284,6 +320,7 @@ class WarningScript extends Laya.AnimatorStateScript {
     public onStateExit(): void {
         var stepPosition: Laya.Vector3 = this.m_Step.transform.localPosition;
         this.m_Step.transform.localPosition = stepPosition;
+        
     }
 
     public onStateUpdate(): void {

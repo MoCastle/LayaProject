@@ -195,6 +195,20 @@ export default class Player extends Laya.Sprite3D {
         buff.Removed();
     }
 
+    /**
+     * 关闭所有Buff
+     */
+    ComleteAllBuff()
+    {
+        for(var idx:number = 0; idx < this.BuffArr.length; ++ idx)
+        {
+            if(this.BuffArr[idx])
+            {
+                this.BuffArr[idx].RemoveSelf();
+            }
+        } 
+    }
+
     //摆放角色
     SetStep(putStep: Step): void {
         this.JumpDown();
@@ -335,12 +349,14 @@ class PlayerAnimator extends CharactorAnimator {
     Init()  {
         var fallState: Laya.AnimatorState = this.GetState("fallDown");
         var fallScript: Laya.AnimatorStateScript = fallState.addScript(Laya.AnimatorStateScript);
-        fallScript.onStateExit = () => { APP.MessageManager.Fire(MessageMD.GameEvent.PlayerDeath); }
-
+        fallScript.onStateExit = () => { APP.MessageManager.Fire(MessageMD.GameEvent.PlayerDeath); 
+            player.ComleteAllBuff();}
+        fallScript.onStateEnter = ()=>{player.ComleteAllBuff();};
         var fallDownImdState: Laya.AnimatorState = this.GetState("fallDownImd");
         var fallDownImdScript: Laya.AnimatorStateScript = fallDownImdState.addScript(Laya.AnimatorStateScript);
         var player:Player = this.m_Player;
-        fallDownImdScript.onStateExit = () => { APP.MessageManager.Fire(MessageMD.GameEvent.PlayerDeath); }
+        fallDownImdScript.onStateEnter = ()=>{player.ComleteAllBuff();};
+        fallDownImdScript.onStateExit = () => { APP.MessageManager.Fire(MessageMD.GameEvent.PlayerDeath);}
 
         var dieState:Laya.AnimatorState = this.GetState("die");
         var dieScript: Laya.AnimatorStateScript = dieState.addScript(Laya.AnimatorStateScript);
@@ -385,7 +401,7 @@ class FallStateScript extends Laya.AnimatorStateScript {
         this.m_YieldCallBack = setTimeout(() => {
             APP.MessageManager.Fire(MessageMD.GameEvent.PlayerDeath);
         }, 3000);
-
+        this.m_Player.ComleteAllBuff();
     }
     onStateExit()  {
         if (this.m_YieldCallBack)

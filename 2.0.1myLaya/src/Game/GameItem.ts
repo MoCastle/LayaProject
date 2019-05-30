@@ -55,14 +55,14 @@ export module Item {
 
     //物品布局
     export class ItemLayout {
+        private m_Colum:number;
         rewardList: Array<ItemLayOutData>;
         barrierList: Array<ItemLayOutData>;
         layOutCount: Array<number>;
-        startFloor:number;
-        range:number
-        itemInfo:LevelItemInfo.ItemRangeInfo;
-        get endFloor():number
-        {
+        startFloor: number;
+        range: number
+        itemInfo: LevelItemInfo.ItemRangeInfo;
+        get endFloor(): number  {
             return this.startFloor + this.itemInfo.GetFloorRange();
         }
         //RewardMap: { [key: number]: LevelItemInfo.ItemInfo } ;
@@ -85,17 +85,24 @@ export module Item {
             */
         }
 
-        public Init(startFloor: number, colum: number = 5) {
-            var itemInfo: LevelItemInfo.ItemRangeInfo = LevelItemInfo.LevelItemRangeManager.Mgr.GetFloorInfo(startFloor);
+        public Reset(floor:number)
+        {
+            var itemInfo: LevelItemInfo.ItemRangeInfo = LevelItemInfo.LevelItemRangeManager.Mgr.GetFloorInfo(floor);
+            this.InitItemLayout(itemInfo);
+        }
+        private InitItemLayout(itemInfo:LevelItemInfo.ItemRangeInfo)
+        {
             this.itemInfo = itemInfo;
             var range: number = itemInfo.GetFloorRange();
             var layOutCount = new Array<number>();
             this.range = range;
+            this.startFloor = itemInfo.StartFloor;
+            
             for (var startIdx: number = 0; startIdx < range; ++startIdx) {
                 if (startIdx % 2 == 0) {
-                    layOutCount[startIdx] = colum;
+                    layOutCount[startIdx] = this.m_Colum;
                 } else {
-                    layOutCount[startIdx] = colum - 1;
+                    layOutCount[startIdx] = this.m_Colum - 1;
                 }
             }
             this.layOutCount = layOutCount;
@@ -116,13 +123,18 @@ export module Item {
                     if (itemTypeEnum == ItemType.None || itemTypeEnum == ItemType.WinFlag || itemTypeEnum == ItemType.Rope) {
                     }
                     else if (itemTypeEnum < ItemType.Vine) {
-                        barrierList.push(new ItemLayOutData(this.layOutCount, itemDataMap[itemType], startFloor));
+                        barrierList.push(new ItemLayOutData(this.layOutCount, itemDataMap[itemType], itemInfo.StartFloor));
                     }
                     else {
-                        rewardList.push(new ItemLayOutData(this.layOutCount, itemDataMap[itemType], startFloor));
+                        rewardList.push(new ItemLayOutData(this.layOutCount, itemDataMap[itemType], itemInfo.StartFloor));
                     }
                 }
             }
+        }
+        public Init(LevelID: number, colum: number = 5) {
+            var itemInfo: LevelItemInfo.ItemRangeInfo = LevelItemInfo.LevelItemRangeManager.Mgr.GetFloorInfoByLevelID(LevelID);
+            this.m_Colum = colum;
+            this.InitItemLayout(itemInfo);
         }
 
         TakeLineReward(floor: number) {
@@ -139,8 +151,7 @@ export module Item {
                 MgrList[listIdx].UpdateFloor(floor);
 
                 var info: LineItemInfo = MgrList[listIdx].TakeItems(floor);
-                if(info.Number>1)
-                {
+                if (info.Number > 1)  {
                     console.log("why");
                 }
                 if (info.Number > 0) {
@@ -211,15 +222,13 @@ export module Item {
 
             for (var floorIdx: number = startFloor; floorIdx < startFloor + range; floorIdx++) {
                 if (isOdd && floorIdx % 2 == 0 && this.layoutItemList[floorIdx] > 0) {
-                    if((this.itemInfo.itemType >Item.ItemType.None && this.itemInfo.itemType <10)||(this.itemInfo.itemType>10) )
-                    {
+                    if ((this.itemInfo.itemType > Item.ItemType.None && this.itemInfo.itemType < 10) || (this.itemInfo.itemType > 10))  {
                         floorArr.push(floorIdx)
                         itemList[floorIdx - startFloor] = 0;
                     }
                 }
                 else if (!isOdd && floorIdx % 2 != 0 && this.layoutItemList[floorIdx] > 0) {
-                    if((this.itemInfo.itemType >Item.ItemType.None && this.itemInfo.itemType <10)||(this.itemInfo.itemType>10) )
-                    {
+                    if ((this.itemInfo.itemType > Item.ItemType.None && this.itemInfo.itemType < 10) || (this.itemInfo.itemType > 10))  {
                         floorArr.push(floorIdx)
                         itemList[floorIdx - startFloor] = 0;
                     }
@@ -232,13 +241,13 @@ export module Item {
                 var randomLine = Math.floor(Math.random() * floorArr.length);
                 var leftItemNum = --this.layoutItemList[floorArr[randomLine]];
                 itemList[floorArr[randomLine] - startFloor] += 1;
-                
+
                 if (leftItemNum < 1) {
                     floorArr.splice(randomLine, 1);
                 }
                 --itemNum;
             }
-           
+
             this.m_StartFloorArr[isOdd ? 0 : 1] = startFloor;
         }
 
@@ -336,6 +345,7 @@ export module Item {
             if (this.Model != null) {
                 this.Model.transform.rotationEuler = new Laya.Vector3(0, 180, 0);
                 this.Step.PutInItem(this.Model);// .addChild(this.Model);
+                this.Model.transform.localPosition = Laya.Vector3.ZERO;
             }
         }
 
@@ -665,18 +675,16 @@ export module Item {
             this.CountFloor = 0;
         }
         Start() {
-            this.CountFloor = this.GameDir.GamePlay.PlayerFloor;
-            console.log("Start");
+            this.CountFloor = this.GameDir.GamePlay.PlayerCurFloor;
         }
         Removed() {
-            console.log("End");
         }
         Update() {
             if (this.Time < APP.TimeManager.GameTime) {
                 this.RemoveSelf();
             } else {
-                if (this.GameDir.GamePlay.PlayerFloor + 2 + 1 - this.CountFloor < 0) {
-                    
+                if (this.GameDir.GamePlay.PlayerCurFloor + 1 - this.CountFloor < 0) {
+
                     return;
                 }
                 this.GameDir.GamePlay.LoopDoFloorStep(this.CountFloor, this, this.CountCoins);
@@ -685,7 +693,6 @@ export module Item {
         }
         private CountCoins(step: Step) {
             if (step.StepItem.ItemType == ItemType.Coin) {
-                console.log(step.Location);
                 var Coin: Coin = step.StepItem as Coin;
                 Coin.FlyToPlayer(this.player);
             }
