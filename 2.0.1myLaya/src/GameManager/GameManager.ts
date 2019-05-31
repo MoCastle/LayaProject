@@ -4,6 +4,21 @@ export module GameManager {
         protected m_DataArr: Array<BaseInfo>;  //{ [name: string]: BaseInfo };
         protected m_BottomID: number;
         constructor(name: string) {
+            // this.m_DataArr = new Array<BaseInfo>();
+            // this.m_BottomID = -1;
+            // var configInfo: object = Laya.loader.getRes(path.GetJsonPath(name));
+            // for (var key in configInfo) {
+            //     var data = configInfo[key];
+            //     var dataInfo: BaseInfo = this.GenInfo(data);
+            //     this.m_DataArr[dataInfo.ID] = dataInfo;
+            //     if (dataInfo.ID != -1)
+            //         this.m_BottomID = dataInfo.ID;
+            // }
+           this.LoadJsonInfo(name);
+        }
+
+        protected LoadJsonInfo(name: string):void
+        {
             this.m_DataArr = new Array<BaseInfo>();
             this.m_BottomID = -1;
             var configInfo: object = Laya.loader.getRes(path.GetJsonPath(name));

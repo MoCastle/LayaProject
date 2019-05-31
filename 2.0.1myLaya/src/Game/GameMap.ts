@@ -27,11 +27,11 @@ export default class Gamemap extends Laya.Node {
     private m_ShowSteps: number;
     private m_ViewColums: number;
 
-    get EndFloor(): number  {
+    get EndFloor(): number {
         return this.m_ItemLayout.endFloor;
     }
-    get StartFloor(): number  {
-        return this.m_ItemLayout.startFloor;
+    get InitStartFloor(): number {
+        return this.m_ItemLayout.InitStartFloor;
     }
 
     private get CurLineRewards(): Array<Item.LineItemInfo> {
@@ -90,11 +90,11 @@ export default class Gamemap extends Laya.Node {
         jumpFloor = (!jumpFloor) && (jumpFloor < 0) && (jumpFloor >= lines.length) ? 0 : jumpFloor;
         this.m_JumpedFloor = jumpFloor;
         var cameraPS: Laya.Vector3 = new Laya.Vector3(0, 15, 20);
-        var cmeraViewHeight: number = viewHeight / (this.m_MountLines.length + 1);
+        var cmeraViewHeight: number = viewHeight / (this.m_MountLines.length + 1 + 3);
 
         GameModule.VSpace = cmeraViewHeight;
         camera.orthographicVerticalSize = viewHeight - 2.5 * cmeraViewHeight;
-        var widtthSpace: number = (camera.orthographicVerticalSize * camera.aspectRatio) / (this.m_ViewColums - 0.5 + 0.4);
+        var widtthSpace: number = (camera.orthographicVerticalSize * camera.aspectRatio) / (this.m_ViewColums - 0.5 + 0.4 +3);
         GameModule.HSpace = widtthSpace;
 
         Laya.Vector3.add(cameraPS, new Laya.Vector3(0, GameModule.VSpace * (jumpFloor), 0), cameraPS)
@@ -105,7 +105,7 @@ export default class Gamemap extends Laya.Node {
         this.m_rightSwitchCount = 0;
 
         for (var idx: number = 0; idx < lines.length; ++idx) {
-            var floor: number = idx + this.StartFloor;
+            var floor: number = idx + this.InitStartFloor;
             var line: MountLine = lines[idx];
             line.Init();
             line.startFloor = this.m_JumpedFloor;
@@ -235,9 +235,9 @@ export default class Gamemap extends Laya.Node {
      */
     protected PutItemInLine(floor: number) {
         var floorLine = this.GetFloorByFloor(floor);
-        
+
         var safeCol: Array<number>;
-        if(!floorLine)
+        if (!floorLine)
             var a = 1;
         //布置过了不用再布置了
         if (floorLine.LayOutDirty)
@@ -251,9 +251,24 @@ export default class Gamemap extends Laya.Node {
         }
         this.m_CurLineRewards = new Array<Item.LineItemInfo>();
         this.m_CurLineRewards = new Array<Item.LineItemInfo>();
+        
         //获取该行要摆放的物品
-        this.TakeItemList(floor - this.m_JumpedFloor);
-
+        this.TakeItemListByRealFloor(floor);
+        var barrierNum:number = 0;
+        console.log("\n enumstart ");
+        this.m_CurLineBarriers.forEach(element => {
+            barrierNum += element.Number;
+        console.log("enumDebug Type " + element.Type);
+        console.log("enumDebug Number " + element.Number);
+            
+        });
+        console.log("Barrier " + barrierNum);
+        console.log("floor " + (floor - this.m_JumpedFloor + this.InitStartFloor));
+        console.log( "floorlength " +  floorLine.Length);
+        if(barrierNum >= floorLine.Length)
+        {
+            var a = 1;
+        }
         //把需要放道具的格子放入随机池
         var randomPool: Array<Step> = new Array();
         //把安全的格子暂时移出来
@@ -282,38 +297,52 @@ export default class Gamemap extends Laya.Node {
                 countBarrierNum += element.Number;
             });
             var NumberArr: Array<number> = this.FindSafeStep(floor);
-            if (countBarrierNum <= NumberArr.length) {
-                var putInfStep: Array<Step> = []
+            var safeStepNum: number = NumberArr[Math.floor(Math.random() * NumberArr.length)];
+            if (safeStepList.length < NumberArr.length || countBarrierNum > (safeStepList.length) )  {
+                console.log("Fuck");
+            }
+            if (NumberArr.length > 0) {
+                var safeStep: Step = null;
+                for (var idx: number = 0; idx < safeStepList.length; ++idx) {
+                    if (safeStepNum == safeStepList[idx].Idx) {
+                        safeStep = safeStepList[idx];
+                        safeStepList.splice(idx, 1);
+                        break;
+                    }
+                }
+
+                var putInfStepArr: Array<Step> = []
+                // console.log("Barrier")
+                // barriersList.forEach(element => {
+                //     console.log(element.Type);
+                // });
+                // console.log("safeList")
+                // safeStepList.forEach(element => {
+                //     console.log(element.Idx);
+                // });
                 while (barriersList.length > 0) {
                     var info: Item.LineItemInfo = barriersList[0]
-                    var putinIdx: number = NumberArr[Math.floor(Math.random() * NumberArr.length)];
-                    if (!putinStep)  {
-                        console.log("aaa");
-                    }
-                    var putinStep: Step = floorLine.GetStep(putinIdx);
+                    var randPutinIdx: number = Math.floor(Math.random() * safeStepList.length)
+                    var putinStep: Step = safeStepList[randPutinIdx];
+                    if (!putinStep)
+                        console.log("Fuck");
+                    safeStepList.splice(randPutinIdx, 1);
                     putinStep.PutItem(info.Type);
-                    for (var safeStepIdx: number = 0; safeStepIdx < safeStepList.length; ++safeStepIdx) {
-                        var safeStep: Step = safeStepList[safeStepIdx];
-                        if (putinIdx == safeStep.Idx)  {
-                            safeStepList.splice(safeStepIdx, 1);
-                            break;
-                        }
-                    }
                     --info.Number;
-                    if (info.Number < 1)  {
+                    if (info.Number < 1) {
                         barriersList.shift();
                     }
                 }
+                safeStepList.push(safeStep);
             }
             else {
-                var NumberArr: Array<number> = this.FindSafeStep(floor);
                 while (barriersList.length > 0) {
                     var info: Item.LineItemInfo = barriersList[0]
                     var safeStepIdx: number = Math.floor(Math.random() * safeStepList.length);
                     var safeStep: Step = safeStepList[safeStepIdx];
                     safeStepList.splice(safeStepIdx, 1);
                     --info.Number;
-                    if (info.Number < 1)  {
+                    if (info.Number < 1) {
                         barriersList.shift();
                     }
                 }
@@ -331,7 +360,7 @@ export default class Gamemap extends Laya.Node {
 
     public GetStepByPosition(location: GameStruct.MLocation) {
         var floor: MountLine = this.GetFloorByFloor(location.Y);
-        if (!floor)  {
+        if (!floor) {
             return null;
         }
         var step: Step = floor.GetStep(location.X);
@@ -341,7 +370,7 @@ export default class Gamemap extends Laya.Node {
     protected FindSafeStep(floor: number): Array<number> {
         var stepContainer: Array<number> = new Array<number>();
         var startStep: Step = this.m_Player && this.m_Player.CurStep ? this.m_Player.CurStep : this.GetStepByPosition(this.m_SafeLocation);
-        if (startStep)  {
+        if (startStep) {
             this.SearchingCurFloor(startStep, floor, stepContainer);
         }
 
@@ -350,7 +379,15 @@ export default class Gamemap extends Laya.Node {
 
     protected SearchingCurFloor(curStep: Step, targetFloor: number, targetStepContainer: Array<number>) {
         if (curStep.Floor.floorNum == targetFloor) {
-            targetStepContainer.push(curStep.Idx);
+            var isRepeated: boolean = false;
+            for (var idx: number = 0; idx < targetStepContainer.length; ++idx) {
+                if (targetStepContainer[idx] == curStep.Idx) {
+                    isRepeated = true;
+                }
+            }
+            if (!isRepeated) {
+                targetStepContainer.push(curStep.Idx);
+            }
             return;
         }
         else {
@@ -487,8 +524,8 @@ export default class Gamemap extends Laya.Node {
 
         var roadNum: number = 0;
         var lastFloor: MountLine = null;
-        if(floor<0)
-            this.GetFloorByFloor(floor - 1);
+        if (floor > 0)
+            lastFloor = this.GetFloorByFloor(floor - 1);
         if (!lastFloor)
             return safeMap;
         var safeIdx: string = "";
@@ -562,20 +599,20 @@ export default class Gamemap extends Laya.Node {
             step.isDeadRoad = true;
         }
     }
-
+    
     /**
      * 获取某道具信息
      * @param {number}floor 
      */
-    TakeItemList(floor: number) {
-        if (floor > this.EndFloor)  {
+    TakeItemListByRealFloor(floor: number) {
+        floor += this.InitStartFloor;
+        if (floor > this.EndFloor) {
             this.m_ItemLayout.Reset(floor);
         }
-        if (floor < this.m_JumpedFloor)  {
+        if (floor < this.m_JumpedFloor) {
             return;
         }
         floor -= this.m_JumpedFloor
-        var line = this.GetFloorByFloor(floor);
         this.m_CurLineRewards = new Array<Item.LineItemInfo>();
         this.m_CurLineBarriers = new Array<Item.LineItemInfo>();
         this.m_CurLineRewards = this.m_ItemLayout.TakeLineReward(floor);

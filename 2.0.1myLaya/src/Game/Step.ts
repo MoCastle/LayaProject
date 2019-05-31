@@ -21,6 +21,7 @@ export default class Step extends Laya.Sprite3D {
     private _IsDeadRoad: boolean;
     private m_StepModel: Laya.Sprite3D;
     private m_YieldFunc;
+    private m_locked;
 
     LeftParent: Step;
     RightParent: Step;
@@ -31,7 +32,14 @@ export default class Step extends Laya.Sprite3D {
     Mark: any;
     Floor: MountLine;
     realIdx: number;
-    locked: boolean
+    get locked(): boolean
+    {
+        return this.m_locked || !this.active;
+    }
+    set locked(value:boolean)
+    {
+        this.m_locked = value;
+    }
 
     get Idx(): number  {
         return this.realIdx - 1;
@@ -130,7 +138,6 @@ export default class Step extends Laya.Sprite3D {
         if (this.m_YieldFunc)  {
             clearTimeout(this.m_YieldFunc);
         }
-        console.log("Reset" + this.m_Num);
     }
 
     public TouchGround(player: Player) {
@@ -157,7 +164,6 @@ export default class Step extends Laya.Sprite3D {
         var randomTime = 1000 * Math.random();
         var step: Step = this;
         this.m_YieldFunc = setTimeout(() => {
-            console.log("Run" + this.m_Num);
             step.YieldBreak();
         }, randomTime);
     }

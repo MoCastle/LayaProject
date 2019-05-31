@@ -1,5 +1,6 @@
 import { GameManager } from "./GameManager"
 import { Item } from "./../Game/GameItem"
+import { path } from "../Utility/Path";
 
 export module LevelItemInfo {
     export class LevelItemRangeManager extends GameManager.BaseManager {
@@ -13,14 +14,25 @@ export module LevelItemInfo {
         constructor() {
             super("LevelItemRange");
         }
-        protected GenInfo(data: any): GameManager.BaseInfo {
-            var itemRangeInfo = new ItemRangeInfo(data);
-
-            if (itemRangeInfo.ID > 1)  {
-                var lastItemInfo: ItemRangeInfo = this.GetInfo(itemRangeInfo.ID - 1);
-                itemRangeInfo.StartFloor = lastItemInfo.StartFloor + lastItemInfo.GetFloorRange();
+        
+        protected LoadJsonInfo(name: string):void
+        {
+            this.m_DataArr = new Array<GameManager.BaseInfo>();
+            this.m_BottomID = -1;
+            var configInfo: object = Laya.loader.getRes(path.GetJsonPath(name));
+            var startFloor:number = 0;
+            for (var key in configInfo) {
+                var data = configInfo[key];
+                var dataInfo: ItemRangeInfo = this.GenInfo(data) as ItemRangeInfo;
+                dataInfo.StartFloor = startFloor;
+                startFloor += dataInfo.GetFloorRange();
+                this.m_DataArr[dataInfo.ID] = dataInfo;
+                if (dataInfo.ID != -1)
+                    this.m_BottomID = dataInfo.ID;
             }
-            return itemRangeInfo;
+        }
+        protected GenInfo(data: any): GameManager.BaseInfo {
+            return new ItemRangeInfo(data);
         }
         /**
          * 

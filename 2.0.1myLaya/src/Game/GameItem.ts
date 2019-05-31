@@ -55,14 +55,15 @@ export module Item {
 
     //物品布局
     export class ItemLayout {
-        private m_Colum:number;
+        private m_Colum: number;
         rewardList: Array<ItemLayOutData>;
         barrierList: Array<ItemLayOutData>;
         layOutCount: Array<number>;
         startFloor: number;
+        InitStartFloor: number;
         range: number
         itemInfo: LevelItemInfo.ItemRangeInfo;
-        get endFloor(): number  {
+        get endFloor(): number {
             return this.startFloor + this.itemInfo.GetFloorRange();
         }
         //RewardMap: { [key: number]: LevelItemInfo.ItemInfo } ;
@@ -85,25 +86,30 @@ export module Item {
             */
         }
 
-        public Reset(floor:number)
-        {
+        public Reset(floor: number) {
+            console.log("\nReset " + floor);
             var itemInfo: LevelItemInfo.ItemRangeInfo = LevelItemInfo.LevelItemRangeManager.Mgr.GetFloorInfo(floor);
-            this.InitItemLayout(itemInfo);
+            this.InitItemLayout(itemInfo, floor);
         }
-        private InitItemLayout(itemInfo:LevelItemInfo.ItemRangeInfo)
-        {
+        private InitItemLayout(itemInfo: LevelItemInfo.ItemRangeInfo, inputStartFloor: number = 0) {
             this.itemInfo = itemInfo;
             var range: number = itemInfo.GetFloorRange();
             var layOutCount = new Array<number>();
             this.range = range;
-            this.startFloor = itemInfo.StartFloor;
-            
+            if (itemInfo.StartFloor + itemInfo.GetFloorRange() < inputStartFloor)  {
+                this.startFloor += range;
+            }else
+            {
+                this.startFloor = itemInfo.StartFloor;
+            }
+
             for (var startIdx: number = 0; startIdx < range; ++startIdx) {
                 if (startIdx % 2 == 0) {
                     layOutCount[startIdx] = this.m_Colum;
                 } else {
                     layOutCount[startIdx] = this.m_Colum - 1;
                 }
+                console.log("lineStep " + (this.startFloor + startIdx) + " " + layOutCount[startIdx]);
             }
             this.layOutCount = layOutCount;
 
@@ -123,10 +129,10 @@ export module Item {
                     if (itemTypeEnum == ItemType.None || itemTypeEnum == ItemType.WinFlag || itemTypeEnum == ItemType.Rope) {
                     }
                     else if (itemTypeEnum < ItemType.Vine) {
-                        barrierList.push(new ItemLayOutData(this.layOutCount, itemDataMap[itemType], itemInfo.StartFloor));
+                        barrierList.push(new ItemLayOutData(this.layOutCount, itemDataMap[itemType], this.startFloor));
                     }
                     else {
-                        rewardList.push(new ItemLayOutData(this.layOutCount, itemDataMap[itemType], itemInfo.StartFloor));
+                        rewardList.push(new ItemLayOutData(this.layOutCount, itemDataMap[itemType], this.startFloor));
                     }
                 }
             }
@@ -134,6 +140,7 @@ export module Item {
         public Init(LevelID: number, colum: number = 5) {
             var itemInfo: LevelItemInfo.ItemRangeInfo = LevelItemInfo.LevelItemRangeManager.Mgr.GetFloorInfoByLevelID(LevelID);
             this.m_Colum = colum;
+            this.InitStartFloor = itemInfo.StartFloor;
             this.InitItemLayout(itemInfo);
         }
 
@@ -151,9 +158,6 @@ export module Item {
                 MgrList[listIdx].UpdateFloor(floor);
 
                 var info: LineItemInfo = MgrList[listIdx].TakeItems(floor);
-                if (info.Number > 1)  {
-                    console.log("why");
-                }
                 if (info.Number > 0) {
                     returnInfo.push(info);
                 }
@@ -171,6 +175,7 @@ export module Item {
         curFloorNum: number;
         //开始层
         protected m_StartFloorArr: Array<number>;
+        private m_RangeStartFloor: number;
         layoutItemList: Array<number>;
         itemListArr: Array<number>;
         itemNum: Array<number>;
@@ -188,8 +193,9 @@ export module Item {
             this.itemInfo = itemInfo;
             var itemNum: Array<number> = new Array<number>();
             this.itemNum = itemNum;
-            this.GenMap(0, true);
-            this.GenMap(0, false);
+            this.m_RangeStartFloor = startFloor;
+            this.GenMap(startFloor, true);
+            this.GenMap(startFloor, false);
         }
 
         GetEndFloor(isOdd: boolean): number {
@@ -199,10 +205,8 @@ export module Item {
         //层更新函数
         UpdateFloor(floor: number) {
             var isOdd: boolean = floor % 2 == 0;
-            if (this.GetEndFloor(isOdd) < floor) {
-                var range: number = this.itemInfo.GetRange(isOdd);
-                var startFloor = Math.floor(floor / range) * range;
-                this.GenMap(startFloor, isOdd);
+            if (this.GetEndFloor(isOdd) <= floor) {
+                this.GenMap(floor, isOdd);
             }
             /*
             if (floor >= this.startFloor + this.Range) {
@@ -210,50 +214,82 @@ export module Item {
             }
             */
         }
-
+        get isBarrier(): boolean {
+            return this.itemType > 0 && this.itemType < Item.ItemType.Vine;
+        }
         //生成分布图
-        GenMap(startFloor: number, isOdd: boolean) {
+        GenMap(startPutinFloor: number, isOdd: boolean) {
+            var countStartPutInFloor: number = -1;
             var itemList: Array<number>;
             var itemNum: number = this.itemInfo.GetNum(isOdd);
             var range: number = this.itemInfo.GetRange(isOdd);
             var floorArr: Array<number> = new Array<number>();
             this.itemListArr = this.itemListArr ? this.itemListArr : new Array<number>();
+            var slotShift: number = isOdd ? 0 : 1;
             itemList = this.itemListArr;
 
-            for (var floorIdx: number = startFloor; floorIdx < startFloor + range; floorIdx++) {
-                if (isOdd && floorIdx % 2 == 0 && this.layoutItemList[floorIdx] > 0) {
-                    if ((this.itemInfo.itemType > Item.ItemType.None && this.itemInfo.itemType < 10) || (this.itemInfo.itemType > 10))  {
-                        floorArr.push(floorIdx)
-                        itemList[floorIdx - startFloor] = 0;
+            for (var floorCounter: number = startPutinFloor; floorCounter < startPutinFloor + range; floorCounter++) {
+                if (isOdd && floorCounter % 2 == 0) {
+                    if (countStartPutInFloor == -1)  {
+                        countStartPutInFloor = floorCounter;
                     }
+                    itemList[floorCounter - countStartPutInFloor + slotShift] = 0;
+                    if (this.layoutItemList[floorCounter - this.m_RangeStartFloor] < 1 || (this.isBarrier && this.layoutItemList[floorCounter - this.m_RangeStartFloor] < 2)) {
+                        continue;
+                    }
+                    floorArr.push(floorCounter - this.m_RangeStartFloor)
                 }
-                else if (!isOdd && floorIdx % 2 != 0 && this.layoutItemList[floorIdx] > 0) {
-                    if ((this.itemInfo.itemType > Item.ItemType.None && this.itemInfo.itemType < 10) || (this.itemInfo.itemType > 10))  {
-                        floorArr.push(floorIdx)
-                        itemList[floorIdx - startFloor] = 0;
+                else if (!isOdd && floorCounter % 2 != 0) {
+                    if (countStartPutInFloor == -1)  {
+                        countStartPutInFloor = floorCounter;
                     }
+                    itemList[floorCounter - countStartPutInFloor + slotShift] = 0;
+                    if (this.layoutItemList[floorCounter - this.m_RangeStartFloor] < 1 || (this.isBarrier && this.layoutItemList[floorCounter - this.m_RangeStartFloor] < 2)) {
+                        continue;
+                    }
+                    floorArr.push(floorCounter - this.m_RangeStartFloor)
                 }
             }
+            startPutinFloor = countStartPutInFloor;
+
+            console.log("\nenum ItemLayout");
+            console.log("Itemtype " + this.itemType);
             while (itemNum > 0) {
                 if (floorArr.length < 1) {
                     break;
                 }
                 var randomLine = Math.floor(Math.random() * floorArr.length);
-                var leftItemNum = --this.layoutItemList[floorArr[randomLine]];
-                itemList[floorArr[randomLine] - startFloor] += 1;
+                var PutInFloor: number = floorArr[randomLine];
+                var leftItemNum = --this.layoutItemList[PutInFloor];
+                itemList[PutInFloor + this.m_RangeStartFloor - startPutinFloor + slotShift] += 1;
 
-                if (leftItemNum < 1) {
+                console.log("floor " + (PutInFloor + this.m_RangeStartFloor) + " StartPutinFloor " + startPutinFloor + " slot " + (PutInFloor + this.m_RangeStartFloor - startPutinFloor + slotShift));
+                console.log("number " + this.itemListArr[PutInFloor + this.m_RangeStartFloor - startPutinFloor + slotShift]);
+
+                /*
+                console.log("PutItem in floor " +  (PutInFloor + this.m_RangeStartFloor))
+                console.log("Left in Floor " + leftItemNum);
+                console.log("Type is " + this.itemType);
+                console.log("ItemNum " + itemList[PutInFloor + this.m_RangeStartFloor - startPutinFloor]);
+                console.log("startPutinFloor " + startPutinFloor );
+                console.log("\n" );
+                */
+                if (leftItemNum < 1 || (this.isBarrier && leftItemNum < 2)) {
                     floorArr.splice(randomLine, 1);
                 }
                 --itemNum;
             }
 
-            this.m_StartFloorArr[isOdd ? 0 : 1] = startFloor;
+            this.m_StartFloorArr[isOdd ? 0 : 1] = startPutinFloor;
         }
 
         TakeItems(floor: number): LineItemInfo {
+            var isOdd: boolean = floor % 2 == 0;
             var listItem: Array<number> = this.itemListArr;
-            return new LineItemInfo(this.itemType, listItem[floor - this.m_StartFloorArr[floor % 2 == 0 ? 0 : 1]]);
+            var slotShift: number = isOdd ? 0 : 1;
+
+            console.log("TakeItem " + this.itemType + " slot " + (floor - this.m_StartFloorArr[isOdd ? 0 : 1] + slotShift));
+            return new LineItemInfo(this.itemType, listItem[floor - this.m_StartFloorArr[isOdd ? 0 : 1] + slotShift]);
         }
     }
 

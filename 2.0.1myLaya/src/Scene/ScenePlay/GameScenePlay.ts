@@ -77,7 +77,7 @@ export default class GameScenePlay extends Scene.BaseScenePlaye {
     }
     get PlayerCurFloor():number
     {
-        var floor:number = this.PlayerJumped + this.m_GameMap.StartFloor;
+        var floor:number = this.PlayerJumped + this.m_GameMap.InitStartFloor;
         return floor;
     }
     get JumpedDistance(): number {
