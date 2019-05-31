@@ -31,7 +31,7 @@ export module Character
         }
         public SwitchState( AnimEnum )
         {
-
+            
         }
     }
 }
